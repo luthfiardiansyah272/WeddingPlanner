@@ -51,13 +51,22 @@ const Auth = {
     const uid = auth.currentUser?.uid;
     if (!uid) return null;
     const snap = await getDoc(doc(db, 'users', uid));
-    return snap.exists() ? { uid, ...snap.data() } : null;
+    if (snap.exists()) return { uid, ...snap.data() };
+    // Fallback: buat dokumen user jika belum ada
+    const fallback = { name: auth.currentUser.email.split('@')[0], email: auth.currentUser.email, partnerName: '', weddingDate: '', location: '', theme: '' };
+    await setDoc(doc(db, 'users', uid), fallback);
+    return { uid, ...fallback };
   },
 
   require(callback) {
-    onAuthStateChanged(auth, user => {
-      if (!user) window.location.href = 'login.html';
-      else callback(user);
+    onAuthStateChanged(auth, async user => {
+      if (!user) { window.location.href = 'login.html'; return; }
+      try {
+        await callback(user);
+      } catch (e) {
+        console.error('Page error:', e);
+        showLoading(false);
+      }
     });
   }
 };

@@ -90,9 +90,10 @@
   Auth.require(async (user) => {
     showLoading(true);
     const profile = await Auth.getProfile();
+    if (!profile) { window.location.href = 'login.html'; return; }
     setupNav(profile);
 
-    document.getElementById('hero-names').textContent = `${profile.name} & ${profile.partnerName}`;
+    document.getElementById('hero-names').textContent = `${profile.name} & ${profile.partnerName || '...'}`;
 
     // Countdown
     function updateCountdown() {
