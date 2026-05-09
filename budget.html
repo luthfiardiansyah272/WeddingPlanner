@@ -7,7 +7,6 @@
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-
 <nav>
   <a href="index.html" class="nav-brand">💍 Wedding Planner</a>
   <div class="nav-links">
@@ -22,21 +21,16 @@
   </div>
   <div class="nav-user">
     <span id="nav-user-name"></span>
-    <button class="btn-logout" onclick="Auth.logout()">Keluar</button>
+    <button class="btn-logout" onclick="doLogout()">Keluar</button>
   </div>
 </nav>
 
 <div class="container">
-
   <div class="page-header">
-    <div>
-      <h2>💰 Manajemen Budget</h2>
-      <p>Kelola anggaran pernikahan Anda</p>
-    </div>
-    <button class="btn btn-primary" onclick="openModal('modal-add')">+ Tambah Item</button>
+    <div><h2>💰 Manajemen Budget</h2><p>Kelola anggaran pernikahan Anda</p></div>
+    <button class="btn btn-primary" onclick="openAddModal()">+ Tambah Item</button>
   </div>
 
-  <!-- TOTAL BUDGET CARD -->
   <div class="card" style="margin-bottom:1.5rem">
     <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
       <div>
@@ -44,100 +38,51 @@
         <h2 id="total-display" style="font-size:2rem;color:var(--primary-dark)">Rp 0</h2>
       </div>
       <div style="display:flex;gap:1rem;align-items:center;flex-wrap:wrap">
-        <div style="text-align:center">
-          <p style="font-size:0.75rem;color:var(--text-light)">Direncanakan</p>
-          <p id="planned-display" style="font-weight:600;color:var(--text)">Rp 0</p>
-        </div>
-        <div style="text-align:center">
-          <p style="font-size:0.75rem;color:var(--text-light)">Terpakai</p>
-          <p id="spent-display" style="font-weight:600;color:var(--text)">Rp 0</p>
-        </div>
-        <div style="text-align:center">
-          <p style="font-size:0.75rem;color:var(--text-light)">Sisa</p>
-          <p id="remaining-display" style="font-weight:600">Rp 0</p>
-        </div>
+        <div style="text-align:center"><p style="font-size:0.75rem;color:var(--text-light)">Direncanakan</p><p id="planned-display" style="font-weight:600">Rp 0</p></div>
+        <div style="text-align:center"><p style="font-size:0.75rem;color:var(--text-light)">Terpakai</p><p id="spent-display" style="font-weight:600">Rp 0</p></div>
+        <div style="text-align:center"><p style="font-size:0.75rem;color:var(--text-light)">Sisa</p><p id="remaining-display" style="font-weight:600">Rp 0</p></div>
         <button class="btn btn-outline btn-sm" onclick="openModal('modal-total')">✏️ Ubah Total</button>
       </div>
     </div>
-    <div class="progress-bar" style="margin-top:1.2rem;height:14px">
-      <div id="main-progress" class="progress-fill" style="width:0%"></div>
-    </div>
+    <div class="progress-bar" style="margin-top:1.2rem;height:14px"><div id="main-progress" class="progress-fill" style="width:0%"></div></div>
     <p id="progress-label" style="font-size:0.75rem;color:var(--text-light);margin-top:6px"></p>
   </div>
 
-  <!-- ITEMS TABLE -->
-  <div class="card">
-    <div id="budget-table"></div>
-  </div>
-
+  <div class="card"><div id="budget-table"></div></div>
 </div>
 
-<!-- MODAL SET TOTAL -->
+<!-- MODAL TOTAL -->
 <div class="modal-overlay" id="modal-total">
   <div class="modal">
-    <div class="modal-header">
-      <h3>Atur Total Budget</h3>
-      <button class="btn-close" onclick="closeModal('modal-total')">✕</button>
-    </div>
-    <div class="form-group">
-      <label>Total Budget (Rp)</label>
-      <input type="number" id="input-total" placeholder="Contoh: 100000000" min="0" />
-    </div>
+    <div class="modal-header"><h3>Atur Total Budget</h3><button class="btn-close" onclick="closeModal('modal-total')">✕</button></div>
+    <div class="form-group"><label>Total Budget (Rp)</label><input type="number" id="input-total" placeholder="Contoh: 100000000" min="0" /></div>
     <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="saveTotal()">Simpan</button>
   </div>
 </div>
 
-<!-- MODAL ADD/EDIT ITEM -->
+<!-- MODAL ADD/EDIT -->
 <div class="modal-overlay" id="modal-add">
   <div class="modal">
-    <div class="modal-header">
-      <h3 id="modal-add-title">Tambah Item Budget</h3>
-      <button class="btn-close" onclick="closeModal('modal-add')">✕</button>
-    </div>
+    <div class="modal-header"><h3 id="modal-add-title">Tambah Item Budget</h3><button class="btn-close" onclick="closeModal('modal-add')">✕</button></div>
     <input type="hidden" id="edit-id" />
     <div class="form-group">
       <label>Kategori</label>
       <select id="item-category">
-        <option>Venue</option>
-        <option>Katering</option>
-        <option>Fotografer</option>
-        <option>Videografer</option>
-        <option>Dekorasi</option>
-        <option>MUA & Busana</option>
-        <option>Hiburan</option>
-        <option>Undangan</option>
-        <option>Transportasi</option>
-        <option>Cincin</option>
-        <option>Bulan Madu</option>
-        <option>Lainnya</option>
+        <option>Venue</option><option>Katering</option><option>Fotografer</option><option>Videografer</option>
+        <option>Dekorasi</option><option>MUA & Busana</option><option>Hiburan</option><option>Undangan</option>
+        <option>Transportasi</option><option>Cincin</option><option>Bulan Madu</option><option>Lainnya</option>
       </select>
     </div>
-    <div class="form-group">
-      <label>Nama Item</label>
-      <input type="text" id="item-name" placeholder="Contoh: Gedung Serbaguna" />
-    </div>
+    <div class="form-group"><label>Nama Item</label><input type="text" id="item-name" placeholder="Contoh: Gedung Serbaguna" /></div>
     <div class="grid-2">
-      <div class="form-group">
-        <label>Budget Rencana (Rp)</label>
-        <input type="number" id="item-planned" placeholder="0" min="0" />
-      </div>
-      <div class="form-group">
-        <label>Biaya Aktual (Rp)</label>
-        <input type="number" id="item-actual" placeholder="0" min="0" />
-      </div>
+      <div class="form-group"><label>Budget Rencana (Rp)</label><input type="number" id="item-planned" placeholder="0" min="0" /></div>
+      <div class="form-group"><label>Biaya Aktual (Rp)</label><input type="number" id="item-actual" placeholder="0" min="0" /></div>
     </div>
     <div class="form-group">
       <label>Status</label>
-      <select id="item-status">
-        <option>Belum Bayar</option>
-        <option>DP</option>
-        <option>Lunas</option>
-      </select>
+      <select id="item-status"><option>Belum Bayar</option><option>DP</option><option>Lunas</option></select>
     </div>
-    <div class="form-group">
-      <label>Catatan</label>
-      <textarea id="item-note" rows="2" placeholder="Catatan tambahan..."></textarea>
-    </div>
+    <div class="form-group"><label>Catatan</label><textarea id="item-note" rows="2" placeholder="Catatan tambahan..."></textarea></div>
     <div style="display:flex;gap:0.8rem">
       <button class="btn btn-primary" style="flex:1;justify-content:center" onclick="saveItem()">Simpan</button>
       <button class="btn btn-outline" onclick="closeModal('modal-add')">Batal</button>
@@ -145,129 +90,119 @@
   </div>
 </div>
 
-<script src="js/app.js"></script>
-<script>
-  Auth.require();
-  setupNav();
+<script type="module">
+  import { Auth, Budget, fmt, setupNav, toast, openModal, closeModal, showLoading } from './js/firebase.js';
 
-  const statusColor = { 'Lunas': 'badge-green', 'DP': 'badge-yellow', 'Belum Bayar': 'badge-blue' };
+  window.doLogout = () => Auth.logout();
+  window.openModal = openModal;
+  window.closeModal = closeModal;
+
+  let uid, bData;
+  const statusColor = { 'Lunas':'badge-green', 'DP':'badge-yellow', 'Belum Bayar':'badge-blue' };
 
   function render() {
-    const data = Budget.getAll();
-    const s = Budget.summary();
-
+    const s = Budget.summary(bData);
     document.getElementById('total-display').textContent = fmt(s.total);
     document.getElementById('planned-display').textContent = fmt(s.planned);
     document.getElementById('spent-display').textContent = fmt(s.spent);
     const remEl = document.getElementById('remaining-display');
     remEl.textContent = fmt(s.remaining);
     remEl.style.color = s.remaining < 0 ? 'var(--danger)' : 'var(--success)';
-
-    const pct = s.total ? Math.min(s.spent / s.total * 100, 100) : 0;
+    const pct = s.total ? Math.min(s.spent/s.total*100,100) : 0;
     const over = s.spent > s.total && s.total > 0;
     document.getElementById('main-progress').style.width = pct + '%';
-    document.getElementById('main-progress').className = `progress-fill ${over ? 'over' : ''}`;
+    document.getElementById('main-progress').className = `progress-fill ${over?'over':''}`;
     document.getElementById('progress-label').textContent = `${pct.toFixed(1)}% dari total budget terpakai`;
 
     const el = document.getElementById('budget-table');
-    if (!data.items.length) {
+    if (!bData.items.length) {
       el.innerHTML = '<div class="empty-state"><div class="empty-icon">💰</div><p>Belum ada item budget. Klik "+ Tambah Item" untuk mulai.</p></div>';
       return;
     }
-
-    el.innerHTML = `<table>
-      <thead><tr>
-        <th>Kategori</th><th>Nama Item</th>
-        <th>Rencana</th><th>Aktual</th>
-        <th>Selisih</th><th>Status</th><th>Aksi</th>
-      </tr></thead>
-      <tbody>
-        ${data.items.map(item => {
-          const diff = (item.planned || 0) - (item.actual || 0);
-          return `<tr>
-            <td><span class="badge badge-pink">${item.category}</span></td>
-            <td><strong>${item.name}</strong>${item.note ? `<br><small style="color:var(--text-light)">${item.note}</small>` : ''}</td>
-            <td>${fmt(item.planned || 0)}</td>
-            <td>${fmt(item.actual || 0)}</td>
-            <td style="color:${diff >= 0 ? 'var(--success)' : 'var(--danger)'}">
-              ${diff >= 0 ? '+' : ''}${fmt(diff)}
-            </td>
-            <td><span class="badge ${statusColor[item.status] || 'badge-blue'}">${item.status}</span></td>
-            <td>
-              <button class="btn btn-outline btn-sm" onclick="editItem(${item.id})">✏️</button>
-              <button class="btn btn-danger btn-sm" onclick="deleteItem(${item.id})">🗑️</button>
-            </td>
-          </tr>`;
-        }).join('')}
-      </tbody>
-    </table>`;
+    el.innerHTML = `<table><thead><tr><th>Kategori</th><th>Nama Item</th><th>Rencana</th><th>Aktual</th><th>Selisih</th><th>Status</th><th>Aksi</th></tr></thead><tbody>
+      ${bData.items.map(item => {
+        const diff = (item.planned||0)-(item.actual||0);
+        return `<tr>
+          <td><span class="badge badge-pink">${item.category}</span></td>
+          <td><strong>${item.name}</strong>${item.note?`<br><small style="color:var(--text-light)">${item.note}</small>`:''}</td>
+          <td>${fmt(item.planned||0)}</td><td>${fmt(item.actual||0)}</td>
+          <td style="color:${diff>=0?'var(--success)':'var(--danger)'}">${diff>=0?'+':''}${fmt(diff)}</td>
+          <td><span class="badge ${statusColor[item.status]||'badge-blue'}">${item.status}</span></td>
+          <td>
+            <button class="btn btn-outline btn-sm" onclick="editItem(${item.id})">✏️</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteItem(${item.id})">🗑️</button>
+          </td>
+        </tr>`;
+      }).join('')}
+    </tbody></table>`;
   }
 
-  function saveTotal() {
+  window.openAddModal = () => {
+    document.getElementById('edit-id').value = '';
+    document.getElementById('modal-add-title').textContent = 'Tambah Item Budget';
+    ['item-name','item-planned','item-actual','item-note'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('item-status').value = 'Belum Bayar';
+    openModal('modal-add');
+  };
+
+  window.saveTotal = async () => {
     const val = parseFloat(document.getElementById('input-total').value);
     if (!val || val <= 0) return toast('Masukkan jumlah yang valid', 'error');
-    Budget.setTotal(val);
-    closeModal('modal-total');
-    toast('Total budget disimpan');
-    render();
-  }
+    bData.total = val;
+    await Budget.setTotal(uid, val);
+    closeModal('modal-total'); toast('Total budget disimpan'); render();
+  };
 
-  function saveItem() {
-    const id = document.getElementById('edit-id').value;
+  window.saveItem = async () => {
+    const id = parseInt(document.getElementById('edit-id').value);
     const item = {
       category: document.getElementById('item-category').value,
       name: document.getElementById('item-name').value,
-      planned: parseFloat(document.getElementById('item-planned').value) || 0,
-      actual: parseFloat(document.getElementById('item-actual').value) || 0,
+      planned: parseFloat(document.getElementById('item-planned').value)||0,
+      actual: parseFloat(document.getElementById('item-actual').value)||0,
       status: document.getElementById('item-status').value,
       note: document.getElementById('item-note').value,
     };
     if (!item.name) return toast('Nama item wajib diisi', 'error');
-    if (id) Budget.updateItem(parseInt(id), item);
-    else Budget.addItem(item);
-    closeModal('modal-add');
-    toast(id ? 'Item diperbarui' : 'Item ditambahkan');
-    render();
-  }
+    if (id) { await Budget.updateItem(uid, id, item); } else { await Budget.addItem(uid, item); }
+    bData = await Budget.get(uid);
+    closeModal('modal-add'); toast(id ? 'Item diperbarui' : 'Item ditambahkan'); render();
+  };
 
-  function editItem(id) {
-    const item = Budget.getAll().items.find(i => i.id === id);
+  window.editItem = (id) => {
+    const item = bData.items.find(i => i.id === id);
     if (!item) return;
     document.getElementById('edit-id').value = id;
     document.getElementById('modal-add-title').textContent = 'Edit Item Budget';
     document.getElementById('item-category').value = item.category;
     document.getElementById('item-name').value = item.name;
-    document.getElementById('item-planned').value = item.planned || '';
-    document.getElementById('item-actual').value = item.actual || '';
+    document.getElementById('item-planned').value = item.planned||'';
+    document.getElementById('item-actual').value = item.actual||'';
     document.getElementById('item-status').value = item.status;
-    document.getElementById('item-note').value = item.note || '';
+    document.getElementById('item-note').value = item.note||'';
     openModal('modal-add');
-  }
+  };
 
-  function deleteItem(id) {
+  window.deleteItem = async (id) => {
     if (!confirm('Hapus item ini?')) return;
-    Budget.deleteItem(id);
-    toast('Item dihapus');
-    render();
-  }
+    await Budget.deleteItem(uid, id);
+    bData = await Budget.get(uid);
+    toast('Item dihapus'); render();
+  };
 
-  // Reset form on open
-  document.querySelector('[onclick="openModal(\'modal-add\')"]').addEventListener('click', () => {
-    document.getElementById('edit-id').value = '';
-    document.getElementById('modal-add-title').textContent = 'Tambah Item Budget';
-    document.getElementById('item-name').value = '';
-    document.getElementById('item-planned').value = '';
-    document.getElementById('item-actual').value = '';
-    document.getElementById('item-note').value = '';
-    document.getElementById('item-status').value = 'Belum Bayar';
-  });
-
-  // Pre-fill total modal
   document.querySelector('[onclick="openModal(\'modal-total\')"]').addEventListener('click', () => {
-    document.getElementById('input-total').value = Budget.getAll().total || '';
+    document.getElementById('input-total').value = bData.total || '';
   });
 
-  render();
+  Auth.require(async (user) => {
+    showLoading(true);
+    uid = user.uid;
+    const profile = await Auth.getProfile();
+    setupNav(profile);
+    bData = await Budget.get(uid);
+    render();
+    showLoading(false);
+  });
 </script>
 </body>
 </html>
