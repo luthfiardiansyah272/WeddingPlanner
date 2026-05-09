@@ -36,9 +36,12 @@
     <button class="btn btn-primary" onclick="openAddModal()">+ Tambah Rekomendasi</button>
   </div>
 
+  <!-- REGION TABS -->
+  <div id="region-tabs" style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1rem"></div>
+
   <!-- FILTER -->
   <div class="filter-bar">
-    <input type="text" id="search" placeholder="🔍 Cari vendor..." oninput="render()" />
+    <input type="text" id="search" placeholder="🔍 Cari nama, kota, kategori..." oninput="render()" />
     <select id="filter-cat" onchange="render()">
       <option value="">Semua Kategori</option>
       <option>Fotografer</option><option>Katering</option><option>Dekorasi</option>
@@ -51,8 +54,16 @@
       <option value="4">⭐⭐⭐⭐ 4+ Bintang</option>
       <option value="3">⭐⭐⭐ 3+ Bintang</option>
     </select>
+    <select id="filter-price" onchange="render()">
+      <option value="">Semua Harga</option>
+      <option value="5000000">Di bawah Rp 5 Juta</option>
+      <option value="10000000">Di bawah Rp 10 Juta</option>
+      <option value="20000000">Di bawah Rp 20 Juta</option>
+      <option value="50000000">Di bawah Rp 50 Juta</option>
+    </select>
   </div>
 
+  <div id="rec-stats" style="margin-bottom:1rem;font-size:0.85rem;color:var(--text-light)"></div>
   <div id="rec-list"></div>
 
 </div>
@@ -109,9 +120,22 @@
       <label>Emoji / Ikon</label>
       <input type="text" id="r-emoji" placeholder="Contoh: 📸" maxlength="4" />
     </div>
-    <div class="form-group">
-      <label>Deskripsi</label>
-      <textarea id="r-desc" rows="2" placeholder="Deskripsi singkat vendor..."></textarea>
+    <div class="grid-2">
+      <div class="form-group">
+        <label>Region / Provinsi</label>
+        <input type="text" id="r-region" placeholder="Contoh: Lampung" list="region-list" />
+        <datalist id="region-list">
+          <option value="Lampung"><option value="Jakarta"><option value="Jawa Barat">
+          <option value="Yogyakarta"><option value="Jawa Timur"><option value="Jawa Tengah">
+          <option value="Sumatera Utara"><option value="Sumatera Selatan">
+          <option value="Sulawesi Selatan"><option value="Bali"><option value="Kalimantan">
+          <option value="Papua"><option value="Aceh"><option value="Riau">
+        </datalist>
+      </div>
+      <div class="form-group">
+        <label>Deskripsi</label>
+        <textarea id="r-desc" rows="2" placeholder="Deskripsi singkat vendor..."></textarea>
+      </div>
     </div>
     <div style="display:flex;gap:0.8rem">
       <button class="btn btn-primary" style="flex:1;justify-content:center" onclick="saveRec()">Simpan</button>
@@ -120,44 +144,96 @@
   </div>
 </div>
 
+<!-- MODAL ADD/EDIT update: tambah field region -->
 <script src="js/app.js"></script>
 <script>
   Auth.require();
   setupNav();
 
   const catEmoji = { Venue:'🏛️', Katering:'🍽️', Fotografer:'📸', Videografer:'🎬', Dekorasi:'💐', MUA:'💄', Hiburan:'🎵', Bunga:'🌸', Lainnya:'📦' };
+  const regionFlag = { 'Lampung':'🌴', 'Jakarta':'🏙️', 'Jawa Barat':'🌿', 'Yogyakarta':'🎯', 'Jawa Timur':'🌊', 'Sumatera Utara':'🌺', 'Sulawesi Selatan':'🌏', 'Bali':'🏖️', 'Sumatera Selatan':'🌻', 'Jawa Tengah':'🎯' };
+
+  let activeRegion = '';
+
+  function buildRegionTabs() {
+    const all = Recommendation.getAll();
+    const regions = ['', ...new Set(all.map(r => r.region).filter(Boolean))];
+    document.getElementById('region-tabs').innerHTML = regions.map(r => `
+      <button onclick="setRegion('${r}')" class="btn btn-sm ${activeRegion===r?'btn-primary':'btn-outline'}" style="border-radius:20px">
+        ${r ? (regionFlag[r]||'📍') + ' ' + r : '🌏 Semua Region'}
+      </button>
+    `).join('');
+  }
+
+  function setRegion(r) {
+    activeRegion = r;
+    buildRegionTabs();
+    render();
+  }
 
   function render() {
     const search = document.getElementById('search').value.toLowerCase();
     const cat = document.getElementById('filter-cat').value;
     const minRating = parseInt(document.getElementById('filter-rating').value) || 0;
+    const maxPrice = parseInt(document.getElementById('filter-price').value) || 0;
 
     let recs = Recommendation.getAll().filter(r =>
-      (!search || r.name.toLowerCase().includes(search) || r.category.toLowerCase().includes(search) || (r.location||'').toLowerCase().includes(search)) &&
+      (!search || r.name.toLowerCase().includes(search) || r.category.toLowerCase().includes(search) || (r.location||'').toLowerCase().includes(search) || (r.region||'').toLowerCase().includes(search)) &&
       (!cat || r.category === cat) &&
-      (r.rating >= minRating)
+      (!activeRegion || r.region === activeRegion) &&
+      (r.rating >= minRating) &&
+      (!maxPrice || (r.price || 0) < maxPrice)
     );
+
+    document.getElementById('rec-stats').textContent = `Menampilkan ${recs.length} vendor${activeRegion ? ' di ' + activeRegion : ''}`;
 
     const el = document.getElementById('rec-list');
     if (!recs.length) {
-      el.innerHTML = '<div class="empty-state card"><div class="empty-icon">⭐</div><p>Tidak ada rekomendasi ditemukan.</p></div>';
+      el.innerHTML = '<div class="empty-state card"><div class="empty-icon">⭐</div><p>Tidak ada rekomendasi ditemukan.<br>Coba ubah filter atau tambah vendor baru.</p></div>';
       return;
     }
 
-    el.innerHTML = `<div class="grid-3">${recs.map(r => `
+    // Group by region jika tidak ada filter region aktif
+    if (!activeRegion && !search && !cat && !minRating && !maxPrice) {
+      const grouped = {};
+      recs.forEach(r => {
+        const key = r.region || 'Lainnya';
+        if (!grouped[key]) grouped[key] = [];
+        grouped[key].push(r);
+      });
+      el.innerHTML = Object.entries(grouped).map(([region, items]) => `
+        <div style="margin-bottom:2rem">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:1rem">
+            <span style="font-size:1.3rem">${regionFlag[region]||'📍'}</span>
+            <h3 style="font-size:1.1rem;color:var(--primary-dark)">${region}</h3>
+            <span class="badge badge-pink">${items.length} vendor</span>
+          </div>
+          <div class="grid-3">${items.map(r => vendorCard(r)).join('')}</div>
+        </div>
+      `).join('');
+    } else {
+      el.innerHTML = `<div class="grid-3">${recs.map(r => vendorCard(r)).join('')}</div>`;
+    }
+  }
+
+  function vendorCard(r) {
+    return `
       <div class="vendor-card">
-        <div class="vendor-card-img" style="font-size:3.5rem">${r.emoji || catEmoji[r.category] || '📦'}</div>
+        <div class="vendor-card-img" style="font-size:3rem;position:relative">
+          ${r.emoji || catEmoji[r.category] || '📦'}
+          ${r.region ? `<span style="position:absolute;top:8px;right:8px;font-size:0.7rem;background:rgba(255,255,255,0.9);padding:2px 8px;border-radius:10px;color:var(--primary-dark);font-family:'Poppins',sans-serif">${regionFlag[r.region]||'📍'} ${r.region}</span>` : ''}
+        </div>
         <div class="vendor-card-body">
           <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:6px">
-            <h4>${r.name}</h4>
-            ${!r.isDefault ? '<span style="font-size:0.7rem;color:var(--primary-dark);background:var(--primary-light);padding:2px 8px;border-radius:10px">Custom</span>' : ''}
+            <h4 style="font-size:0.95rem">${r.name}</h4>
+            ${!r.isDefault ? '<span style="font-size:0.65rem;color:var(--primary-dark);background:var(--primary-light);padding:2px 7px;border-radius:10px">Custom</span>' : ''}
           </div>
-          <span class="badge badge-pink" style="margin-bottom:8px;display:inline-block">${r.category}</span>
+          <span class="badge badge-pink" style="margin-bottom:8px;display:inline-block;font-size:0.72rem">${r.category}</span>
           <div class="price">Mulai ${fmt(r.price || 0)}</div>
-          <div style="font-size:0.8rem;color:var(--text-light);margin-bottom:4px">📍 ${r.location || '-'}</div>
-          <div style="font-size:0.8rem;color:var(--text-light);margin-bottom:6px">📞 ${r.contact || '-'}</div>
-          <div class="stars">${stars(r.rating || 0)}</div>
-          <p style="font-size:0.8rem;color:var(--text-light);margin-top:8px;line-height:1.5">${r.desc || ''}</p>
+          <div style="font-size:0.78rem;color:var(--text-light);margin-bottom:3px">📍 ${r.location || '-'}</div>
+          <div style="font-size:0.78rem;color:var(--text-light);margin-bottom:6px">📞 ${r.contact || '-'}</div>
+          <div class="stars" style="font-size:0.85rem">${stars(r.rating || 0)}</div>
+          <p style="font-size:0.78rem;color:var(--text-light);margin-top:7px;line-height:1.5">${r.desc || ''}</p>
         </div>
         <div class="vendor-card-footer">
           <button class="btn btn-outline btn-sm" style="flex:1;justify-content:center" onclick="addToMyVendor(${r.id})">➕ Pilih</button>
@@ -165,21 +241,16 @@
           <button class="btn btn-danger btn-sm" onclick="deleteRec(${r.id})">🗑️</button>
         </div>
       </div>
-    `).join('')}</div>`;
+    `;
   }
 
   function addToMyVendor(id) {
     const r = Recommendation.getAll().find(x => x.id === id);
     if (!r) return;
     Vendor.add({
-      name: r.name,
-      category: r.category,
-      price: r.price,
-      location: r.location,
-      contact: r.contact,
-      rating: r.rating,
-      status: 'Kandidat',
-      note: r.desc || '',
+      name: r.name, category: r.category, price: r.price,
+      location: r.location, contact: r.contact, rating: r.rating,
+      status: 'Kandidat', note: r.desc || '',
     });
     toast(`${r.name} ditambahkan ke vendor saya! ✅`);
   }
@@ -187,7 +258,7 @@
   function openAddModal() {
     document.getElementById('r-edit-id').value = '';
     document.getElementById('modal-rec-title').textContent = 'Tambah Rekomendasi';
-    ['r-name','r-price','r-location','r-contact','r-desc','r-emoji'].forEach(id => document.getElementById(id).value = '');
+    ['r-name','r-price','r-location','r-contact','r-desc','r-emoji','r-region'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
     document.getElementById('r-rating').value = '5';
     openModal('modal-rec');
   }
@@ -205,6 +276,7 @@
     document.getElementById('r-rating').value = r.rating || 5;
     document.getElementById('r-emoji').value = r.emoji || '';
     document.getElementById('r-desc').value = r.desc || '';
+    document.getElementById('r-region').value = r.region || '';
     openModal('modal-rec');
   }
 
@@ -221,10 +293,12 @@
       rating: parseInt(document.getElementById('r-rating').value),
       emoji: document.getElementById('r-emoji').value || catEmoji[document.getElementById('r-category').value] || '📦',
       desc: document.getElementById('r-desc').value,
+      region: document.getElementById('r-region').value,
     };
     if (id) Recommendation.update(parseInt(id), data);
     else Recommendation.add(data);
     closeModal('modal-rec');
+    buildRegionTabs();
     toast(id ? 'Rekomendasi diperbarui' : 'Rekomendasi ditambahkan');
     render();
   }
@@ -232,10 +306,20 @@
   function deleteRec(id) {
     if (!confirm('Hapus rekomendasi ini?')) return;
     Recommendation.delete(id);
+    buildRegionTabs();
     toast('Rekomendasi dihapus');
     render();
   }
 
+  // Reset data rekomendasi lama agar data baru dengan region muncul
+  const user = Auth.currentUser();
+  const recKey = `wp_recs_${user.id}`;
+  const existing = store.get(recKey);
+  if (existing && existing.length && !existing[0].region) {
+    localStorage.removeItem(recKey);
+  }
+
+  buildRegionTabs();
   render();
 </script>
 </body>

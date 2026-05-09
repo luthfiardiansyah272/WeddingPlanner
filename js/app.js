@@ -105,16 +105,81 @@ const Recommendation = {
   getAll() {
     const saved = store.get(this.key());
     if (saved) return saved;
-    // Default recommendations
     const defaults = [
-      { id: 1, name: 'Amore Photography', category: 'Fotografer', price: 8000000, rating: 5, location: 'Jakarta', desc: 'Spesialis foto pernikahan dengan gaya romantis & cinematic.', emoji: '📸', contact: '0812-3456-7890', isDefault: true },
-      { id: 2, name: 'Blossom Catering', category: 'Katering', price: 150000, rating: 5, location: 'Bandung', desc: 'Katering premium dengan menu Indonesia & Western. Harga per pax.', emoji: '🍽️', contact: '0813-2345-6789', isDefault: true },
-      { id: 3, name: 'Elegant Decoration', category: 'Dekorasi', price: 15000000, rating: 4, location: 'Jakarta', desc: 'Dekorasi mewah dengan konsep garden, rustic, dan modern.', emoji: '💐', contact: '0814-3456-7891', isDefault: true },
-      { id: 4, name: 'Harmony Music', category: 'Hiburan', price: 5000000, rating: 4, location: 'Surabaya', desc: 'Live band & akustik untuk acara pernikahan.', emoji: '🎵', contact: '0815-4567-8901', isDefault: true },
-      { id: 5, name: 'Dream Venue Hall', category: 'Venue', price: 25000000, rating: 5, location: 'Jakarta', desc: 'Gedung pernikahan mewah kapasitas 500 orang.', emoji: '🏛️', contact: '0816-5678-9012', isDefault: true },
-      { id: 6, name: 'Bridal Glow MUA', category: 'MUA', price: 3500000, rating: 5, location: 'Bandung', desc: 'Makeup artist profesional untuk pengantin & keluarga.', emoji: '💄', contact: '0817-6789-0123', isDefault: true },
-      { id: 7, name: 'Sweet Moments Video', category: 'Videografer', price: 6000000, rating: 4, location: 'Yogyakarta', desc: 'Videografi sinematik untuk momen pernikahan tak terlupakan.', emoji: '🎬', contact: '0818-7890-1234', isDefault: true },
-      { id: 8, name: 'Floral Fantasy', category: 'Bunga', price: 4000000, rating: 4, location: 'Jakarta', desc: 'Rangkaian bunga segar untuk dekorasi & bouquet pengantin.', emoji: '🌸', contact: '0819-8901-2345', isDefault: true },
+      // ===== LAMPUNG =====
+      { id: 101, name: 'Krakatau Photography', category: 'Fotografer', price: 4500000, rating: 5, location: 'Bandar Lampung', region: 'Lampung', desc: 'Fotografer pernikahan terbaik di Lampung, gaya candid & cinematic.', emoji: '📸', contact: '0812-7891-2345', isDefault: true },
+      { id: 102, name: 'Siger Catering', category: 'Katering', price: 85000, rating: 5, location: 'Bandar Lampung', region: 'Lampung', desc: 'Katering khas Lampung & nasional, berpengalaman 15 tahun. Harga per pax.', emoji: '🍽️', contact: '0813-7892-3456', isDefault: true },
+      { id: 103, name: 'Pesona Dekorasi Lampung', category: 'Dekorasi', price: 8000000, rating: 4, location: 'Bandar Lampung', region: 'Lampung', desc: 'Dekorasi pernikahan adat Lampung & modern, konsep garden dan indoor.', emoji: '💐', contact: '0814-7893-4567', isDefault: true },
+      { id: 104, name: 'Grand Ballroom Lampung', category: 'Venue', price: 15000000, rating: 5, location: 'Bandar Lampung', region: 'Lampung', desc: 'Gedung pernikahan mewah kapasitas 800 orang di pusat kota Bandar Lampung.', emoji: '🏛️', contact: '0815-7894-5678', isDefault: true },
+      { id: 105, name: 'Cantik MUA Lampung', category: 'MUA', price: 2000000, rating: 4, location: 'Bandar Lampung', region: 'Lampung', desc: 'Makeup artist profesional spesialis pengantin adat Lampung & modern.', emoji: '💄', contact: '0816-7895-6789', isDefault: true },
+      { id: 106, name: 'Tapis Florist', category: 'Bunga', price: 2500000, rating: 4, location: 'Metro, Lampung', region: 'Lampung', desc: 'Rangkaian bunga segar untuk dekorasi & bouquet pengantin khas Lampung.', emoji: '🌸', contact: '0817-7896-7890', isDefault: true },
+      { id: 107, name: 'Lampung Sinema Video', category: 'Videografer', price: 3500000, rating: 4, location: 'Bandar Lampung', region: 'Lampung', desc: 'Videografi sinematik & drone untuk pernikahan di Lampung.', emoji: '🎬', contact: '0818-7897-8901', isDefault: true },
+      { id: 108, name: 'Harmoni Band Lampung', category: 'Hiburan', price: 3000000, rating: 4, location: 'Bandar Lampung', region: 'Lampung', desc: 'Live band & organ tunggal untuk resepsi pernikahan.', emoji: '🎵', contact: '0819-7898-9012', isDefault: true },
+
+      // ===== JAKARTA =====
+      { id: 201, name: 'Amore Photography', category: 'Fotografer', price: 8000000, rating: 5, location: 'Jakarta Selatan', region: 'Jakarta', desc: 'Spesialis foto pernikahan dengan gaya romantis & cinematic premium.', emoji: '📸', contact: '0812-3456-7890', isDefault: true },
+      { id: 202, name: 'Royal Catering Jakarta', category: 'Katering', price: 175000, rating: 5, location: 'Jakarta Pusat', region: 'Jakarta', desc: 'Katering premium menu Indonesia, Western & Chinese. Harga per pax.', emoji: '🍽️', contact: '0813-2345-6789', isDefault: true },
+      { id: 203, name: 'Elegant Decoration JKT', category: 'Dekorasi', price: 20000000, rating: 5, location: 'Jakarta Barat', region: 'Jakarta', desc: 'Dekorasi mewah konsep garden, rustic, modern & adat.', emoji: '💐', contact: '0814-3456-7891', isDefault: true },
+      { id: 204, name: 'Dream Venue Hall', category: 'Venue', price: 35000000, rating: 5, location: 'Jakarta Selatan', region: 'Jakarta', desc: 'Gedung pernikahan mewah kapasitas 1000 orang, fasilitas lengkap.', emoji: '🏛️', contact: '0816-5678-9012', isDefault: true },
+      { id: 205, name: 'Glam MUA Jakarta', category: 'MUA', price: 5000000, rating: 5, location: 'Jakarta Timur', region: 'Jakarta', desc: 'Makeup artist top Jakarta, spesialis pengantin modern & adat.', emoji: '💄', contact: '0817-6789-0123', isDefault: true },
+      { id: 206, name: 'Floral Fantasy Jakarta', category: 'Bunga', price: 5000000, rating: 5, location: 'Jakarta Utara', region: 'Jakarta', desc: 'Florist premium untuk dekorasi & bouquet pengantin.', emoji: '🌸', contact: '0819-8901-2345', isDefault: true },
+      { id: 207, name: 'Cinematic Wedding JKT', category: 'Videografer', price: 9000000, rating: 5, location: 'Jakarta Selatan', region: 'Jakarta', desc: 'Videografi sinematik & drone, hasil film-like berkualitas tinggi.', emoji: '🎬', contact: '0818-7890-1234', isDefault: true },
+
+      // ===== BANDUNG =====
+      { id: 301, name: 'Bandung Photography Studio', category: 'Fotografer', price: 6000000, rating: 5, location: 'Bandung', region: 'Jawa Barat', desc: 'Fotografer pernikahan Bandung dengan konsep vintage & modern.', emoji: '📸', contact: '0812-4567-8901', isDefault: true },
+      { id: 302, name: 'Blossom Catering Bandung', category: 'Katering', price: 120000, rating: 5, location: 'Bandung', region: 'Jawa Barat', desc: 'Katering premium menu Sunda & Western. Harga per pax.', emoji: '🍽️', contact: '0813-4567-8902', isDefault: true },
+      { id: 303, name: 'Villa Istana Bunga', category: 'Venue', price: 20000000, rating: 5, location: 'Lembang, Bandung', region: 'Jawa Barat', desc: 'Venue outdoor & indoor di kawasan Lembang, pemandangan indah.', emoji: '🏛️', contact: '0815-4567-8903', isDefault: true },
+      { id: 304, name: 'Bridal Glow MUA Bandung', category: 'MUA', price: 3500000, rating: 5, location: 'Bandung', region: 'Jawa Barat', desc: 'Makeup artist profesional spesialis pengantin Sunda & modern.', emoji: '💄', contact: '0817-4567-8904', isDefault: true },
+      { id: 305, name: 'Bunga Rampai Florist', category: 'Bunga', price: 3000000, rating: 4, location: 'Bandung', region: 'Jawa Barat', desc: 'Florist terpercaya untuk dekorasi & bouquet pengantin di Bandung.', emoji: '🌸', contact: '0819-4567-8905', isDefault: true },
+
+      // ===== YOGYAKARTA =====
+      { id: 401, name: 'Jogja Wedding Photo', category: 'Fotografer', price: 5000000, rating: 5, location: 'Yogyakarta', region: 'Yogyakarta', desc: 'Fotografer pernikahan Jogja, spesialis konsep Jawa klasik & modern.', emoji: '📸', contact: '0812-5678-9012', isDefault: true },
+      { id: 402, name: 'Prambanan Catering', category: 'Katering', price: 90000, rating: 4, location: 'Yogyakarta', region: 'Yogyakarta', desc: 'Katering khas Jawa & nasional, berpengalaman untuk pernikahan adat.', emoji: '🍽️', contact: '0813-5678-9013', isDefault: true },
+      { id: 403, name: 'Pendopo Agung Venue', category: 'Venue', price: 18000000, rating: 5, location: 'Yogyakarta', region: 'Yogyakarta', desc: 'Pendopo mewah bergaya Jawa klasik, kapasitas 600 orang.', emoji: '🏛️', contact: '0815-5678-9014', isDefault: true },
+      { id: 404, name: 'Sweet Moments Video Jogja', category: 'Videografer', price: 5500000, rating: 5, location: 'Yogyakarta', region: 'Yogyakarta', desc: 'Videografi sinematik & drone untuk pernikahan di Yogyakarta.', emoji: '🎬', contact: '0818-5678-9015', isDefault: true },
+      { id: 405, name: 'Melati Dekorasi Jogja', category: 'Dekorasi', price: 10000000, rating: 4, location: 'Yogyakarta', region: 'Yogyakarta', desc: 'Dekorasi pernikahan adat Jawa & modern di Yogyakarta.', emoji: '💐', contact: '0814-5678-9016', isDefault: true },
+      { id: 406, name: 'Keraton MUA Jogja', category: 'MUA', price: 2800000, rating: 5, location: 'Yogyakarta', region: 'Yogyakarta', desc: 'Makeup artist spesialis pengantin adat Jawa & modern.', emoji: '💄', contact: '0817-5678-9017', isDefault: true },
+
+      // ===== SURABAYA =====
+      { id: 501, name: 'Surabaya Wedding Photo', category: 'Fotografer', price: 7000000, rating: 5, location: 'Surabaya', region: 'Jawa Timur', desc: 'Fotografer pernikahan profesional di Surabaya & sekitarnya.', emoji: '📸', contact: '0812-6789-0123', isDefault: true },
+      { id: 502, name: 'Majapahit Catering', category: 'Katering', price: 130000, rating: 5, location: 'Surabaya', region: 'Jawa Timur', desc: 'Katering premium menu Jawa Timur & nasional. Harga per pax.', emoji: '🍽️', contact: '0813-6789-0124', isDefault: true },
+      { id: 503, name: 'Grand City Ballroom', category: 'Venue', price: 28000000, rating: 5, location: 'Surabaya', region: 'Jawa Timur', desc: 'Ballroom mewah di pusat kota Surabaya, kapasitas 700 orang.', emoji: '🏛️', contact: '0815-6789-0125', isDefault: true },
+      { id: 504, name: 'Harmony Music Surabaya', category: 'Hiburan', price: 5000000, rating: 4, location: 'Surabaya', region: 'Jawa Timur', desc: 'Live band & akustik profesional untuk resepsi pernikahan.', emoji: '🎵', contact: '0815-4567-8901', isDefault: true },
+      { id: 505, name: 'Anggrek MUA Surabaya', category: 'MUA', price: 3200000, rating: 4, location: 'Surabaya', region: 'Jawa Timur', desc: 'Makeup artist terpercaya untuk pengantin di Surabaya.', emoji: '💄', contact: '0817-6789-0126', isDefault: true },
+
+      // ===== MEDAN =====
+      { id: 601, name: 'Medan Wedding Photography', category: 'Fotografer', price: 5500000, rating: 5, location: 'Medan', region: 'Sumatera Utara', desc: 'Fotografer pernikahan Medan, spesialis adat Batak & modern.', emoji: '📸', contact: '0812-7890-1234', isDefault: true },
+      { id: 602, name: 'Batak Catering Medan', category: 'Katering', price: 100000, rating: 4, location: 'Medan', region: 'Sumatera Utara', desc: 'Katering khas Batak & nasional untuk pernikahan adat dan modern.', emoji: '🍽️', contact: '0813-7890-1235', isDefault: true },
+      { id: 603, name: 'Tiara Convention Hall', category: 'Venue', price: 20000000, rating: 5, location: 'Medan', region: 'Sumatera Utara', desc: 'Gedung pernikahan terbesar di Medan, kapasitas 1000 orang.', emoji: '🏛️', contact: '0815-7890-1236', isDefault: true },
+      { id: 604, name: 'Ulos Dekorasi Medan', category: 'Dekorasi', price: 12000000, rating: 4, location: 'Medan', region: 'Sumatera Utara', desc: 'Dekorasi pernikahan adat Batak & modern di Medan.', emoji: '💐', contact: '0814-7890-1237', isDefault: true },
+      { id: 605, name: 'Cantik MUA Medan', category: 'MUA', price: 2500000, rating: 4, location: 'Medan', region: 'Sumatera Utara', desc: 'Makeup artist spesialis pengantin adat Batak & modern.', emoji: '💄', contact: '0817-7890-1238', isDefault: true },
+
+      // ===== MAKASSAR =====
+      { id: 701, name: 'Makassar Wedding Photo', category: 'Fotografer', price: 5000000, rating: 5, location: 'Makassar', region: 'Sulawesi Selatan', desc: 'Fotografer pernikahan Makassar, spesialis adat Bugis-Makassar & modern.', emoji: '📸', contact: '0812-8901-2345', isDefault: true },
+      { id: 702, name: 'Coto Catering Makassar', category: 'Katering', price: 95000, rating: 5, location: 'Makassar', region: 'Sulawesi Selatan', desc: 'Katering khas Makassar & nasional, berpengalaman untuk pernikahan adat.', emoji: '🍽️', contact: '0813-8901-2346', isDefault: true },
+      { id: 703, name: 'Celebes Convention Center', category: 'Venue', price: 22000000, rating: 5, location: 'Makassar', region: 'Sulawesi Selatan', desc: 'Venue pernikahan terbesar di Makassar, kapasitas 800 orang.', emoji: '🏛️', contact: '0815-8901-2347', isDefault: true },
+      { id: 704, name: 'Baju Bodo Dekorasi', category: 'Dekorasi', price: 11000000, rating: 4, location: 'Makassar', region: 'Sulawesi Selatan', desc: 'Dekorasi pernikahan adat Bugis-Makassar & modern.', emoji: '💐', contact: '0814-8901-2348', isDefault: true },
+      { id: 705, name: 'Sulawesi MUA Studio', category: 'MUA', price: 2800000, rating: 4, location: 'Makassar', region: 'Sulawesi Selatan', desc: 'Makeup artist spesialis pengantin adat Bugis & modern.', emoji: '💄', contact: '0817-8901-2349', isDefault: true },
+
+      // ===== BALI =====
+      { id: 801, name: 'Bali Wedding Photography', category: 'Fotografer', price: 10000000, rating: 5, location: 'Denpasar, Bali', region: 'Bali', desc: 'Fotografer pernikahan Bali, spesialis outdoor & beach wedding.', emoji: '📸', contact: '0812-9012-3456', isDefault: true },
+      { id: 802, name: 'Ubud Catering Bali', category: 'Katering', price: 200000, rating: 5, location: 'Ubud, Bali', region: 'Bali', desc: 'Katering premium menu Bali & internasional. Harga per pax.', emoji: '🍽️', contact: '0813-9012-3457', isDefault: true },
+      { id: 803, name: 'Cliff Venue Uluwatu', category: 'Venue', price: 50000000, rating: 5, location: 'Uluwatu, Bali', region: 'Bali', desc: 'Venue pernikahan tepi tebing dengan pemandangan laut Bali yang memukau.', emoji: '🏛️', contact: '0815-9012-3458', isDefault: true },
+      { id: 804, name: 'Frangipani Decoration Bali', category: 'Dekorasi', price: 25000000, rating: 5, location: 'Seminyak, Bali', region: 'Bali', desc: 'Dekorasi pernikahan Bali & internasional, konsep tropical & luxury.', emoji: '💐', contact: '0814-9012-3459', isDefault: true },
+      { id: 805, name: 'Bali Bridal MUA', category: 'MUA', price: 6000000, rating: 5, location: 'Kuta, Bali', region: 'Bali', desc: 'Makeup artist internasional spesialis pengantin Bali & modern.', emoji: '💄', contact: '0817-9012-3460', isDefault: true },
+      { id: 806, name: 'Bali Drone Videography', category: 'Videografer', price: 12000000, rating: 5, location: 'Denpasar, Bali', region: 'Bali', desc: 'Videografi sinematik & drone aerial untuk pernikahan di Bali.', emoji: '🎬', contact: '0818-9012-3461', isDefault: true },
+
+      // ===== PALEMBANG =====
+      { id: 901, name: 'Sriwijaya Wedding Photo', category: 'Fotografer', price: 4000000, rating: 4, location: 'Palembang', region: 'Sumatera Selatan', desc: 'Fotografer pernikahan Palembang, spesialis adat Palembang & modern.', emoji: '📸', contact: '0812-0123-4567', isDefault: true },
+      { id: 902, name: 'Pempek Catering Palembang', category: 'Katering', price: 80000, rating: 4, location: 'Palembang', region: 'Sumatera Selatan', desc: 'Katering khas Palembang & nasional untuk pernikahan.', emoji: '🍽️', contact: '0813-0123-4568', isDefault: true },
+      { id: 903, name: 'Jakabaring Convention', category: 'Venue', price: 16000000, rating: 4, location: 'Palembang', region: 'Sumatera Selatan', desc: 'Gedung pernikahan modern di Palembang, kapasitas 600 orang.', emoji: '🏛️', contact: '0815-0123-4569', isDefault: true },
+      { id: 904, name: 'Songket Dekorasi Palembang', category: 'Dekorasi', price: 9000000, rating: 4, location: 'Palembang', region: 'Sumatera Selatan', desc: 'Dekorasi pernikahan adat Palembang & modern.', emoji: '💐', contact: '0814-0123-4570', isDefault: true },
+
+      // ===== SEMARANG =====
+      { id: 1001, name: 'Semarang Wedding Photo', category: 'Fotografer', price: 5000000, rating: 4, location: 'Semarang', region: 'Jawa Tengah', desc: 'Fotografer pernikahan Semarang & sekitarnya.', emoji: '📸', contact: '0812-1234-5678', isDefault: true },
+      { id: 1002, name: 'Lawang Sewu Catering', category: 'Katering', price: 100000, rating: 4, location: 'Semarang', region: 'Jawa Tengah', desc: 'Katering khas Jawa Tengah & nasional. Harga per pax.', emoji: '🍽️', contact: '0813-1234-5679', isDefault: true },
+      { id: 1003, name: 'Puri Gedeh Venue', category: 'Venue', price: 17000000, rating: 5, location: 'Semarang', region: 'Jawa Tengah', desc: 'Venue pernikahan bersejarah di Semarang, kapasitas 500 orang.', emoji: '🏛️', contact: '0815-1234-5680', isDefault: true },
+      { id: 1004, name: 'Batik Dekorasi Semarang', category: 'Dekorasi', price: 9500000, rating: 4, location: 'Semarang', region: 'Jawa Tengah', desc: 'Dekorasi pernikahan adat Jawa & modern di Semarang.', emoji: '💐', contact: '0814-1234-5681', isDefault: true },
     ];
     store.set(this.key(), defaults);
     return defaults;
