@@ -44,7 +44,7 @@ const Auth = {
 
   async logout() {
     await signOut(auth);
-    window.location.href = 'login.html';
+    window.location.replace('login.html');
   },
 
   async getProfile() {
@@ -59,10 +59,9 @@ const Auth = {
   },
 
   require(callback) {
-    let handled = false;
-    onAuthStateChanged(auth, async user => {
-      if (handled) return;
-      handled = true;
+    // Tunggu Firebase selesai inisialisasi auth state (sekali saja)
+    const unsubscribe = onAuthStateChanged(auth, async user => {
+      unsubscribe(); // stop listening setelah dapat state pertama
       if (!user) { window.location.href = 'login.html'; return; }
       try {
         await callback(user);
