@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard – Wedding Planner</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-brand">💍 Wedding Planner</a>
+  <div class="nav-links">
+    <a href="index.html"><span>🏠</span> <span>Dashboard</span></a>
+    <a href="budget.html"><span>💰</span> <span>Budget</span></a>
+    <a href="vendors.html"><span>🤝</span> <span>Vendor</span></a>
+    <a href="recommendations.html"><span>⭐</span> <span>Rekomendasi</span></a>
+  </div>
+  <div class="nav-user">
+    <span id="nav-user-name"></span>
+    <button class="btn-logout" onclick="Auth.logout()">Keluar</button>
+  </div>
+</nav>
+
+<div class="container">
+
+  <!-- HERO -->
+  <div class="card" style="background: linear-gradient(135deg, var(--primary-light), var(--nude-dark)); margin-bottom:1.5rem; text-align:center; padding:2.5rem">
+    <p style="font-size:0.9rem;color:var(--text-light);margin-bottom:4px">Selamat datang kembali,</p>
+    <h2 id="hero-names" style="font-size:1.8rem;color:var(--primary-dark);margin-bottom:1rem"></h2>
+    <div id="countdown" style="display:flex;justify-content:center;gap:1.5rem;flex-wrap:wrap"></div>
+    <p id="wedding-date-label" style="margin-top:1rem;font-size:0.85rem;color:var(--text-light)"></p>
+  </div>
+
+  <!-- STATS -->
+  <div class="grid-4" style="margin-bottom:1.5rem">
+    <div class="stat-card">
+      <div class="stat-icon">💰</div>
+      <div class="stat-info">
+        <p>Total Budget</p>
+        <h3 id="stat-total">Rp 0</h3>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">✅</div>
+      <div class="stat-info">
+        <p>Sudah Dipakai</p>
+        <h3 id="stat-spent">Rp 0</h3>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">📋</div>
+      <div class="stat-info">
+        <p>Direncanakan</p>
+        <h3 id="stat-planned">Rp 0</h3>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">💸</div>
+      <div class="stat-info">
+        <p>Sisa Budget</p>
+        <h3 id="stat-remaining">Rp 0</h3>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <!-- BUDGET OVERVIEW -->
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.2rem">
+        <h3 style="font-size:1.1rem;color:var(--primary-dark)">Ringkasan Budget</h3>
+        <a href="budget.html" class="btn btn-outline btn-sm">Lihat Semua</a>
+      </div>
+      <div id="budget-overview"></div>
+    </div>
+
+    <!-- VENDOR OVERVIEW -->
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.2rem">
+        <h3 style="font-size:1.1rem;color:var(--primary-dark)">Vendor Saya</h3>
+        <a href="vendors.html" class="btn btn-outline btn-sm">Lihat Semua</a>
+      </div>
+      <div id="vendor-overview"></div>
+    </div>
+  </div>
+
+</div>
+
+<script src="js/app.js"></script>
+<script>
+  Auth.require();
+  setupNav();
+
+  const user = Auth.currentUser();
+
+  // Hero
+  document.getElementById('hero-names').textContent = `${user.name} & ${user.partnerName}`;
+
+  // Countdown
+  function updateCountdown() {
+    if (!user.weddingDate) return;
+    const wedding = new Date(user.weddingDate);
+    const now = new Date();
+    const diff = wedding - now;
+    if (diff <= 0) {
+      document.getElementById('countdown').innerHTML = '<p style="font-size:1.2rem;color:var(--primary-dark)">🎉 Selamat atas pernikahan Anda!</p>';
+      return;
+    }
+    const days = Math.floor(diff / 86400000);
+    const hours = Math.floor((diff % 86400000) / 3600000);
+    const mins = Math.floor((diff % 3600000) / 60000);
+    const secs = Math.floor((diff % 60000) / 1000);
+    const box = (n, label) => `<div style="background:white;border-radius:12px;padding:12px 18px;min-width:70px;text-align:center;box-shadow:var(--shadow)"><div style="font-size:1.6rem;font-weight:700;color:var(--primary-dark)">${n}</div><div style="font-size:0.7rem;color:var(--text-light)">${label}</div></div>`;
+    document.getElementById('countdown').innerHTML = box(days,'Hari') + box(hours,'Jam') + box(mins,'Menit') + box(secs,'Detik');
+    document.getElementById('wedding-date-label').textContent = '📅 ' + wedding.toLocaleDateString('id-ID', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+  }
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+
+  // Stats
+  const s = Budget.summary();
+  document.getElementById('stat-total').textContent = fmt(s.total);
+  document.getElementById('stat-spent').textContent = fmt(s.spent);
+  document.getElementById('stat-planned').textContent = fmt(s.planned);
+  const remEl = document.getElementById('stat-remaining');
+  remEl.textContent = fmt(s.remaining);
+  remEl.style.color = s.remaining < 0 ? 'var(--danger)' : 'var(--text)';
+
+  // Budget overview
+  const bData = Budget.getAll();
+  const boEl = document.getElementById('budget-overview');
+  if (!bData.items.length) {
+    boEl.innerHTML = '<div class="empty-state"><div class="empty-icon">💰</div><p>Belum ada item budget.<br><a href="budget.html" style="color:var(--primary-dark)">Tambah sekarang</a></p></div>';
+  } else {
+    boEl.innerHTML = bData.items.slice(0, 5).map(item => {
+      const pct = bData.total ? Math.min((item.actual || 0) / bData.total * 100, 100) : 0;
+      const over = (item.actual || 0) > (item.planned || 0);
+      return `<div style="margin-bottom:1rem">
+        <div style="display:flex;justify-content:space-between;font-size:0.85rem;margin-bottom:4px">
+          <span>${item.category}</span>
+          <span style="color:${over?'var(--danger)':'var(--text-light)'}">${fmt(item.actual||0)} / ${fmt(item.planned||0)}</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill ${over?'over':''}" style="width:${pct}%"></div></div>
+      </div>`;
+    }).join('');
+  }
+
+  // Vendor overview
+  const vendors = Vendor.getAll();
+  const voEl = document.getElementById('vendor-overview');
+  if (!vendors.length) {
+    voEl.innerHTML = '<div class="empty-state"><div class="empty-icon">🤝</div><p>Belum ada vendor.<br><a href="vendors.html" style="color:var(--primary-dark)">Tambah sekarang</a></p></div>';
+  } else {
+    const statusColor = { 'Terkonfirmasi': 'badge-green', 'Negosiasi': 'badge-yellow', 'Kandidat': 'badge-blue' };
+    voEl.innerHTML = `<table><thead><tr><th>Vendor</th><th>Kategori</th><th>Status</th></tr></thead><tbody>
+      ${vendors.slice(0,5).map(v => `<tr>
+        <td><strong>${v.name}</strong></td>
+        <td><span class="badge badge-pink">${v.category}</span></td>
+        <td><span class="badge ${statusColor[v.status]||'badge-blue'}">${v.status}</span></td>
+      </tr>`).join('')}
+    </tbody></table>`;
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vendor – Wedding Planner</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-brand">💍 Wedding Planner</a>
+  <div class="nav-links">
+    <a href="index.html"><span>🏠</span> <span>Dashboard</span></a>
+    <a href="budget.html"><span>💰</span> <span>Budget</span></a>
+    <a href="vendors.html"><span>🤝</span> <span>Vendor</span></a>
+    <a href="recommendations.html"><span>⭐</span> <span>Rekomendasi</span></a>
+  </div>
+  <div class="nav-user">
+    <span id="nav-user-name"></span>
+    <button class="btn-logout" onclick="Auth.logout()">Keluar</button>
+  </div>
+</nav>
+
+<div class="container">
+
+  <div class="page-header">
+    <div>
+      <h2>🤝 Vendor Saya</h2>
+      <p>Kelola vendor pilihan untuk pernikahan Anda</p>
+    </div>
+    <button class="btn btn-primary" onclick="openAddModal()">+ Tambah Vendor</button>
+  </div>
+
+  <!-- FILTER -->
+  <div class="filter-bar">
+    <input type="text" id="search" placeholder="🔍 Cari vendor..." oninput="render()" />
+    <select id="filter-cat" onchange="render()">
+      <option value="">Semua Kategori</option>
+      <option>Venue</option><option>Katering</option><option>Fotografer</option>
+      <option>Videografer</option><option>Dekorasi</option><option>MUA</option>
+      <option>Hiburan</option><option>Bunga</option><option>Lainnya</option>
+    </select>
+    <select id="filter-status" onchange="render()">
+      <option value="">Semua Status</option>
+      <option>Kandidat</option><option>Negosiasi</option><option>Terkonfirmasi</option>
+    </select>
+  </div>
+
+  <div id="vendor-list"></div>
+
+</div>
+
+<!-- MODAL ADD/EDIT -->
+<div class="modal-overlay" id="modal-vendor">
+  <div class="modal" style="max-width:520px">
+    <div class="modal-header">
+      <h3 id="modal-vendor-title">Tambah Vendor</h3>
+      <button class="btn-close" onclick="closeModal('modal-vendor')">✕</button>
+    </div>
+    <input type="hidden" id="v-edit-id" />
+    <div class="grid-2">
+      <div class="form-group">
+        <label>Nama Vendor</label>
+        <input type="text" id="v-name" placeholder="Nama vendor" />
+      </div>
+      <div class="form-group">
+        <label>Kategori</label>
+        <select id="v-category">
+          <option>Venue</option><option>Katering</option><option>Fotografer</option>
+          <option>Videografer</option><option>Dekorasi</option><option>MUA</option>
+          <option>Hiburan</option><option>Bunga</option><option>Lainnya</option>
+        </select>
+      </div>
+    </div>
+    <div class="grid-2">
+      <div class="form-group">
+        <label>Harga (Rp)</label>
+        <input type="number" id="v-price" placeholder="0" min="0" />
+      </div>
+      <div class="form-group">
+        <label>Lokasi</label>
+        <input type="text" id="v-location" placeholder="Kota" />
+      </div>
+    </div>
+    <div class="grid-2">
+      <div class="form-group">
+        <label>Kontak</label>
+        <input type="text" id="v-contact" placeholder="No. HP / Email" />
+      </div>
+      <div class="form-group">
+        <label>Status</label>
+        <select id="v-status">
+          <option>Kandidat</option>
+          <option>Negosiasi</option>
+          <option>Terkonfirmasi</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Rating</label>
+      <select id="v-rating">
+        <option value="5">⭐⭐⭐⭐⭐ (5)</option>
+        <option value="4">⭐⭐⭐⭐ (4)</option>
+        <option value="3">⭐⭐⭐ (3)</option>
+        <option value="2">⭐⭐ (2)</option>
+        <option value="1">⭐ (1)</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Catatan</label>
+      <textarea id="v-note" rows="2" placeholder="Catatan tentang vendor ini..."></textarea>
+    </div>
+    <div style="display:flex;gap:0.8rem">
+      <button class="btn btn-primary" style="flex:1;justify-content:center" onclick="saveVendor()">Simpan</button>
+      <button class="btn btn-outline" onclick="closeModal('modal-vendor')">Batal</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/app.js"></script>
+<script>
+  Auth.require();
+  setupNav();
+
+  const statusColor = { 'Terkonfirmasi': 'badge-green', 'Negosiasi': 'badge-yellow', 'Kandidat': 'badge-blue' };
+  const catEmoji = { Venue:'🏛️', Katering:'🍽️', Fotografer:'📸', Videografer:'🎬', Dekorasi:'💐', MUA:'💄', Hiburan:'🎵', Bunga:'🌸', Lainnya:'📦' };
+
+  function render() {
+    const search = document.getElementById('search').value.toLowerCase();
+    const cat = document.getElementById('filter-cat').value;
+    const status = document.getElementById('filter-status').value;
+
+    let vendors = Vendor.getAll().filter(v =>
+      (!search || v.name.toLowerCase().includes(search) || v.category.toLowerCase().includes(search)) &&
+      (!cat || v.category === cat) &&
+      (!status || v.status === status)
+    );
+
+    const el = document.getElementById('vendor-list');
+    if (!vendors.length) {
+      el.innerHTML = '<div class="empty-state card"><div class="empty-icon">🤝</div><p>Belum ada vendor. Tambahkan vendor pilihan Anda!</p></div>';
+      return;
+    }
+
+    el.innerHTML = `<div class="grid-3">${vendors.map(v => `
+      <div class="vendor-card">
+        <div class="vendor-card-img">${catEmoji[v.category] || '📦'}</div>
+        <div class="vendor-card-body">
+          <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:6px">
+            <h4>${v.name}</h4>
+            <span class="badge ${statusColor[v.status]||'badge-blue'}">${v.status}</span>
+          </div>
+          <span class="badge badge-pink" style="margin-bottom:8px;display:inline-block">${v.category}</span>
+          <div class="price">${fmt(v.price || 0)}</div>
+          <div style="font-size:0.8rem;color:var(--text-light);margin-bottom:4px">📍 ${v.location || '-'}</div>
+          <div style="font-size:0.8rem;color:var(--text-light);margin-bottom:4px">📞 ${v.contact || '-'}</div>
+          <div class="stars">${stars(parseInt(v.rating)||0)}</div>
+          ${v.note ? `<p style="font-size:0.8rem;color:var(--text-light);margin-top:6px">${v.note}</p>` : ''}
+        </div>
+        <div class="vendor-card-footer">
+          <button class="btn btn-outline btn-sm" style="flex:1;justify-content:center" onclick="editVendor(${v.id})">✏️ Edit</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteVendor(${v.id})">🗑️</button>
+        </div>
+      </div>
+    `).join('')}</div>`;
+  }
+
+  function openAddModal() {
+    document.getElementById('v-edit-id').value = '';
+    document.getElementById('modal-vendor-title').textContent = 'Tambah Vendor';
+    ['v-name','v-price','v-location','v-contact','v-note'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('v-status').value = 'Kandidat';
+    document.getElementById('v-rating').value = '5';
+    openModal('modal-vendor');
+  }
+
+  function editVendor(id) {
+    const v = Vendor.getAll().find(x => x.id === id);
+    if (!v) return;
+    document.getElementById('v-edit-id').value = id;
+    document.getElementById('modal-vendor-title').textContent = 'Edit Vendor';
+    document.getElementById('v-name').value = v.name;
+    document.getElementById('v-category').value = v.category;
+    document.getElementById('v-price').value = v.price || '';
+    document.getElementById('v-location').value = v.location || '';
+    document.getElementById('v-contact').value = v.contact || '';
+    document.getElementById('v-status').value = v.status;
+    document.getElementById('v-rating').value = v.rating || 5;
+    document.getElementById('v-note').value = v.note || '';
+    openModal('modal-vendor');
+  }
+
+  function saveVendor() {
+    const name = document.getElementById('v-name').value.trim();
+    if (!name) return toast('Nama vendor wajib diisi', 'error');
+    const id = document.getElementById('v-edit-id').value;
+    const data = {
+      name,
+      category: document.getElementById('v-category').value,
+      price: parseFloat(document.getElementById('v-price').value) || 0,
+      location: document.getElementById('v-location').value,
+      contact: document.getElementById('v-contact').value,
+      status: document.getElementById('v-status').value,
+      rating: parseInt(document.getElementById('v-rating').value),
+      note: document.getElementById('v-note').value,
+    };
+    if (id) Vendor.update(parseInt(id), data);
+    else Vendor.add(data);
+    closeModal('modal-vendor');
+    toast(id ? 'Vendor diperbarui' : 'Vendor ditambahkan');
+    render();
+  }
+
+  function deleteVendor(id) {
+    if (!confirm('Hapus vendor ini?')) return;
+    Vendor.delete(id);
+    toast('Vendor dihapus');
+    render();
+  }
+
+  render();
+</script>
+</body>
+</html>

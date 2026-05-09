@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rekomendasi – Wedding Planner</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-brand">💍 Wedding Planner</a>
+  <div class="nav-links">
+    <a href="index.html"><span>🏠</span> <span>Dashboard</span></a>
+    <a href="budget.html"><span>💰</span> <span>Budget</span></a>
+    <a href="vendors.html"><span>🤝</span> <span>Vendor</span></a>
+    <a href="recommendations.html"><span>⭐</span> <span>Rekomendasi</span></a>
+  </div>
+  <div class="nav-user">
+    <span id="nav-user-name"></span>
+    <button class="btn-logout" onclick="Auth.logout()">Keluar</button>
+  </div>
+</nav>
+
+<div class="container">
+
+  <div class="page-header">
+    <div>
+      <h2>⭐ Rekomendasi Vendor</h2>
+      <p>Temukan vendor terbaik untuk pernikahan Anda</p>
+    </div>
+    <button class="btn btn-primary" onclick="openAddModal()">+ Tambah Rekomendasi</button>
+  </div>
+
+  <!-- FILTER -->
+  <div class="filter-bar">
+    <input type="text" id="search" placeholder="🔍 Cari vendor..." oninput="render()" />
+    <select id="filter-cat" onchange="render()">
+      <option value="">Semua Kategori</option>
+      <option>Fotografer</option><option>Katering</option><option>Dekorasi</option>
+      <option>Hiburan</option><option>Venue</option><option>MUA</option>
+      <option>Videografer</option><option>Bunga</option><option>Lainnya</option>
+    </select>
+    <select id="filter-rating" onchange="render()">
+      <option value="">Semua Rating</option>
+      <option value="5">⭐⭐⭐⭐⭐ 5 Bintang</option>
+      <option value="4">⭐⭐⭐⭐ 4+ Bintang</option>
+      <option value="3">⭐⭐⭐ 3+ Bintang</option>
+    </select>
+  </div>
+
+  <div id="rec-list"></div>
+
+</div>
+
+<!-- MODAL ADD/EDIT -->
+<div class="modal-overlay" id="modal-rec">
+  <div class="modal" style="max-width:520px">
+    <div class="modal-header">
+      <h3 id="modal-rec-title">Tambah Rekomendasi</h3>
+      <button class="btn-close" onclick="closeModal('modal-rec')">✕</button>
+    </div>
+    <input type="hidden" id="r-edit-id" />
+    <div class="grid-2">
+      <div class="form-group">
+        <label>Nama Vendor</label>
+        <input type="text" id="r-name" placeholder="Nama vendor" />
+      </div>
+      <div class="form-group">
+        <label>Kategori</label>
+        <select id="r-category">
+          <option>Fotografer</option><option>Katering</option><option>Dekorasi</option>
+          <option>Hiburan</option><option>Venue</option><option>MUA</option>
+          <option>Videografer</option><option>Bunga</option><option>Lainnya</option>
+        </select>
+      </div>
+    </div>
+    <div class="grid-2">
+      <div class="form-group">
+        <label>Harga Mulai (Rp)</label>
+        <input type="number" id="r-price" placeholder="0" min="0" />
+      </div>
+      <div class="form-group">
+        <label>Lokasi</label>
+        <input type="text" id="r-location" placeholder="Kota" />
+      </div>
+    </div>
+    <div class="grid-2">
+      <div class="form-group">
+        <label>Kontak</label>
+        <input type="text" id="r-contact" placeholder="No. HP / Email" />
+      </div>
+      <div class="form-group">
+        <label>Rating</label>
+        <select id="r-rating">
+          <option value="5">⭐⭐⭐⭐⭐ (5)</option>
+          <option value="4">⭐⭐⭐⭐ (4)</option>
+          <option value="3">⭐⭐⭐ (3)</option>
+          <option value="2">⭐⭐ (2)</option>
+          <option value="1">⭐ (1)</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Emoji / Ikon</label>
+      <input type="text" id="r-emoji" placeholder="Contoh: 📸" maxlength="4" />
+    </div>
+    <div class="form-group">
+      <label>Deskripsi</label>
+      <textarea id="r-desc" rows="2" placeholder="Deskripsi singkat vendor..."></textarea>
+    </div>
+    <div style="display:flex;gap:0.8rem">
+      <button class="btn btn-primary" style="flex:1;justify-content:center" onclick="saveRec()">Simpan</button>
+      <button class="btn btn-outline" onclick="closeModal('modal-rec')">Batal</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/app.js"></script>
+<script>
+  Auth.require();
+  setupNav();
+
+  const catEmoji = { Venue:'🏛️', Katering:'🍽️', Fotografer:'📸', Videografer:'🎬', Dekorasi:'💐', MUA:'💄', Hiburan:'🎵', Bunga:'🌸', Lainnya:'📦' };
+
+  function render() {
+    const search = document.getElementById('search').value.toLowerCase();
+    const cat = document.getElementById('filter-cat').value;
+    const minRating = parseInt(document.getElementById('filter-rating').value) || 0;
+
+    let recs = Recommendation.getAll().filter(r =>
+      (!search || r.name.toLowerCase().includes(search) || r.category.toLowerCase().includes(search) || (r.location||'').toLowerCase().includes(search)) &&
+      (!cat || r.category === cat) &&
+      (r.rating >= minRating)
+    );
+
+    const el = document.getElementById('rec-list');
+    if (!recs.length) {
+      el.innerHTML = '<div class="empty-state card"><div class="empty-icon">⭐</div><p>Tidak ada rekomendasi ditemukan.</p></div>';
+      return;
+    }
+
+    el.innerHTML = `<div class="grid-3">${recs.map(r => `
+      <div class="vendor-card">
+        <div class="vendor-card-img" style="font-size:3.5rem">${r.emoji || catEmoji[r.category] || '📦'}</div>
+        <div class="vendor-card-body">
+          <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:6px">
+            <h4>${r.name}</h4>
+            ${!r.isDefault ? '<span style="font-size:0.7rem;color:var(--primary-dark);background:var(--primary-light);padding:2px 8px;border-radius:10px">Custom</span>' : ''}
+          </div>
+          <span class="badge badge-pink" style="margin-bottom:8px;display:inline-block">${r.category}</span>
+          <div class="price">Mulai ${fmt(r.price || 0)}</div>
+          <div style="font-size:0.8rem;color:var(--text-light);margin-bottom:4px">📍 ${r.location || '-'}</div>
+          <div style="font-size:0.8rem;color:var(--text-light);margin-bottom:6px">📞 ${r.contact || '-'}</div>
+          <div class="stars">${stars(r.rating || 0)}</div>
+          <p style="font-size:0.8rem;color:var(--text-light);margin-top:8px;line-height:1.5">${r.desc || ''}</p>
+        </div>
+        <div class="vendor-card-footer">
+          <button class="btn btn-outline btn-sm" style="flex:1;justify-content:center" onclick="addToMyVendor(${r.id})">➕ Pilih</button>
+          <button class="btn btn-outline btn-sm" onclick="editRec(${r.id})">✏️</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteRec(${r.id})">🗑️</button>
+        </div>
+      </div>
+    `).join('')}</div>`;
+  }
+
+  function addToMyVendor(id) {
+    const r = Recommendation.getAll().find(x => x.id === id);
+    if (!r) return;
+    Vendor.add({
+      name: r.name,
+      category: r.category,
+      price: r.price,
+      location: r.location,
+      contact: r.contact,
+      rating: r.rating,
+      status: 'Kandidat',
+      note: r.desc || '',
+    });
+    toast(`${r.name} ditambahkan ke vendor saya! ✅`);
+  }
+
+  function openAddModal() {
+    document.getElementById('r-edit-id').value = '';
+    document.getElementById('modal-rec-title').textContent = 'Tambah Rekomendasi';
+    ['r-name','r-price','r-location','r-contact','r-desc','r-emoji'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('r-rating').value = '5';
+    openModal('modal-rec');
+  }
+
+  function editRec(id) {
+    const r = Recommendation.getAll().find(x => x.id === id);
+    if (!r) return;
+    document.getElementById('r-edit-id').value = id;
+    document.getElementById('modal-rec-title').textContent = 'Edit Rekomendasi';
+    document.getElementById('r-name').value = r.name;
+    document.getElementById('r-category').value = r.category;
+    document.getElementById('r-price').value = r.price || '';
+    document.getElementById('r-location').value = r.location || '';
+    document.getElementById('r-contact').value = r.contact || '';
+    document.getElementById('r-rating').value = r.rating || 5;
+    document.getElementById('r-emoji').value = r.emoji || '';
+    document.getElementById('r-desc').value = r.desc || '';
+    openModal('modal-rec');
+  }
+
+  function saveRec() {
+    const name = document.getElementById('r-name').value.trim();
+    if (!name) return toast('Nama vendor wajib diisi', 'error');
+    const id = document.getElementById('r-edit-id').value;
+    const data = {
+      name,
+      category: document.getElementById('r-category').value,
+      price: parseFloat(document.getElementById('r-price').value) || 0,
+      location: document.getElementById('r-location').value,
+      contact: document.getElementById('r-contact').value,
+      rating: parseInt(document.getElementById('r-rating').value),
+      emoji: document.getElementById('r-emoji').value || catEmoji[document.getElementById('r-category').value] || '📦',
+      desc: document.getElementById('r-desc').value,
+    };
+    if (id) Recommendation.update(parseInt(id), data);
+    else Recommendation.add(data);
+    closeModal('modal-rec');
+    toast(id ? 'Rekomendasi diperbarui' : 'Rekomendasi ditambahkan');
+    render();
+  }
+
+  function deleteRec(id) {
+    if (!confirm('Hapus rekomendasi ini?')) return;
+    Recommendation.delete(id);
+    toast('Rekomendasi dihapus');
+    render();
+  }
+
+  render();
+</script>
+</body>
+</html>
