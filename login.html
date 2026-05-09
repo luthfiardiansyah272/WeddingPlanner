@@ -5,6 +5,66 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Login – Wedding Planner</title>
   <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .input-wrap { position: relative; }
+    .input-wrap input { padding-right: 44px; }
+    .toggle-eye {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1.1rem;
+      color: var(--text-light);
+      padding: 0;
+      line-height: 1;
+    }
+    .toggle-eye:hover { color: var(--primary-dark); }
+
+    .forgot-link {
+      display: block;
+      text-align: right;
+      font-size: 0.8rem;
+      color: var(--primary-dark);
+      text-decoration: none;
+      margin-top: -8px;
+      margin-bottom: 1rem;
+      cursor: pointer;
+    }
+    .forgot-link:hover { text-decoration: underline; }
+
+    /* Modal reset password */
+    .reset-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(90,62,62,0.35);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+    }
+    .reset-overlay.active { display: flex; }
+    .reset-modal {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 2rem;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 8px 30px rgba(180,120,120,0.22);
+      animation: slideUp 0.25s ease;
+      text-align: center;
+    }
+    @keyframes slideUp {
+      from { transform: translateY(30px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .reset-modal h3 { color: var(--primary-dark); margin-bottom: 0.5rem; }
+    .reset-modal p { font-size: 0.85rem; color: var(--text-light); margin-bottom: 1.5rem; }
+    .reset-success { display: none; }
+    .reset-success .icon { font-size: 3rem; margin-bottom: 1rem; }
+  </style>
 </head>
 <body>
 <div class="login-page">
@@ -18,6 +78,7 @@
       <button onclick="switchTab('register')">Daftar</button>
     </div>
 
+    <!-- LOGIN FORM -->
     <form id="form-login" onsubmit="doLogin(event)">
       <div class="form-group">
         <label>Email</label>
@@ -25,12 +86,17 @@
       </div>
       <div class="form-group">
         <label>Password</label>
-        <input type="password" id="login-pass" placeholder="Password" required />
+        <div class="input-wrap">
+          <input type="password" id="login-pass" placeholder="Password" required />
+          <button type="button" class="toggle-eye" onclick="toggleEye('login-pass', this)">👁️</button>
+        </div>
       </div>
+      <span class="forgot-link" onclick="openReset()">Lupa password?</span>
       <p id="login-err" style="color:var(--danger);font-size:0.8rem;margin-bottom:1rem;display:none"></p>
       <button type="submit" id="btn-login" class="btn btn-primary" style="width:100%;justify-content:center">Masuk</button>
     </form>
 
+    <!-- REGISTER FORM -->
     <form id="form-register" style="display:none" onsubmit="doRegister(event)">
       <div class="form-group">
         <label>Nama Lengkap</label>
@@ -46,7 +112,10 @@
       </div>
       <div class="form-group">
         <label>Password</label>
-        <input type="password" id="reg-pass" placeholder="Minimal 6 karakter" required minlength="6" />
+        <div class="input-wrap">
+          <input type="password" id="reg-pass" placeholder="Minimal 6 karakter" required minlength="6" />
+          <button type="button" class="toggle-eye" onclick="toggleEye('reg-pass', this)">👁️</button>
+        </div>
       </div>
       <div class="form-group">
         <label>Tanggal Pernikahan</label>
@@ -58,12 +127,48 @@
   </div>
 </div>
 
+<!-- MODAL LUPA PASSWORD -->
+<div class="reset-overlay" id="reset-overlay" onclick="closeResetOnOverlay(event)">
+  <div class="reset-modal">
+    <!-- Form reset -->
+    <div id="reset-form-wrap">
+      <div style="font-size:2rem;margin-bottom:0.5rem">🔑</div>
+      <h3>Lupa Password?</h3>
+      <p>Masukkan email kamu, kami akan kirim link reset password.</p>
+      <div class="form-group" style="text-align:left">
+        <label>Email</label>
+        <input type="email" id="reset-email" placeholder="email@contoh.com" />
+      </div>
+      <p id="reset-err" style="color:var(--danger);font-size:0.8rem;margin-bottom:1rem;display:none"></p>
+      <div style="display:flex;gap:0.8rem">
+        <button class="btn btn-primary" style="flex:1;justify-content:center" onclick="doReset()" id="btn-reset">Kirim Link Reset</button>
+        <button class="btn btn-outline" onclick="closeReset()">Batal</button>
+      </div>
+    </div>
+    <!-- Success state -->
+    <div class="reset-success" id="reset-success">
+      <div class="icon">📧</div>
+      <h3 style="color:var(--primary-dark);margin-bottom:0.5rem">Email Terkirim!</h3>
+      <p style="margin-bottom:1.5rem">Link reset password sudah dikirim ke <strong id="reset-email-sent"></strong>. Cek inbox atau folder spam kamu.</p>
+      <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="closeReset()">Oke, Mengerti</button>
+    </div>
+  </div>
+</div>
+
 <script type="module">
   import { Auth } from './js/firebase.js';
 
-  // Jika sudah login, redirect ke dashboard
   Auth.redirectIfLoggedIn();
 
+  // Toggle show/hide password
+  window.toggleEye = (inputId, btn) => {
+    const input = document.getElementById(inputId);
+    const isHidden = input.type === 'password';
+    input.type = isHidden ? 'text' : 'password';
+    btn.textContent = isHidden ? '🙈' : '👁️';
+  };
+
+  // Switch tab login/register
   window.switchTab = (tab) => {
     document.querySelectorAll('.tab-switch button').forEach((b, i) => {
       b.classList.toggle('active', (tab === 'login' && i === 0) || (tab === 'register' && i === 1));
@@ -72,6 +177,7 @@
     document.getElementById('form-register').style.display = tab === 'register' ? 'block' : 'none';
   };
 
+  // Login
   window.doLogin = async (e) => {
     e.preventDefault();
     const btn = document.getElementById('btn-login');
@@ -93,6 +199,7 @@
     }
   };
 
+  // Register
   window.doRegister = async (e) => {
     e.preventDefault();
     const btn = document.getElementById('btn-register');
@@ -113,6 +220,48 @@
       errEl.textContent = res.msg;
       errEl.style.display = 'block';
       btn.textContent = 'Daftar Sekarang';
+      btn.disabled = false;
+    }
+  };
+
+  // Reset password
+  window.openReset = () => {
+    document.getElementById('reset-email').value = document.getElementById('login-email').value || '';
+    document.getElementById('reset-err').style.display = 'none';
+    document.getElementById('reset-form-wrap').style.display = 'block';
+    document.getElementById('reset-success').style.display = 'none';
+    document.getElementById('reset-overlay').classList.add('active');
+  };
+
+  window.closeReset = () => {
+    document.getElementById('reset-overlay').classList.remove('active');
+  };
+
+  window.closeResetOnOverlay = (e) => {
+    if (e.target === document.getElementById('reset-overlay')) closeReset();
+  };
+
+  window.doReset = async () => {
+    const email = document.getElementById('reset-email').value.trim();
+    const errEl = document.getElementById('reset-err');
+    const btn = document.getElementById('btn-reset');
+    if (!email) {
+      errEl.textContent = 'Masukkan email kamu';
+      errEl.style.display = 'block';
+      return;
+    }
+    errEl.style.display = 'none';
+    btn.textContent = 'Mengirim...';
+    btn.disabled = true;
+    const res = await Auth.resetPassword(email);
+    if (res.ok) {
+      document.getElementById('reset-email-sent').textContent = email;
+      document.getElementById('reset-form-wrap').style.display = 'none';
+      document.getElementById('reset-success').style.display = 'block';
+    } else {
+      errEl.textContent = res.msg;
+      errEl.style.display = 'block';
+      btn.textContent = 'Kirim Link Reset';
       btn.disabled = false;
     }
   };

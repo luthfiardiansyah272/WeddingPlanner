@@ -1,6 +1,6 @@
 // ===== FIREBASE CONFIG =====
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, addDoc, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -36,6 +36,17 @@ const Auth = {
       return { ok: true };
     } catch (e) {
       return { ok: false, msg: 'Email atau password salah' };
+    }
+  },
+
+  async resetPassword(email) {
+    try {
+      await sendPasswordResetEmail(auth, email);
+      return { ok: true };
+    } catch (e) {
+      const msg = e.code === 'auth/user-not-found' ? 'Email tidak terdaftar' :
+                  e.code === 'auth/invalid-email' ? 'Format email tidak valid' : e.message;
+      return { ok: false, msg };
     }
   },
 
