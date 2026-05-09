@@ -59,7 +59,10 @@ const Auth = {
   },
 
   require(callback) {
+    let handled = false;
     onAuthStateChanged(auth, async user => {
+      if (handled) return;
+      handled = true;
       if (!user) { window.location.href = 'login.html'; return; }
       try {
         await callback(user);
