@@ -11,10 +11,14 @@
 <nav>
   <a href="index.html" class="nav-brand">💍 Wedding Planner</a>
   <div class="nav-links">
-    <a href="index.html"><span>🏠</span> <span>Dashboard</span></a>
-    <a href="budget.html"><span>💰</span> <span>Budget</span></a>
-    <a href="vendors.html"><span>🤝</span> <span>Vendor</span></a>
-    <a href="recommendations.html"><span>⭐</span> <span>Rekomendasi</span></a>
+    <a href="index.html">🏠 <span>Dashboard</span></a>
+    <a href="budget.html">💰 <span>Budget</span></a>
+    <a href="vendors.html">🤝 <span>Vendor</span></a>
+    <a href="recommendations.html">⭐ <span>Rekomendasi</span></a>
+    <a href="checklist.html">✅ <span>Checklist</span></a>
+    <a href="guestlist.html">👥 <span>Tamu</span></a>
+    <a href="timeline.html">🕐 <span>Timeline</span></a>
+    <a href="profile.html">👤 <span>Profil</span></a>
   </div>
   <div class="nav-user">
     <span id="nav-user-name"></span>
@@ -64,6 +68,34 @@
     </div>
   </div>
 
+  <!-- QUICK ACCESS -->  
+  <div class="grid-4" style="margin-bottom:1.5rem">
+    <a href="checklist.html" style="text-decoration:none">
+      <div class="stat-card" style="cursor:pointer">
+        <div class="stat-icon">✅</div>
+        <div class="stat-info"><p>Checklist</p><h3 id="stat-checklist" style="font-size:1rem">0%</h3></div>
+      </div>
+    </a>
+    <a href="guestlist.html" style="text-decoration:none">
+      <div class="stat-card" style="cursor:pointer">
+        <div class="stat-icon">👥</div>
+        <div class="stat-info"><p>Tamu</p><h3 id="stat-guests" style="font-size:1rem">0 orang</h3></div>
+      </div>
+    </a>
+    <a href="vendors.html" style="text-decoration:none">
+      <div class="stat-card" style="cursor:pointer">
+        <div class="stat-icon">🤝</div>
+        <div class="stat-info"><p>Vendor</p><h3 id="stat-vendors" style="font-size:1rem">0 vendor</h3></div>
+      </div>
+    </a>
+    <a href="timeline.html" style="text-decoration:none">
+      <div class="stat-card" style="cursor:pointer">
+        <div class="stat-icon">🕐</div>
+        <div class="stat-info"><p>Timeline</p><h3 id="stat-timeline" style="font-size:1rem">0 acara</h3></div>
+      </div>
+    </a>
+  </div>
+
   <div class="grid-2">
     <!-- BUDGET OVERVIEW -->
     <div class="card">
@@ -81,6 +113,25 @@
         <a href="vendors.html" class="btn btn-outline btn-sm">Lihat Semua</a>
       </div>
       <div id="vendor-overview"></div>
+    </div>
+  </div>
+
+  <div class="grid-2" style="margin-top:1.2rem">
+    <!-- CHECKLIST OVERVIEW -->
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.2rem">
+        <h3 style="font-size:1.1rem;color:var(--primary-dark)">Checklist Terbaru</h3>
+        <a href="checklist.html" class="btn btn-outline btn-sm">Lihat Semua</a>
+      </div>
+      <div id="checklist-overview"></div>
+    </div>
+    <!-- GUEST OVERVIEW -->
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.2rem">
+        <h3 style="font-size:1.1rem;color:var(--primary-dark)">Status Tamu</h3>
+        <a href="guestlist.html" class="btn btn-outline btn-sm">Lihat Semua</a>
+      </div>
+      <div id="guest-overview"></div>
     </div>
   </div>
 
@@ -148,6 +199,7 @@
   // Vendor overview
   const vendors = Vendor.getAll();
   const voEl = document.getElementById('vendor-overview');
+  document.getElementById('stat-vendors').textContent = vendors.length + ' vendor';
   if (!vendors.length) {
     voEl.innerHTML = '<div class="empty-state"><div class="empty-icon">🤝</div><p>Belum ada vendor.<br><a href="vendors.html" style="color:var(--primary-dark)">Tambah sekarang</a></p></div>';
   } else {
@@ -160,6 +212,45 @@
       </tr>`).join('')}
     </tbody></table>`;
   }
+
+  // Checklist overview
+  const prog = Checklist.progress();
+  document.getElementById('stat-checklist').textContent = prog.pct + '%';
+  const coEl = document.getElementById('checklist-overview');
+  const pending = Checklist.getAll().filter(t => !t.done).slice(0, 5);
+  if (!pending.length) {
+    coEl.innerHTML = '<div class="empty-state"><div class="empty-icon">🎉</div><p>Semua checklist selesai!</p></div>';
+  } else {
+    coEl.innerHTML = pending.map(t => `
+      <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--nude-dark)">
+        <div style="width:10px;height:10px;border-radius:50%;background:${t.priority==='Tinggi'?'var(--danger)':t.priority==='Sedang'?'var(--warning)':'var(--success)'};flex-shrink:0"></div>
+        <span style="font-size:0.85rem;flex:1">${t.task}</span>
+        <span class="badge badge-pink" style="font-size:0.7rem">${t.category}</span>
+      </div>
+    `).join('');
+  }
+
+  // Guest overview
+  const gs = GuestList.summary();
+  document.getElementById('stat-guests').textContent = gs.total + ' orang';
+  const goEl = document.getElementById('guest-overview');
+  if (!gs.total) {
+    goEl.innerHTML = '<div class="empty-state"><div class="empty-icon">👥</div><p>Belum ada tamu.<br><a href="guestlist.html" style="color:var(--primary-dark)">Tambah sekarang</a></p></div>';
+  } else {
+    const pctHadir = gs.total ? Math.round(gs.confirmed/gs.total*100) : 0;
+    goEl.innerHTML = `
+      <div style="display:flex;justify-content:space-around;text-align:center;margin-bottom:1.2rem">
+        <div><div style="font-size:1.8rem;font-weight:700;color:var(--success)">${gs.confirmed}</div><div style="font-size:0.8rem;color:var(--text-light)">Hadir</div></div>
+        <div><div style="font-size:1.8rem;font-weight:700;color:var(--warning)">${gs.pending}</div><div style="font-size:0.8rem;color:var(--text-light)">Belum Konfirmasi</div></div>
+        <div><div style="font-size:1.8rem;font-weight:700;color:var(--danger)">${gs.declined}</div><div style="font-size:0.8rem;color:var(--text-light)">Tidak Hadir</div></div>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${pctHadir}%"></div></div>
+      <p style="font-size:0.75rem;color:var(--text-light);margin-top:6px">${pctHadir}% tamu sudah konfirmasi hadir · Total ${gs.totalPax} kursi</p>
+    `;
+  }
+
+  // Timeline stat
+  document.getElementById('stat-timeline').textContent = Timeline.getAll().length + ' acara';
 </script>
 </body>
 </html>

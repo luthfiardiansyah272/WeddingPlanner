@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Profil – Wedding Planner</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-brand">💍 Wedding Planner</a>
+  <div class="nav-links">
+    <a href="index.html">🏠 <span>Dashboard</span></a>
+    <a href="budget.html">💰 <span>Budget</span></a>
+    <a href="vendors.html">🤝 <span>Vendor</span></a>
+    <a href="recommendations.html">⭐ <span>Rekomendasi</span></a>
+    <a href="checklist.html">✅ <span>Checklist</span></a>
+    <a href="guestlist.html">👥 <span>Tamu</span></a>
+    <a href="timeline.html">🕐 <span>Timeline</span></a>
+    <a href="profile.html">👤 <span>Profil</span></a>
+  </div>
+  <div class="nav-user">
+    <span id="nav-user-name"></span>
+    <button class="btn-logout" onclick="Auth.logout()">Keluar</button>
+  </div>
+</nav>
+
+<div class="container">
+  <div class="page-header">
+    <div>
+      <h2>👤 Profil & Pengaturan</h2>
+      <p>Kelola data akun dan ekspor laporan</p>
+    </div>
+  </div>
+
+  <div class="grid-2" style="align-items:start">
+
+    <!-- PROFILE CARD -->
+    <div>
+      <div class="card" style="margin-bottom:1.2rem">
+        <div style="text-align:center;padding:1rem 0 1.5rem">
+          <div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--primary-light),var(--primary));display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 1rem">💍</div>
+          <h3 id="profile-names" style="color:var(--primary-dark);font-size:1.3rem"></h3>
+          <p id="profile-date" style="color:var(--text-light);font-size:0.85rem;margin-top:4px"></p>
+          <p id="profile-countdown" style="color:var(--primary);font-weight:600;margin-top:6px"></p>
+        </div>
+
+        <hr style="border:none;border-top:1px solid var(--nude-dark);margin-bottom:1.5rem" />
+
+        <form onsubmit="saveProfile(event)">
+          <div class="grid-2">
+            <div class="form-group">
+              <label>Nama Kamu</label>
+              <input type="text" id="p-name" required />
+            </div>
+            <div class="form-group">
+              <label>Nama Pasangan</label>
+              <input type="text" id="p-partner" required />
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="p-email" required />
+          </div>
+          <div class="form-group">
+            <label>Tanggal Pernikahan</label>
+            <input type="date" id="p-date" required />
+          </div>
+          <div class="form-group">
+            <label>Lokasi Pernikahan</label>
+            <input type="text" id="p-location" placeholder="Contoh: Jakarta, Indonesia" />
+          </div>
+          <div class="form-group">
+            <label>Tema Pernikahan</label>
+            <input type="text" id="p-theme" placeholder="Contoh: Garden Romantic, Rustic, Modern" />
+          </div>
+          <div class="form-group">
+            <label>Ganti Password (kosongkan jika tidak ingin ganti)</label>
+            <input type="password" id="p-pass" placeholder="Password baru" minlength="6" />
+          </div>
+          <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center">💾 Simpan Perubahan</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- TOOLS & STATS -->
+    <div>
+      <!-- SUMMARY STATS -->
+      <div class="card" style="margin-bottom:1.2rem">
+        <h3 style="font-size:1rem;color:var(--primary-dark);margin-bottom:1.2rem">📊 Ringkasan Data</h3>
+        <div style="display:flex;flex-direction:column;gap:0.8rem" id="summary-stats"></div>
+      </div>
+
+      <!-- EXPORT -->
+      <div class="card" style="margin-bottom:1.2rem">
+        <h3 style="font-size:1rem;color:var(--primary-dark);margin-bottom:1rem">📤 Ekspor Laporan</h3>
+        <div style="display:flex;flex-direction:column;gap:0.8rem">
+          <button class="btn btn-outline" style="justify-content:start;gap:12px" onclick="exportBudgetPDF()">
+            <span style="font-size:1.2rem">📄</span>
+            <div style="text-align:left"><div style="font-weight:600">Laporan Budget</div><div style="font-size:0.75rem;color:var(--text-light)">Export ringkasan budget ke PDF</div></div>
+          </button>
+          <button class="btn btn-outline" style="justify-content:start;gap:12px" onclick="exportGuestPDF()">
+            <span style="font-size:1.2rem">👥</span>
+            <div style="text-align:left"><div style="font-weight:600">Daftar Tamu</div><div style="font-size:0.75rem;color:var(--text-light)">Export daftar tamu ke PDF</div></div>
+          </button>
+          <button class="btn btn-outline" style="justify-content:start;gap:12px" onclick="window.location.href='timeline.html'">
+            <span style="font-size:1.2rem">🕐</span>
+            <div style="text-align:left"><div style="font-weight:600">Timeline Hari H</div><div style="font-size:0.75rem;color:var(--text-light)">Print rundown acara dari halaman Timeline</div></div>
+          </button>
+        </div>
+      </div>
+
+      <!-- DANGER ZONE -->
+      <div class="card" style="border:1.5px solid #ffd0d0">
+        <h3 style="font-size:1rem;color:var(--danger);margin-bottom:1rem">⚠️ Zona Berbahaya</h3>
+        <p style="font-size:0.85rem;color:var(--text-light);margin-bottom:1rem">Tindakan ini tidak dapat dibatalkan.</p>
+        <button class="btn btn-danger btn-sm" onclick="resetData()">🗑️ Reset Semua Data</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script src="js/app.js"></script>
+<script>
+  Auth.require();
+  setupNav();
+
+  function loadProfile() {
+    const user = Auth.currentUser();
+    document.getElementById('p-name').value = user.name;
+    document.getElementById('p-partner').value = user.partnerName;
+    document.getElementById('p-email').value = user.email;
+    document.getElementById('p-date').value = user.weddingDate || '';
+    document.getElementById('p-location').value = user.location || '';
+    document.getElementById('p-theme').value = user.theme || '';
+
+    document.getElementById('profile-names').textContent = `${user.name} & ${user.partnerName}`;
+    if (user.weddingDate) {
+      const d = new Date(user.weddingDate);
+      document.getElementById('profile-date').textContent = d.toLocaleDateString('id-ID', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+      const diff = Math.ceil((d - new Date()) / 86400000);
+      document.getElementById('profile-countdown').textContent = diff > 0 ? `⏳ ${diff} hari lagi` : diff === 0 ? '🎉 Hari ini!' : '🎊 Sudah menikah!';
+    }
+
+    // Summary stats
+    const bSummary = Budget.summary();
+    const vendors = Vendor.getAll();
+    const guests = GuestList.summary();
+    const checklist = Checklist.progress();
+
+    document.getElementById('summary-stats').innerHTML = [
+      { icon:'💰', label:'Total Budget', val: fmt(bSummary.total) },
+      { icon:'✅', label:'Budget Terpakai', val: fmt(bSummary.spent) },
+      { icon:'🤝', label:'Vendor Terdaftar', val: vendors.length + ' vendor' },
+      { icon:'👥', label:'Total Tamu', val: guests.total + ' orang (' + guests.totalPax + ' kursi)' },
+      { icon:'📋', label:'Checklist', val: checklist.done + '/' + checklist.total + ' selesai (' + checklist.pct + '%)' },
+    ].map(s => `
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--nude-dark)">
+        <span style="font-size:0.85rem;color:var(--text-light)">${s.icon} ${s.label}</span>
+        <span style="font-size:0.85rem;font-weight:600">${s.val}</span>
+      </div>
+    `).join('');
+  }
+
+  function saveProfile(e) {
+    e.preventDefault();
+    const pass = document.getElementById('p-pass').value;
+    const data = {
+      name: document.getElementById('p-name').value,
+      partnerName: document.getElementById('p-partner').value,
+      email: document.getElementById('p-email').value,
+      weddingDate: document.getElementById('p-date').value,
+      location: document.getElementById('p-location').value,
+      theme: document.getElementById('p-theme').value,
+    };
+    if (pass) data.password = pass;
+    Profile.update(data);
+    toast('Profil berhasil disimpan! ✨');
+    loadProfile();
+    setupNav();
+  }
+
+  function exportBudgetPDF() {
+    const user = Auth.currentUser();
+    const data = Budget.getAll();
+    const s = Budget.summary();
+    const win = window.open('', '_blank');
+    win.document.write(`
+      <html><head><title>Laporan Budget</title>
+      <style>
+        body { font-family: Arial, sans-serif; padding: 30px; color: #333; }
+        h1 { color: #a07070; } h2 { color: #c9a0a0; font-size: 1rem; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th { background: #f5ebe0; padding: 10px; text-align: left; font-size: 13px; }
+        td { padding: 10px; border-bottom: 1px solid #eee; font-size: 13px; }
+        .summary { display: flex; gap: 20px; margin: 20px 0; flex-wrap: wrap; }
+        .sum-box { background: #f5ebe0; padding: 12px 20px; border-radius: 8px; }
+        .sum-box p { margin: 0; font-size: 12px; color: #888; }
+        .sum-box h3 { margin: 4px 0 0; color: #a07070; }
+        .over { color: #e07070; }
+      </style></head><body>
+      <h1>💰 Laporan Budget Pernikahan</h1>
+      <h2>${user.name} & ${user.partnerName}</h2>
+      <div class="summary">
+        <div class="sum-box"><p>Total Budget</p><h3>${fmt(s.total)}</h3></div>
+        <div class="sum-box"><p>Direncanakan</p><h3>${fmt(s.planned)}</h3></div>
+        <div class="sum-box"><p>Terpakai</p><h3>${fmt(s.spent)}</h3></div>
+        <div class="sum-box"><p>Sisa</p><h3 class="${s.remaining<0?'over':''}">${fmt(s.remaining)}</h3></div>
+      </div>
+      <table>
+        <thead><tr><th>Kategori</th><th>Nama Item</th><th>Rencana</th><th>Aktual</th><th>Selisih</th><th>Status</th></tr></thead>
+        <tbody>${data.items.map(i => {
+          const diff = (i.planned||0)-(i.actual||0);
+          return `<tr>
+            <td>${i.category}</td><td>${i.name}</td>
+            <td>${fmt(i.planned||0)}</td><td>${fmt(i.actual||0)}</td>
+            <td class="${diff<0?'over':''}">${diff>=0?'+':''}${fmt(diff)}</td>
+            <td>${i.status}</td>
+          </tr>`;
+        }).join('')}</tbody>
+      </table>
+      <p style="margin-top:20px;font-size:12px;color:#aaa">Dicetak pada: ${new Date().toLocaleString('id-ID')}</p>
+      </body></html>
+    `);
+    win.document.close();
+    win.print();
+  }
+
+  function exportGuestPDF() {
+    const user = Auth.currentUser();
+    const guests = GuestList.getAll();
+    const s = GuestList.summary();
+    const win = window.open('', '_blank');
+    win.document.write(`
+      <html><head><title>Daftar Tamu</title>
+      <style>
+        body { font-family: Arial, sans-serif; padding: 30px; color: #333; }
+        h1 { color: #a07070; } h2 { color: #c9a0a0; font-size: 1rem; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th { background: #f5ebe0; padding: 10px; text-align: left; font-size: 13px; }
+        td { padding: 10px; border-bottom: 1px solid #eee; font-size: 13px; }
+        .summary { display: flex; gap: 20px; margin: 20px 0; flex-wrap: wrap; }
+        .sum-box { background: #f5ebe0; padding: 12px 20px; border-radius: 8px; }
+        .sum-box p { margin: 0; font-size: 12px; color: #888; }
+        .sum-box h3 { margin: 4px 0 0; color: #a07070; }
+      </style></head><body>
+      <h1>👥 Daftar Tamu Pernikahan</h1>
+      <h2>${user.name} & ${user.partnerName}</h2>
+      <div class="summary">
+        <div class="sum-box"><p>Total Tamu</p><h3>${s.total}</h3></div>
+        <div class="sum-box"><p>Hadir</p><h3>${s.confirmed}</h3></div>
+        <div class="sum-box"><p>Belum Konfirmasi</p><h3>${s.pending}</h3></div>
+        <div class="sum-box"><p>Total Kursi</p><h3>${s.totalPax}</h3></div>
+      </div>
+      <table>
+        <thead><tr><th>No</th><th>Nama</th><th>Kelompok</th><th>Kontak</th><th>Pax</th><th>RSVP</th><th>Undangan</th></tr></thead>
+        <tbody>${guests.map((g,i) => `<tr>
+          <td>${i+1}</td><td>${g.name}</td><td>${g.group||'-'}</td>
+          <td>${g.phone||'-'}</td><td>${g.pax||1}</td>
+          <td>${g.rsvp}</td><td>${g.invited?'✅ Terkirim':'Belum'}</td>
+        </tr>`).join('')}</tbody>
+      </table>
+      <p style="margin-top:20px;font-size:12px;color:#aaa">Dicetak pada: ${new Date().toLocaleString('id-ID')}</p>
+      </body></html>
+    `);
+    win.document.close();
+    win.print();
+  }
+
+  function resetData() {
+    if (!confirm('Yakin ingin menghapus SEMUA data? Tindakan ini tidak bisa dibatalkan!')) return;
+    if (!confirm('Konfirmasi sekali lagi: hapus semua data budget, vendor, tamu, checklist, dan timeline?')) return;
+    const user = Auth.currentUser();
+    ['wp_budget_','wp_vendors_','wp_recs_','wp_checklist_','wp_guests_','wp_timeline_'].forEach(k => localStorage.removeItem(k + user.id));
+    toast('Semua data berhasil direset');
+    setTimeout(() => window.location.href = 'index.html', 1500);
+  }
+
+  loadProfile();
+</script>
+</body>
+</html>

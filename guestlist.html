@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Daftar Tamu – Wedding Planner</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-brand">💍 Wedding Planner</a>
+  <div class="nav-links">
+    <a href="index.html">🏠 <span>Dashboard</span></a>
+    <a href="budget.html">💰 <span>Budget</span></a>
+    <a href="vendors.html">🤝 <span>Vendor</span></a>
+    <a href="recommendations.html">⭐ <span>Rekomendasi</span></a>
+    <a href="checklist.html">✅ <span>Checklist</span></a>
+    <a href="guestlist.html">👥 <span>Tamu</span></a>
+    <a href="timeline.html">🕐 <span>Timeline</span></a>
+    <a href="profile.html">👤 <span>Profil</span></a>
+  </div>
+  <div class="nav-user">
+    <span id="nav-user-name"></span>
+    <button class="btn-logout" onclick="Auth.logout()">Keluar</button>
+  </div>
+</nav>
+
+<div class="container">
+  <div class="page-header">
+    <div>
+      <h2>👥 Daftar Tamu</h2>
+      <p>Kelola undangan & konfirmasi kehadiran tamu</p>
+    </div>
+    <button class="btn btn-primary" onclick="openAddModal()">+ Tambah Tamu</button>
+  </div>
+
+  <!-- STATS -->
+  <div class="grid-4" style="margin-bottom:1.5rem">
+    <div class="stat-card">
+      <div class="stat-icon">👥</div>
+      <div class="stat-info"><p>Total Tamu</p><h3 id="s-total">0</h3></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon" style="background:#d4edda">✅</div>
+      <div class="stat-info"><p>Hadir</p><h3 id="s-confirmed" style="color:var(--success)">0</h3></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon" style="background:#fef3cd">⏳</div>
+      <div class="stat-info"><p>Belum Konfirmasi</p><h3 id="s-pending" style="color:var(--warning)">0</h3></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon" style="background:#d0e8f5">🪑</div>
+      <div class="stat-info"><p>Total Kursi</p><h3 id="s-pax">0</h3></div>
+    </div>
+  </div>
+
+  <!-- FILTER -->
+  <div class="filter-bar">
+    <input type="text" id="search" placeholder="🔍 Cari tamu..." oninput="render()" />
+    <select id="filter-rsvp" onchange="render()">
+      <option value="">Semua RSVP</option>
+      <option>Hadir</option>
+      <option>Tidak Hadir</option>
+      <option>Belum Konfirmasi</option>
+    </select>
+    <select id="filter-group" onchange="render()">
+      <option value="">Semua Kelompok</option>
+    </select>
+  </div>
+
+  <div class="card">
+    <div id="guest-table"></div>
+  </div>
+</div>
+
+<!-- MODAL ADD/EDIT -->
+<div class="modal-overlay" id="modal-guest">
+  <div class="modal" style="max-width:500px">
+    <div class="modal-header">
+      <h3 id="modal-guest-title">Tambah Tamu</h3>
+      <button class="btn-close" onclick="closeModal('modal-guest')">✕</button>
+    </div>
+    <input type="hidden" id="g-edit-id" />
+    <div class="grid-2">
+      <div class="form-group">
+        <label>Nama Tamu</label>
+        <input type="text" id="g-name" placeholder="Nama lengkap" />
+      </div>
+      <div class="form-group">
+        <label>Kelompok</label>
+        <input type="text" id="g-group" placeholder="Keluarga / Teman / Rekan" list="group-list" />
+        <datalist id="group-list"></datalist>
+      </div>
+    </div>
+    <div class="grid-2">
+      <div class="form-group">
+        <label>No. HP / WhatsApp</label>
+        <input type="text" id="g-phone" placeholder="08xx-xxxx-xxxx" />
+      </div>
+      <div class="form-group">
+        <label>Jumlah Kursi (Pax)</label>
+        <input type="number" id="g-pax" value="1" min="1" max="10" />
+      </div>
+    </div>
+    <div class="grid-2">
+      <div class="form-group">
+        <label>Status RSVP</label>
+        <select id="g-rsvp">
+          <option>Belum Konfirmasi</option>
+          <option>Hadir</option>
+          <option>Tidak Hadir</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Undangan Dikirim?</label>
+        <select id="g-invited">
+          <option value="0">Belum</option>
+          <option value="1">Sudah</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Catatan</label>
+      <textarea id="g-note" rows="2" placeholder="Alergi makanan, kebutuhan khusus, dll..."></textarea>
+    </div>
+    <div style="display:flex;gap:0.8rem">
+      <button class="btn btn-primary" style="flex:1;justify-content:center" onclick="saveGuest()">Simpan</button>
+      <button class="btn btn-outline" onclick="closeModal('modal-guest')">Batal</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/app.js"></script>
+<script>
+  Auth.require();
+  setupNav();
+
+  const rsvpColor = { 'Hadir': 'badge-green', 'Tidak Hadir': 'badge-pink', 'Belum Konfirmasi': 'badge-yellow' };
+
+  function render() {
+    const search = document.getElementById('search').value.toLowerCase();
+    const rsvp = document.getElementById('filter-rsvp').value;
+    const group = document.getElementById('filter-group').value;
+
+    const all = GuestList.getAll();
+    const s = GuestList.summary();
+
+    document.getElementById('s-total').textContent = s.total;
+    document.getElementById('s-confirmed').textContent = s.confirmed;
+    document.getElementById('s-pending').textContent = s.pending;
+    document.getElementById('s-pax').textContent = s.totalPax;
+
+    // Fill group filter
+    const groups = [...new Set(all.map(g => g.group).filter(Boolean))];
+    const groupEl = document.getElementById('filter-group');
+    const curGroup = groupEl.value;
+    groupEl.innerHTML = '<option value="">Semua Kelompok</option>' + groups.map(g => `<option ${g===curGroup?'selected':''}>${g}</option>`).join('');
+    document.getElementById('group-list').innerHTML = groups.map(g => `<option value="${g}">`).join('');
+
+    let guests = all.filter(g =>
+      (!search || g.name.toLowerCase().includes(search) || (g.group||'').toLowerCase().includes(search)) &&
+      (!rsvp || g.rsvp === rsvp) &&
+      (!group || g.group === group)
+    );
+
+    const el = document.getElementById('guest-table');
+    if (!guests.length) {
+      el.innerHTML = '<div class="empty-state"><div class="empty-icon">👥</div><p>Belum ada tamu. Tambahkan daftar tamu Anda!</p></div>';
+      return;
+    }
+
+    el.innerHTML = `<table>
+      <thead><tr>
+        <th>Nama</th><th>Kelompok</th><th>Kontak</th>
+        <th>Pax</th><th>RSVP</th><th>Undangan</th><th>Aksi</th>
+      </tr></thead>
+      <tbody>
+        ${guests.map(g => `<tr>
+          <td><strong>${g.name}</strong>${g.note?`<br><small style="color:var(--text-light)">${g.note}</small>`:''}</td>
+          <td><span class="badge badge-pink">${g.group||'-'}</span></td>
+          <td style="font-size:0.8rem">${g.phone||'-'}</td>
+          <td style="text-align:center;font-weight:600">${g.pax||1}</td>
+          <td>
+            <select class="rsvp-select" style="border:none;background:transparent;font-size:0.8rem;cursor:pointer;color:var(--text)" onchange="updateRsvp(${g.id}, this.value)">
+              <option ${g.rsvp==='Belum Konfirmasi'?'selected':''}>Belum Konfirmasi</option>
+              <option ${g.rsvp==='Hadir'?'selected':''}>Hadir</option>
+              <option ${g.rsvp==='Tidak Hadir'?'selected':''}>Tidak Hadir</option>
+            </select>
+          </td>
+          <td>
+            <span class="badge ${g.invited?'badge-green':'badge-yellow'}" style="cursor:pointer" onclick="toggleInvited(${g.id})">
+              ${g.invited?'✅ Terkirim':'📨 Belum'}
+            </span>
+          </td>
+          <td>
+            <button class="btn btn-outline btn-sm" onclick="editGuest(${g.id})">✏️</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteGuest(${g.id})">🗑️</button>
+          </td>
+        </tr>`).join('')}
+      </tbody>
+    </table>`;
+  }
+
+  function updateRsvp(id, rsvp) {
+    GuestList.update(id, { rsvp });
+    render();
+    toast('Status RSVP diperbarui');
+  }
+
+  function toggleInvited(id) {
+    const g = GuestList.getAll().find(x => x.id === id);
+    if (!g) return;
+    GuestList.update(id, { invited: !g.invited });
+    render();
+  }
+
+  function openAddModal() {
+    document.getElementById('g-edit-id').value = '';
+    document.getElementById('modal-guest-title').textContent = 'Tambah Tamu';
+    ['g-name','g-group','g-phone','g-note'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('g-pax').value = 1;
+    document.getElementById('g-rsvp').value = 'Belum Konfirmasi';
+    document.getElementById('g-invited').value = '0';
+    openModal('modal-guest');
+  }
+
+  function editGuest(id) {
+    const g = GuestList.getAll().find(x => x.id === id);
+    if (!g) return;
+    document.getElementById('g-edit-id').value = id;
+    document.getElementById('modal-guest-title').textContent = 'Edit Tamu';
+    document.getElementById('g-name').value = g.name;
+    document.getElementById('g-group').value = g.group || '';
+    document.getElementById('g-phone').value = g.phone || '';
+    document.getElementById('g-pax').value = g.pax || 1;
+    document.getElementById('g-rsvp').value = g.rsvp;
+    document.getElementById('g-invited').value = g.invited ? '1' : '0';
+    document.getElementById('g-note').value = g.note || '';
+    openModal('modal-guest');
+  }
+
+  function saveGuest() {
+    const name = document.getElementById('g-name').value.trim();
+    if (!name) return toast('Nama tamu wajib diisi', 'error');
+    const id = document.getElementById('g-edit-id').value;
+    const data = {
+      name,
+      group: document.getElementById('g-group').value,
+      phone: document.getElementById('g-phone').value,
+      pax: parseInt(document.getElementById('g-pax').value) || 1,
+      rsvp: document.getElementById('g-rsvp').value,
+      invited: document.getElementById('g-invited').value === '1',
+      note: document.getElementById('g-note').value,
+    };
+    if (id) GuestList.update(parseInt(id), data);
+    else GuestList.add(data);
+    closeModal('modal-guest');
+    toast(id ? 'Data tamu diperbarui' : 'Tamu ditambahkan');
+    render();
+  }
+
+  function deleteGuest(id) {
+    if (!confirm('Hapus tamu ini?')) return;
+    GuestList.delete(id);
+    toast('Tamu dihapus');
+    render();
+  }
+
+  render();
+</script>
+</body>
+</html>

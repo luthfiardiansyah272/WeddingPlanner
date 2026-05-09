@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Checklist – Wedding Planner</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .checklist-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      border-radius: var(--radius-sm);
+      transition: background 0.2s;
+      border-bottom: 1px solid var(--nude-dark);
+    }
+    .checklist-item:last-child { border-bottom: none; }
+    .checklist-item:hover { background: var(--nude); }
+    .checklist-item.done .task-text { text-decoration: line-through; color: var(--text-light); }
+    .check-box {
+      width: 22px; height: 22px;
+      border-radius: 6px;
+      border: 2px solid var(--primary);
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      transition: all 0.2s;
+      background: white;
+    }
+    .check-box.checked { background: var(--primary); border-color: var(--primary); }
+    .check-box.checked::after { content: '✓'; color: white; font-size: 13px; font-weight: 700; }
+    .priority-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .p-tinggi { background: var(--danger); }
+    .p-sedang { background: var(--warning); }
+    .p-rendah { background: var(--success); }
+    .progress-ring { position: relative; display: inline-flex; align-items: center; justify-content: center; }
+    .progress-ring svg { transform: rotate(-90deg); }
+    .progress-ring .pct-text { position: absolute; font-size: 1.4rem; font-weight: 700; color: var(--primary-dark); font-family: 'Poppins', sans-serif; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-brand">💍 Wedding Planner</a>
+  <div class="nav-links">
+    <a href="index.html">🏠 <span>Dashboard</span></a>
+    <a href="budget.html">💰 <span>Budget</span></a>
+    <a href="vendors.html">🤝 <span>Vendor</span></a>
+    <a href="recommendations.html">⭐ <span>Rekomendasi</span></a>
+    <a href="checklist.html">✅ <span>Checklist</span></a>
+    <a href="guestlist.html">👥 <span>Tamu</span></a>
+    <a href="timeline.html">🕐 <span>Timeline</span></a>
+    <a href="profile.html">👤 <span>Profil</span></a>
+  </div>
+  <div class="nav-user">
+    <span id="nav-user-name"></span>
+    <button class="btn-logout" onclick="Auth.logout()">Keluar</button>
+  </div>
+</nav>
+
+<div class="container">
+  <div class="page-header">
+    <div>
+      <h2>✅ Checklist Persiapan</h2>
+      <p>Pantau semua persiapan pernikahan Anda</p>
+    </div>
+    <button class="btn btn-primary" onclick="openModal('modal-task')">+ Tambah Tugas</button>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="card" style="margin-bottom:1.5rem">
+    <div style="display:flex;align-items:center;gap:2rem;flex-wrap:wrap">
+      <div class="progress-ring">
+        <svg width="110" height="110" viewBox="0 0 110 110">
+          <circle cx="55" cy="55" r="46" fill="none" stroke="var(--nude-dark)" stroke-width="10"/>
+          <circle id="ring-fill" cx="55" cy="55" r="46" fill="none" stroke="var(--primary)" stroke-width="10"
+            stroke-dasharray="289" stroke-dashoffset="289" stroke-linecap="round"/>
+        </svg>
+        <span class="pct-text" id="pct-text">0%</span>
+      </div>
+      <div style="flex:1">
+        <h3 style="font-size:1.3rem;color:var(--primary-dark);margin-bottom:0.5rem" id="progress-title">Mulai persiapan!</h3>
+        <div style="display:flex;gap:1.5rem;flex-wrap:wrap">
+          <div><span style="font-size:1.5rem;font-weight:700;color:var(--success)" id="done-count">0</span><p style="font-size:0.8rem;color:var(--text-light)">Selesai</p></div>
+          <div><span style="font-size:1.5rem;font-weight:700;color:var(--warning)" id="pending-count">0</span><p style="font-size:0.8rem;color:var(--text-light)">Belum</p></div>
+          <div><span style="font-size:1.5rem;font-weight:700;color:var(--text)" id="total-count">0</span><p style="font-size:0.8rem;color:var(--text-light)">Total</p></div>
+        </div>
+      </div>
+      <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
+        <span style="display:flex;align-items:center;gap:5px;font-size:0.8rem"><span class="priority-dot p-tinggi"></span>Tinggi</span>
+        <span style="display:flex;align-items:center;gap:5px;font-size:0.8rem"><span class="priority-dot p-sedang"></span>Sedang</span>
+        <span style="display:flex;align-items:center;gap:5px;font-size:0.8rem"><span class="priority-dot p-rendah"></span>Rendah</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- FILTER -->
+  <div class="filter-bar">
+    <select id="filter-cat" onchange="render()">
+      <option value="">Semua Kategori</option>
+    </select>
+    <select id="filter-status" onchange="render()">
+      <option value="">Semua Status</option>
+      <option value="done">✅ Selesai</option>
+      <option value="pending">⏳ Belum</option>
+    </select>
+    <select id="filter-priority" onchange="render()">
+      <option value="">Semua Prioritas</option>
+      <option value="Tinggi">🔴 Tinggi</option>
+      <option value="Sedang">🟡 Sedang</option>
+      <option value="Rendah">🟢 Rendah</option>
+    </select>
+  </div>
+
+  <div class="card" id="checklist-container"></div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-task">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="modal-task-title">Tambah Tugas</h3>
+      <button class="btn-close" onclick="closeModal('modal-task')">✕</button>
+    </div>
+    <input type="hidden" id="t-edit-id" />
+    <div class="form-group">
+      <label>Nama Tugas</label>
+      <input type="text" id="t-task" placeholder="Contoh: Booking fotografer" />
+    </div>
+    <div class="grid-2">
+      <div class="form-group">
+        <label>Kategori</label>
+        <input type="text" id="t-category" placeholder="Contoh: Dokumentasi" list="cat-list" />
+        <datalist id="cat-list"></datalist>
+      </div>
+      <div class="form-group">
+        <label>Prioritas</label>
+        <select id="t-priority">
+          <option>Tinggi</option>
+          <option>Sedang</option>
+          <option>Rendah</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Catatan</label>
+      <textarea id="t-note" rows="2" placeholder="Catatan tambahan..."></textarea>
+    </div>
+    <div style="display:flex;gap:0.8rem">
+      <button class="btn btn-primary" style="flex:1;justify-content:center" onclick="saveTask()">Simpan</button>
+      <button class="btn btn-outline" onclick="closeModal('modal-task')">Batal</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/app.js"></script>
+<script>
+  Auth.require();
+  setupNav();
+
+  const priorityClass = { Tinggi: 'p-tinggi', Sedang: 'p-sedang', Rendah: 'p-rendah' };
+
+  function render() {
+    const cat = document.getElementById('filter-cat').value;
+    const status = document.getElementById('filter-status').value;
+    const priority = document.getElementById('filter-priority').value;
+
+    const all = Checklist.getAll();
+    const prog = Checklist.progress();
+
+    // Update progress ring
+    const circumference = 289;
+    const offset = circumference - (prog.pct / 100 * circumference);
+    document.getElementById('ring-fill').style.strokeDashoffset = offset;
+    document.getElementById('pct-text').textContent = prog.pct + '%';
+    document.getElementById('done-count').textContent = prog.done;
+    document.getElementById('pending-count').textContent = prog.total - prog.done;
+    document.getElementById('total-count').textContent = prog.total;
+    document.getElementById('progress-title').textContent =
+      prog.pct === 100 ? '🎉 Semua persiapan selesai!' :
+      prog.pct >= 75 ? '💪 Hampir selesai!' :
+      prog.pct >= 50 ? '🌸 Setengah jalan!' :
+      prog.pct >= 25 ? '✨ Terus semangat!' : '🌱 Mulai persiapan!';
+
+    // Fill category filter
+    const cats = [...new Set(all.map(t => t.category))];
+    const catEl = document.getElementById('filter-cat');
+    const curCat = catEl.value;
+    catEl.innerHTML = '<option value="">Semua Kategori</option>' + cats.map(c => `<option ${c===curCat?'selected':''}>${c}</option>`).join('');
+
+    // Fill datalist
+    document.getElementById('cat-list').innerHTML = cats.map(c => `<option value="${c}">`).join('');
+
+    let items = all.filter(t =>
+      (!cat || t.category === cat) &&
+      (!status || (status === 'done' ? t.done : !t.done)) &&
+      (!priority || t.priority === priority)
+    );
+
+    // Group by category
+    const grouped = {};
+    items.forEach(t => {
+      if (!grouped[t.category]) grouped[t.category] = [];
+      grouped[t.category].push(t);
+    });
+
+    const el = document.getElementById('checklist-container');
+    if (!items.length) {
+      el.innerHTML = '<div class="empty-state"><div class="empty-icon">✅</div><p>Tidak ada tugas ditemukan.</p></div>';
+      return;
+    }
+
+    el.innerHTML = Object.entries(grouped).map(([cat, tasks]) => `
+      <div style="margin-bottom:1rem">
+        <div style="font-size:0.8rem;font-weight:600;color:var(--text-light);text-transform:uppercase;letter-spacing:1px;padding:8px 16px;background:var(--nude);border-radius:var(--radius-sm);margin-bottom:4px">${cat}</div>
+        ${tasks.map(t => `
+          <div class="checklist-item ${t.done ? 'done' : ''}">
+            <div class="check-box ${t.done ? 'checked' : ''}" onclick="toggleTask(${t.id})"></div>
+            <span class="priority-dot ${priorityClass[t.priority] || 'p-rendah'}"></span>
+            <div style="flex:1">
+              <div class="task-text" style="font-size:0.9rem;font-weight:500">${t.task}</div>
+              ${t.note ? `<div style="font-size:0.78rem;color:var(--text-light);margin-top:2px">${t.note}</div>` : ''}
+            </div>
+            <span class="badge ${t.priority==='Tinggi'?'badge-pink':t.priority==='Sedang'?'badge-yellow':'badge-green'}" style="font-size:0.7rem">${t.priority}</span>
+            <button class="btn btn-outline btn-sm" onclick="editTask(${t.id})" style="padding:4px 10px">✏️</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteTask(${t.id})" style="padding:4px 10px">🗑️</button>
+          </div>
+        `).join('')}
+      </div>
+    `).join('');
+  }
+
+  function toggleTask(id) {
+    Checklist.toggle(id);
+    render();
+  }
+
+  function saveTask() {
+    const task = document.getElementById('t-task').value.trim();
+    if (!task) return toast('Nama tugas wajib diisi', 'error');
+    const id = document.getElementById('t-edit-id').value;
+    const data = {
+      task,
+      category: document.getElementById('t-category').value || 'Lainnya',
+      priority: document.getElementById('t-priority').value,
+      note: document.getElementById('t-note').value,
+      done: false,
+    };
+    if (id) { data.done = Checklist.getAll().find(t => t.id === parseInt(id))?.done || false; Checklist.update(parseInt(id), data); }
+    else Checklist.add(data);
+    closeModal('modal-task');
+    toast(id ? 'Tugas diperbarui' : 'Tugas ditambahkan');
+    render();
+  }
+
+  function editTask(id) {
+    const t = Checklist.getAll().find(x => x.id === id);
+    if (!t) return;
+    document.getElementById('t-edit-id').value = id;
+    document.getElementById('modal-task-title').textContent = 'Edit Tugas';
+    document.getElementById('t-task').value = t.task;
+    document.getElementById('t-category').value = t.category;
+    document.getElementById('t-priority').value = t.priority;
+    document.getElementById('t-note').value = t.note || '';
+    openModal('modal-task');
+  }
+
+  function deleteTask(id) {
+    if (!confirm('Hapus tugas ini?')) return;
+    Checklist.delete(id);
+    toast('Tugas dihapus');
+    render();
+  }
+
+  document.querySelector('[onclick="openModal(\'modal-task\')"]').addEventListener('click', () => {
+    document.getElementById('t-edit-id').value = '';
+    document.getElementById('modal-task-title').textContent = 'Tambah Tugas';
+    document.getElementById('t-task').value = '';
+    document.getElementById('t-category').value = '';
+    document.getElementById('t-note').value = '';
+    document.getElementById('t-priority').value = 'Sedang';
+  });
+
+  render();
+</script>
+</body>
+</html>
