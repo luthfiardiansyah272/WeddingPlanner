@@ -21,11 +21,22 @@ const Auth = {
   async register(name, email, password, weddingDate, partnerName) {
     try {
       const cred = await createUserWithEmailAndPassword(auth, email, password);
-      await setDoc(doc(db, 'users', cred.user.uid), { name, email, weddingDate, partnerName, location: '', theme: '' });
+      await setDoc(doc(db, 'users', cred.user.uid), {
+        name: name || email.split('@')[0],
+        email,
+        weddingDate: weddingDate || '',
+        partnerName: partnerName || '',
+        location: '',
+        theme: ''
+      });
       return { ok: true };
     } catch (e) {
+      console.error('Register error:', e.code, e.message);
       const msg = e.code === 'auth/email-already-in-use' ? 'Email sudah terdaftar' :
-                  e.code === 'auth/weak-password' ? 'Password minimal 6 karakter' : e.message;
+                  e.code === 'auth/weak-password' ? 'Password minimal 6 karakter' :
+                  e.code === 'auth/invalid-email' ? 'Format email tidak valid' :
+                  e.code === 'auth/network-request-failed' ? 'Gagal koneksi, cek internet kamu' :
+                  e.message;
       return { ok: false, msg };
     }
   },
@@ -69,7 +80,10 @@ const Auth = {
   requireAuth(callback) {
     onAuthStateChanged(auth, async (user) => {
       if (!user) {
-        window.location.replace('login.html');
+        // Tunggu sebentar untuk antisipasi race condition saat register
+        setTimeout(() => {
+          if (!auth.currentUser) window.location.replace('login.html');
+        }, 1000);
         return;
       }
       showLoading(true);
@@ -84,8 +98,11 @@ const Auth = {
 
   // Halaman login: jika sudah login redirect ke dashboard
   redirectIfLoggedIn() {
-    onAuthStateChanged(auth, (user) => {
-      if (user) window.location.replace('index.html');
+    const unsub = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        unsub(); // stop listener
+        window.location.replace('index.html');
+      }
     });
   }
 };
