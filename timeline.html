@@ -18,7 +18,8 @@
 <body>
 <nav>
   <a href="index.html" class="nav-brand">💍 Wedding Planner</a>
-  <div class="nav-links">
+  <button class="nav-toggle" id="nav-toggle" onclick="document.getElementById('nav-links').classList.toggle('open')"><span></span><span></span><span></span></button>
+  <div class="nav-links" id="nav-links">
     <a href="index.html">🏠 <span>Dashboard</span></a>
     <a href="budget.html">💰 <span>Budget</span></a>
     <a href="vendors.html">🤝 <span>Vendor</span></a>
@@ -34,17 +35,20 @@
 <div class="container">
   <div class="page-header">
     <div><h2>🕐 Timeline Hari H</h2><p>Rundown acara pernikahan Anda</p></div>
-    <div style="display:flex;gap:0.8rem">
-      <button class="btn btn-outline" onclick="printTimeline()">🖨️ Print</button>
-      <button class="btn btn-primary" onclick="openAddModal()">+ Tambah Acara</button>
+    <div style="display:flex;gap:0.6rem;flex-wrap:wrap">
+      <button class="btn btn-outline" style="flex:1;justify-content:center" onclick="printTimeline()">🖨️ Print</button>
+      <button class="btn btn-primary" style="flex:1;justify-content:center" onclick="openAddModal()">+ Tambah Acara</button>
     </div>
   </div>
 
   <div class="card" style="margin-bottom:1.5rem;background:linear-gradient(135deg,var(--primary-light),var(--nude-dark))">
     <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap">
-      <div style="font-size:2.5rem">💍</div>
-      <div><h3 id="wedding-names" style="color:var(--primary-dark)"></h3><p id="wedding-date-full" style="color:var(--text-light);font-size:0.9rem"></p></div>
-      <div style="margin-left:auto;text-align:right"><p style="font-size:0.8rem;color:var(--text-light)">Total Acara</p><p id="total-events" style="font-size:1.5rem;font-weight:700;color:var(--primary-dark)">0</p></div>
+      <div style="font-size:2rem">💍</div>
+      <div style="flex:1;min-width:0">
+        <h3 id="wedding-names" style="color:var(--primary-dark);font-size:1rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></h3>
+        <p id="wedding-date-full" style="color:var(--text-light);font-size:0.82rem"></p>
+      </div>
+      <div style="text-align:right;flex-shrink:0"><p style="font-size:0.75rem;color:var(--text-light)">Total Acara</p><p id="total-events" style="font-size:1.4rem;font-weight:700;color:var(--primary-dark)">0</p></div>
     </div>
   </div>
 
@@ -89,10 +93,10 @@
     el.innerHTML = `<div class="timeline-wrap">${allEvents.map(e => `
       <div class="timeline-item">
         <div class="timeline-dot"></div>
-        <div class="timeline-card">
+        <div class="timeline-card" style="flex-wrap:wrap">
           <div class="timeline-time">${e.time}</div>
-          <div style="flex:1">
-            <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+          <div style="flex:1;min-width:0">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;flex-wrap:wrap">
               <strong style="font-size:0.95rem">${e.event}</strong>
               <span class="badge ${catBadge[e.category]||'badge-pink'}">${e.category}</span>
             </div>

@@ -46,7 +46,16 @@ const Auth = {
       await signInWithEmailAndPassword(auth, email, password);
       return { ok: true };
     } catch (e) {
-      return { ok: false, msg: 'Email atau password salah' };
+      console.error('Login error:', e.code, e.message);
+      const msg = e.code === 'auth/user-not-found' ? 'Email tidak terdaftar' :
+                  e.code === 'auth/wrong-password' ? 'Password salah' :
+                  e.code === 'auth/invalid-credential' ? 'Email atau password salah' :
+                  e.code === 'auth/invalid-email' ? 'Format email tidak valid' :
+                  e.code === 'auth/user-disabled' ? 'Akun dinonaktifkan' :
+                  e.code === 'auth/too-many-requests' ? 'Terlalu banyak percobaan, coba lagi nanti' :
+                  e.code === 'auth/network-request-failed' ? 'Gagal koneksi, cek internet kamu' :
+                  'Email atau password salah';
+      return { ok: false, msg };
     }
   },
 

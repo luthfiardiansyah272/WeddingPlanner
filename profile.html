@@ -9,7 +9,8 @@
 <body>
 <nav>
   <a href="index.html" class="nav-brand">💍 Wedding Planner</a>
-  <div class="nav-links">
+  <button class="nav-toggle" id="nav-toggle" onclick="document.getElementById('nav-links').classList.toggle('open')"><span></span><span></span><span></span></button>
+  <div class="nav-links" id="nav-links">
     <a href="index.html">🏠 <span>Dashboard</span></a>
     <a href="budget.html">💰 <span>Budget</span></a>
     <a href="vendors.html">🤝 <span>Vendor</span></a>
@@ -27,10 +28,10 @@
     <div><h2>👤 Profil & Pengaturan</h2><p>Kelola data akun dan ekspor laporan</p></div>
   </div>
 
-  <div class="grid-2" style="align-items:start">
+  <div class="grid-2" style="align-items:start;gap:1rem">
     <div>
       <div class="card" style="margin-bottom:1.2rem">
-        <div style="text-align:center;padding:1rem 0 1.5rem">
+        <div style="text-align:center;padding:0.8rem 0 1.2rem">
           <div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--primary-light),var(--primary));display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 1rem">💍</div>
           <h3 id="profile-names" style="color:var(--primary-dark);font-size:1.3rem"></h3>
           <p id="profile-date" style="color:var(--text-light);font-size:0.85rem;margin-top:4px"></p>

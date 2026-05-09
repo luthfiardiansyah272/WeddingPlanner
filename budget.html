@@ -9,7 +9,8 @@
 <body>
 <nav>
   <a href="index.html" class="nav-brand">💍 Wedding Planner</a>
-  <div class="nav-links">
+  <button class="nav-toggle" id="nav-toggle" onclick="document.getElementById('nav-links').classList.toggle('open')"><span></span><span></span><span></span></button>
+  <div class="nav-links" id="nav-links">
     <a href="index.html">🏠 <span>Dashboard</span></a>
     <a href="budget.html">💰 <span>Budget</span></a>
     <a href="vendors.html">🤝 <span>Vendor</span></a>
@@ -35,13 +36,13 @@
     <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
       <div>
         <p style="font-size:0.85rem;color:var(--text-light);margin-bottom:4px">Total Budget Pernikahan</p>
-        <h2 id="total-display" style="font-size:2rem;color:var(--primary-dark)">Rp 0</h2>
+        <h2 id="total-display" style="font-size:1.6rem;color:var(--primary-dark)">Rp 0</h2>
       </div>
-      <div style="display:flex;gap:1rem;align-items:center;flex-wrap:wrap">
-        <div style="text-align:center"><p style="font-size:0.75rem;color:var(--text-light)">Direncanakan</p><p id="planned-display" style="font-weight:600">Rp 0</p></div>
-        <div style="text-align:center"><p style="font-size:0.75rem;color:var(--text-light)">Terpakai</p><p id="spent-display" style="font-weight:600">Rp 0</p></div>
-        <div style="text-align:center"><p style="font-size:0.75rem;color:var(--text-light)">Sisa</p><p id="remaining-display" style="font-weight:600">Rp 0</p></div>
-        <button class="btn btn-outline btn-sm" onclick="openModal('modal-total')">✏️ Ubah Total</button>
+      <div style="display:flex;gap:0.8rem;align-items:center;flex-wrap:wrap;width:100%">
+        <div style="flex:1;min-width:80px;text-align:center"><p style="font-size:0.75rem;color:var(--text-light)">Direncanakan</p><p id="planned-display" style="font-weight:600;font-size:0.9rem">Rp 0</p></div>
+        <div style="flex:1;min-width:80px;text-align:center"><p style="font-size:0.75rem;color:var(--text-light)">Terpakai</p><p id="spent-display" style="font-weight:600;font-size:0.9rem">Rp 0</p></div>
+        <div style="flex:1;min-width:80px;text-align:center"><p style="font-size:0.75rem;color:var(--text-light)">Sisa</p><p id="remaining-display" style="font-weight:600;font-size:0.9rem">Rp 0</p></div>
+        <button class="btn btn-outline btn-sm" style="width:100%" onclick="openModal('modal-total')">✏️ Ubah Total</button>
       </div>
     </div>
     <div class="progress-bar" style="margin-top:1.2rem;height:14px"><div id="main-progress" class="progress-fill" style="width:0%"></div></div>
