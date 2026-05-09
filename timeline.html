@@ -158,7 +158,7 @@
     win.document.close(); win.print();
   };
 
-  Auth.require(async (user) => {
+  Auth.requireAuth(async (user) => {
     showLoading(true);
     uid = user.uid;
     profile = await Auth.getProfile();

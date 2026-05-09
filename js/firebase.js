@@ -1,6 +1,6 @@
 // ===== FIREBASE CONFIG =====
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, addDoc, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -16,26 +16,12 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// Pastikan session tersimpan di localStorage (bertahan setelah refresh)
-setPersistence(auth, browserLocalPersistence);
-
-// Promise yang resolve setelah Firebase selesai cek auth state pertama kali
-const authReady = new Promise(resolve => {
-  const unsub = onAuthStateChanged(auth, user => {
-    unsub();
-    resolve(user);
-  });
-});
-
 // ===== AUTH =====
 const Auth = {
-  currentUser: () => auth.currentUser,
-
   async register(name, email, password, weddingDate, partnerName) {
     try {
       const cred = await createUserWithEmailAndPassword(auth, email, password);
-      const uid = cred.user.uid;
-      await setDoc(doc(db, 'users', uid), { name, email, weddingDate, partnerName, location: '', theme: '' });
+      await setDoc(doc(db, 'users', cred.user.uid), { name, email, weddingDate, partnerName, location: '', theme: '' });
       return { ok: true };
     } catch (e) {
       const msg = e.code === 'auth/email-already-in-use' ? 'Email sudah terdaftar' :
@@ -59,25 +45,36 @@ const Auth = {
   },
 
   async getProfile() {
-    const uid = auth.currentUser?.uid;
-    if (!uid) return null;
-    const snap = await getDoc(doc(db, 'users', uid));
-    if (snap.exists()) return { uid, ...snap.data() };
-    // Fallback: buat dokumen user jika belum ada
-    const fallback = { name: auth.currentUser.email.split('@')[0], email: auth.currentUser.email, partnerName: '', weddingDate: '', location: '', theme: '' };
-    await setDoc(doc(db, 'users', uid), fallback);
-    return { uid, ...fallback };
+    const user = auth.currentUser;
+    if (!user) return null;
+    const snap = await getDoc(doc(db, 'users', user.uid));
+    if (snap.exists()) return { uid: user.uid, ...snap.data() };
+    const fallback = { name: user.email.split('@')[0], email: user.email, partnerName: '', weddingDate: '', location: '', theme: '' };
+    await setDoc(doc(db, 'users', user.uid), fallback);
+    return { uid: user.uid, ...fallback };
   },
 
-  require(callback) {
-    authReady.then(async user => {
-      if (!user) { window.location.replace('login.html'); return; }
+  // Halaman protected: tunggu auth siap, redirect ke login jika belum login
+  requireAuth(callback) {
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.replace('login.html');
+        return;
+      }
+      showLoading(true);
       try {
         await callback(user);
       } catch (e) {
-        console.error('Page error:', e);
+        console.error('Error:', e);
         showLoading(false);
       }
+    });
+  },
+
+  // Halaman login: jika sudah login redirect ke dashboard
+  redirectIfLoggedIn() {
+    onAuthStateChanged(auth, (user) => {
+      if (user) window.location.replace('index.html');
     });
   }
 };
@@ -326,4 +323,4 @@ document.addEventListener('click', (e) => {
   if (e.target.classList.contains('modal-overlay')) e.target.classList.remove('active');
 });
 
-export { auth, db, authReady, Auth, Budget, Vendor, Recommendation, Checklist, GuestList, Timeline, Profile, fmt, stars, toast, openModal, closeModal, setupNav, showLoading };
+export { auth, db, Auth, Budget, Vendor, Recommendation, Checklist, GuestList, Timeline, Profile, fmt, stars, toast, openModal, closeModal, setupNav, showLoading };

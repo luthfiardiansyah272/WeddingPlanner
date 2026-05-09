@@ -60,12 +60,9 @@
 
 <script type="module">
   import { Auth } from './js/firebase.js';
-  import { authReady } from './js/firebase.js';
 
-  // Cek sekali saja setelah auth benar-benar siap
-  authReady.then(user => {
-    if (user) window.location.replace('index.html');
-  });
+  // Jika sudah login, redirect ke dashboard
+  Auth.redirectIfLoggedIn();
 
   window.switchTab = (tab) => {
     document.querySelectorAll('.tab-switch button').forEach((b, i) => {
@@ -78,23 +75,31 @@
   window.doLogin = async (e) => {
     e.preventDefault();
     const btn = document.getElementById('btn-login');
-    btn.textContent = 'Memuat...'; btn.disabled = true;
+    const errEl = document.getElementById('login-err');
+    errEl.style.display = 'none';
+    btn.textContent = 'Memuat...';
+    btn.disabled = true;
     const res = await Auth.login(
       document.getElementById('login-email').value,
       document.getElementById('login-pass').value
     );
-    if (res.ok) window.location.replace('index.html');
-    else {
-      const el = document.getElementById('login-err');
-      el.textContent = res.msg; el.style.display = 'block';
-      btn.textContent = 'Masuk'; btn.disabled = false;
+    if (res.ok) {
+      window.location.replace('index.html');
+    } else {
+      errEl.textContent = res.msg;
+      errEl.style.display = 'block';
+      btn.textContent = 'Masuk';
+      btn.disabled = false;
     }
   };
 
   window.doRegister = async (e) => {
     e.preventDefault();
     const btn = document.getElementById('btn-register');
-    btn.textContent = 'Memuat...'; btn.disabled = true;
+    const errEl = document.getElementById('reg-err');
+    errEl.style.display = 'none';
+    btn.textContent = 'Memuat...';
+    btn.disabled = true;
     const res = await Auth.register(
       document.getElementById('reg-name').value,
       document.getElementById('reg-email').value,
@@ -102,11 +107,13 @@
       document.getElementById('reg-date').value,
       document.getElementById('reg-partner').value
     );
-    if (res.ok) window.location.replace('index.html');
-    else {
-      const el = document.getElementById('reg-err');
-      el.textContent = res.msg; el.style.display = 'block';
-      btn.textContent = 'Daftar Sekarang'; btn.disabled = false;
+    if (res.ok) {
+      window.location.replace('index.html');
+    } else {
+      errEl.textContent = res.msg;
+      errEl.style.display = 'block';
+      btn.textContent = 'Daftar Sekarang';
+      btn.disabled = false;
     }
   };
 </script>

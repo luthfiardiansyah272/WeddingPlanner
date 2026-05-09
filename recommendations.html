@@ -244,7 +244,7 @@
     buildRegionTabs(); toast('Rekomendasi dihapus'); renderFilter();
   };
 
-  Auth.require(async (user) => {
+  Auth.requireAuth(async (user) => {
     showLoading(true);
     uid = user.uid;
     const profile = await Auth.getProfile();

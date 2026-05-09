@@ -87,7 +87,7 @@
 
   window.doLogout = () => Auth.logout();
 
-  Auth.require(async (user) => {
+  Auth.requireAuth(async (user) => {
     showLoading(true);
     const profile = await Auth.getProfile();
     if (!profile) { window.location.href = 'login.html'; return; }

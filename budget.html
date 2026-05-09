@@ -194,7 +194,7 @@
     document.getElementById('input-total').value = bData.total || '';
   });
 
-  Auth.require(async (user) => {
+  Auth.requireAuth(async (user) => {
     showLoading(true);
     uid = user.uid;
     const profile = await Auth.getProfile();
