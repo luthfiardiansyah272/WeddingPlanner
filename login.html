@@ -60,12 +60,10 @@
 
 <script type="module">
   import { Auth } from './js/firebase.js';
-  import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { auth } from './js/firebase.js';
+  import { authReady } from './js/firebase.js';
 
-  // Cek sekali saja - jika sudah login langsung ke dashboard
-  const unsubscribe = onAuthStateChanged(auth, user => {
-    unsubscribe();
+  // Cek sekali saja setelah auth benar-benar siap
+  authReady.then(user => {
     if (user) window.location.replace('index.html');
   });
 

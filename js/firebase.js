@@ -1,7 +1,7 @@
 // ===== FIREBASE CONFIG =====
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, addDoc, getDocs, deleteDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, addDoc, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyC8qqaI6F3ht6Gp1LdE_T-29uAgWAXNJBk",
@@ -15,6 +15,17 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+
+// Pastikan session tersimpan di localStorage (bertahan setelah refresh)
+setPersistence(auth, browserLocalPersistence);
+
+// Promise yang resolve setelah Firebase selesai cek auth state pertama kali
+const authReady = new Promise(resolve => {
+  const unsub = onAuthStateChanged(auth, user => {
+    unsub();
+    resolve(user);
+  });
+});
 
 // ===== AUTH =====
 const Auth = {
@@ -59,10 +70,8 @@ const Auth = {
   },
 
   require(callback) {
-    // Tunggu Firebase selesai inisialisasi auth state (sekali saja)
-    const unsubscribe = onAuthStateChanged(auth, async user => {
-      unsubscribe(); // stop listening setelah dapat state pertama
-      if (!user) { window.location.href = 'login.html'; return; }
+    authReady.then(async user => {
+      if (!user) { window.location.replace('login.html'); return; }
       try {
         await callback(user);
       } catch (e) {
@@ -317,4 +326,4 @@ document.addEventListener('click', (e) => {
   if (e.target.classList.contains('modal-overlay')) e.target.classList.remove('active');
 });
 
-export { auth, db, Auth, Budget, Vendor, Recommendation, Checklist, GuestList, Timeline, Profile, fmt, stars, toast, openModal, closeModal, setupNav, showLoading };
+export { auth, db, authReady, Auth, Budget, Vendor, Recommendation, Checklist, GuestList, Timeline, Profile, fmt, stars, toast, openModal, closeModal, setupNav, showLoading };
