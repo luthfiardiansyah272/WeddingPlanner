@@ -37,26 +37,29 @@
       font-weight: 600;
     }
     .session-tab .tab-actions {
-      display: none;
+      display: inline-flex;
       gap: 2px;
       margin-left: 4px;
     }
-    .session-tab.active .tab-actions { display: inline-flex; }
     .tab-btn {
-      background: rgba(255,255,255,0.25);
+      background: rgba(160,112,112,0.15);
       border: none;
       border-radius: 50%;
-      width: 18px; height: 18px;
+      width: 20px; height: 20px;
       cursor: pointer;
-      font-size: 0.65rem;
+      font-size: 0.7rem;
       display: flex; align-items: center; justify-content: center;
-      color: white;
+      color: var(--primary-dark);
       transition: background 0.15s;
       padding: 0;
     }
-    .tab-btn:hover { background: rgba(255,255,255,0.45); }
-    .tab-btn.del { background: rgba(220,80,80,0.5); }
-    .tab-btn.del:hover { background: rgba(220,80,80,0.8); }
+    .tab-btn:hover { background: rgba(160,112,112,0.3); }
+    .session-tab.active .tab-btn { color: white; background: rgba(255,255,255,0.25); }
+    .session-tab.active .tab-btn:hover { background: rgba(255,255,255,0.45); }
+    .tab-btn.del { background: rgba(220,80,80,0.15); color: var(--danger); }
+    .tab-btn.del:hover { background: rgba(220,80,80,0.35); }
+    .session-tab.active .tab-btn.del { background: rgba(220,80,80,0.4); color: white; }
+    .session-tab.active .tab-btn.del:hover { background: rgba(220,80,80,0.7); }
     .btn-add-session {
       background: none;
       border: 1.5px dashed var(--primary);
