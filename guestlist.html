@@ -5,6 +5,57 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Daftar Tamu – Wedding Planner</title>
   <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .guest-tabs {
+      display: flex;
+      background: var(--nude);
+      border-radius: 25px;
+      padding: 4px;
+      margin-bottom: 1.5rem;
+      gap: 3px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .guest-tabs::-webkit-scrollbar { display: none; }
+    .guest-tab {
+      flex: 1;
+      min-width: 80px;
+      padding: 8px 10px;
+      border: none;
+      background: none;
+      border-radius: 20px;
+      cursor: pointer;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: var(--text-light);
+      transition: all 0.2s;
+      white-space: nowrap;
+      text-align: center;
+    }
+    .guest-tab.active {
+      background: var(--white);
+      color: var(--primary-dark);
+      font-weight: 600;
+      box-shadow: var(--shadow);
+    }
+    .tab-count {
+      display: inline-block;
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      border-radius: 10px;
+      font-size: 0.68rem;
+      padding: 1px 6px;
+      margin-left: 3px;
+      font-weight: 600;
+    }
+    .guest-tab.active .tab-count { background: var(--primary); color: white; }
+    .role-badge { display:inline-flex; align-items:center; gap:4px; padding:3px 10px; border-radius:20px; font-size:0.72rem; font-weight:600; }
+    .role-pria    { background:#dbeafe; color:#1d4ed8; }
+    .role-wanita  { background:#fce7f3; color:#be185d; }
+    .role-bridesmaid { background:#f3e8ff; color:#7c3aed; }
+    .role-groomsman  { background:#dcfce7; color:#15803d; }
+  </style>
 </head>
 <body>
 <nav>
@@ -26,10 +77,11 @@
 
 <div class="container">
   <div class="page-header">
-    <div><h2>👥 Daftar Tamu</h2><p>Kelola undangan & konfirmasi kehadiran tamu</p></div>
-    <button class="btn btn-primary" onclick="openAddModal()">+ Tambah Tamu</button>
+    <div><h2>👥 Daftar Tamu</h2><p>Kelola undangan, RSVP, bridesmaid & groomsman</p></div>
+    <button class="btn btn-primary" onclick="openAddModal()">+ Tambah</button>
   </div>
 
+  <!-- STAT CARDS -->
   <div class="grid-4" style="margin-bottom:1.5rem">
     <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-info"><p>Total Tamu</p><h3 id="s-total">0</h3></div></div>
     <div class="stat-card"><div class="stat-icon" style="background:#d4edda">✅</div><div class="stat-info"><p>Hadir</p><h3 id="s-confirmed" style="color:var(--success)">0</h3></div></div>
@@ -37,9 +89,22 @@
     <div class="stat-card"><div class="stat-icon" style="background:#d0e8f5">🪑</div><div class="stat-info"><p>Total Kursi</p><h3 id="s-pax">0</h3></div></div>
   </div>
 
+  <!-- TABS -->
+  <div class="guest-tabs">
+    <button class="guest-tab active" id="tab-semua"       onclick="switchTab('semua')">👥 Semua <span class="tab-count" id="cnt-semua">0</span></button>
+    <button class="guest-tab"        id="tab-pria"        onclick="switchTab('pria')">👨 Pria <span class="tab-count" id="cnt-pria">0</span></button>
+    <button class="guest-tab"        id="tab-wanita"      onclick="switchTab('wanita')">👩 Wanita <span class="tab-count" id="cnt-wanita">0</span></button>
+    <button class="guest-tab"        id="tab-bridesmaid"  onclick="switchTab('bridesmaid')">💐 Bridesmaid <span class="tab-count" id="cnt-bridesmaid">0</span></button>
+    <button class="guest-tab"        id="tab-groomsman"   onclick="switchTab('groomsman')">🤵 Groomsman <span class="tab-count" id="cnt-groomsman">0</span></button>
+  </div>
+
+  <!-- FILTER -->
   <div class="filter-bar">
-    <input type="text" id="search" placeholder="🔍 Cari tamu..." oninput="renderFilter()" />
-    <select id="filter-rsvp" onchange="renderFilter()"><option value="">Semua RSVP</option><option>Hadir</option><option>Tidak Hadir</option><option>Belum Konfirmasi</option></select>
+    <input type="text" id="search" placeholder="🔍 Cari nama..." oninput="renderFilter()" />
+    <select id="filter-rsvp" onchange="renderFilter()">
+      <option value="">Semua RSVP</option>
+      <option>Hadir</option><option>Tidak Hadir</option><option>Belum Konfirmasi</option>
+    </select>
     <select id="filter-group" onchange="renderFilter()"><option value="">Semua Kelompok</option></select>
   </div>
 
@@ -49,19 +114,43 @@
 <!-- MODAL -->
 <div class="modal-overlay" id="modal-guest">
   <div class="modal" style="max-width:500px">
-    <div class="modal-header"><h3 id="modal-guest-title">Tambah Tamu</h3><button class="btn-close" onclick="closeModal('modal-guest')">✕</button></div>
+    <div class="modal-header">
+      <h3 id="modal-guest-title">Tambah Tamu</h3>
+      <button class="btn-close" onclick="closeModal('modal-guest')">✕</button>
+    </div>
     <input type="hidden" id="g-edit-id" />
     <div class="grid-2">
-      <div class="form-group"><label>Nama Tamu</label><input type="text" id="g-name" placeholder="Nama lengkap" /></div>
+      <div class="form-group"><label>Nama Lengkap</label><input type="text" id="g-name" placeholder="Nama lengkap" /></div>
       <div class="form-group"><label>Kelompok</label><input type="text" id="g-group" placeholder="Keluarga / Teman / Rekan" list="group-list" /><datalist id="group-list"></datalist></div>
+    </div>
+    <div class="grid-2">
+      <div class="form-group">
+        <label>Jenis Kelamin</label>
+        <select id="g-gender">
+          <option value="Pria">👨 Pria</option>
+          <option value="Wanita">👩 Wanita</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Peran</label>
+        <select id="g-role">
+          <option value="Tamu">👥 Tamu Biasa</option>
+          <option value="Bridesmaid">💐 Bridesmaid</option>
+          <option value="Groomsman">🤵 Groomsman</option>
+        </select>
+      </div>
     </div>
     <div class="grid-2">
       <div class="form-group"><label>No. HP / WhatsApp</label><input type="text" id="g-phone" placeholder="08xx-xxxx-xxxx" /></div>
       <div class="form-group"><label>Jumlah Kursi (Pax)</label><input type="number" id="g-pax" value="1" min="1" max="10" /></div>
     </div>
     <div class="grid-2">
-      <div class="form-group"><label>Status RSVP</label><select id="g-rsvp"><option>Belum Konfirmasi</option><option>Hadir</option><option>Tidak Hadir</option></select></div>
-      <div class="form-group"><label>Undangan Dikirim?</label><select id="g-invited"><option value="0">Belum</option><option value="1">Sudah</option></select></div>
+      <div class="form-group"><label>Status RSVP</label>
+        <select id="g-rsvp"><option>Belum Konfirmasi</option><option>Hadir</option><option>Tidak Hadir</option></select>
+      </div>
+      <div class="form-group"><label>Undangan Dikirim?</label>
+        <select id="g-invited"><option value="0">Belum</option><option value="1">Sudah</option></select>
+      </div>
     </div>
     <div class="form-group"><label>Catatan</label><textarea id="g-note" rows="2" placeholder="Alergi makanan, kebutuhan khusus, dll..."></textarea></div>
     <div style="display:flex;gap:0.8rem;position:sticky;bottom:0;background:var(--white);padding-top:1rem;margin-top:0.5rem">
@@ -78,53 +167,112 @@
   window.openModal = openModal;
   window.closeModal = closeModal;
 
-  let uid, allGuests = [];
+  let uid, allGuests = [], activeTab = 'semua';
+
+  const roleClass = {
+    Pria: 'role-pria', Wanita: 'role-wanita',
+    Bridesmaid: 'role-bridesmaid', Groomsman: 'role-groomsman', Tamu: 'badge-pink'
+  };
+  const roleLabel = {
+    Pria:'👨 Pria', Wanita:'👩 Wanita',
+    Bridesmaid:'💐 Bridesmaid', Groomsman:'🤵 Groomsman', Tamu:'👥 Tamu'
+  };
+
+  function getTabGuests(tab) {
+    if (tab === 'semua')      return allGuests;
+    if (tab === 'pria')       return allGuests.filter(g => g.gender === 'Pria' && g.role !== 'Groomsman');
+    if (tab === 'wanita')     return allGuests.filter(g => g.gender === 'Wanita' && g.role !== 'Bridesmaid');
+    if (tab === 'bridesmaid') return allGuests.filter(g => g.role === 'Bridesmaid');
+    if (tab === 'groomsman')  return allGuests.filter(g => g.role === 'Groomsman');
+    return allGuests;
+  }
 
   function updateStats() {
     const s = GuestList.summary(allGuests);
-    document.getElementById('s-total').textContent = s.total;
+    document.getElementById('s-total').textContent     = s.total;
     document.getElementById('s-confirmed').textContent = s.confirmed;
-    document.getElementById('s-pending').textContent = s.pending;
-    document.getElementById('s-pax').textContent = s.totalPax;
+    document.getElementById('s-pending').textContent   = s.pending;
+    document.getElementById('s-pax').textContent       = s.totalPax;
+
+    // update tab counts
+    document.getElementById('cnt-semua').textContent      = allGuests.length;
+    document.getElementById('cnt-pria').textContent       = allGuests.filter(g => g.gender === 'Pria' && g.role !== 'Groomsman').length;
+    document.getElementById('cnt-wanita').textContent     = allGuests.filter(g => g.gender === 'Wanita' && g.role !== 'Bridesmaid').length;
+    document.getElementById('cnt-bridesmaid').textContent = allGuests.filter(g => g.role === 'Bridesmaid').length;
+    document.getElementById('cnt-groomsman').textContent  = allGuests.filter(g => g.role === 'Groomsman').length;
   }
+
+  window.switchTab = (tab) => {
+    activeTab = tab;
+    document.querySelectorAll('.guest-tab').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + tab).classList.add('active');
+    renderFilter();
+  };
 
   window.renderFilter = () => {
     const search = document.getElementById('search').value.toLowerCase();
-    const rsvp = document.getElementById('filter-rsvp').value;
-    const group = document.getElementById('filter-group').value;
+    const rsvp   = document.getElementById('filter-rsvp').value;
+    const group  = document.getElementById('filter-group').value;
 
-    const groups = [...new Set(allGuests.map(g => g.group).filter(Boolean))];
+    const base = getTabGuests(activeTab);
+
+    // rebuild group filter
+    const groups  = [...new Set(allGuests.map(g => g.group).filter(Boolean))];
     const groupEl = document.getElementById('filter-group');
-    const curGroup = groupEl.value;
-    groupEl.innerHTML = '<option value="">Semua Kelompok</option>' + groups.map(g => `<option ${g===curGroup?'selected':''}>${g}</option>`).join('');
+    const curGrp  = groupEl.value;
+    groupEl.innerHTML = '<option value="">Semua Kelompok</option>' + groups.map(g => `<option ${g===curGrp?'selected':''}>${g}</option>`).join('');
     document.getElementById('group-list').innerHTML = groups.map(g => `<option value="${g}">`).join('');
 
-    const guests = allGuests.filter(g =>
+    const guests = base.filter(g =>
       (!search || g.name.toLowerCase().includes(search) || (g.group||'').toLowerCase().includes(search)) &&
-      (!rsvp || g.rsvp === rsvp) && (!group || g.group === group)
+      (!rsvp   || g.rsvp === rsvp) &&
+      (!group  || g.group === group)
     );
 
     const el = document.getElementById('guest-table');
-    if (!guests.length) { el.innerHTML = '<div class="empty-state"><div class="empty-icon">👥</div><p>Belum ada tamu. Tambahkan daftar tamu Anda!</p></div>'; return; }
+    if (!guests.length) {
+      const emptyMsg = {
+        semua: 'Belum ada tamu. Klik "+ Tambah" untuk mulai.',
+        pria: 'Belum ada tamu pria.',
+        wanita: 'Belum ada tamu wanita.',
+        bridesmaid: 'Belum ada bridesmaid. Tambahkan dengan memilih Peran = Bridesmaid.',
+        groomsman: 'Belum ada groomsman. Tambahkan dengan memilih Peran = Groomsman.',
+      };
+      el.innerHTML = `<div class="empty-state"><div class="empty-icon">👥</div><p>${emptyMsg[activeTab]||''}</p></div>`;
+      return;
+    }
 
-    el.innerHTML = `<table><thead><tr><th>Nama</th><th>Kelompok</th><th>Kontak</th><th>Pax</th><th>RSVP</th><th>Undangan</th><th>Aksi</th></tr></thead><tbody>
-      ${guests.map(g => `<tr>
+    el.innerHTML = `<table>
+      <thead><tr>
+        <th>Nama</th><th>Peran</th><th>Kelompok</th><th>Kontak</th><th>Pax</th><th>RSVP</th><th>Undangan</th><th>Aksi</th>
+      </tr></thead>
+      <tbody>${guests.map(g => `<tr>
         <td><strong>${g.name}</strong>${g.note?`<br><small style="color:var(--text-light)">${g.note}</small>`:''}</td>
-        <td><span class="badge badge-pink">${g.group||'-'}</span></td>
+        <td>
+          <span class="role-badge ${roleClass[g.role]||'badge-pink'}">${roleLabel[g.role]||g.role||'Tamu'}</span>
+        </td>
+        <td><span class="badge badge-pink" style="font-size:0.7rem">${g.group||'-'}</span></td>
         <td style="font-size:0.8rem">${g.phone||'-'}</td>
         <td style="text-align:center;font-weight:600">${g.pax||1}</td>
-        <td><select style="border:none;background:transparent;font-size:0.8rem;cursor:pointer" onchange="updateRsvp('${g.id}',this.value)">
-          <option ${g.rsvp==='Belum Konfirmasi'?'selected':''}>Belum Konfirmasi</option>
-          <option ${g.rsvp==='Hadir'?'selected':''}>Hadir</option>
-          <option ${g.rsvp==='Tidak Hadir'?'selected':''}>Tidak Hadir</option>
-        </select></td>
-        <td><span class="badge ${g.invited?'badge-green':'badge-yellow'}" style="cursor:pointer" onclick="toggleInvited('${g.id}',${g.invited})">${g.invited?'✅ Terkirim':'📨 Belum'}</span></td>
+        <td>
+          <select style="border:none;background:transparent;font-size:0.78rem;cursor:pointer" onchange="updateRsvp('${g.id}',this.value)">
+            <option ${g.rsvp==='Belum Konfirmasi'?'selected':''}>Belum Konfirmasi</option>
+            <option ${g.rsvp==='Hadir'?'selected':''}>Hadir</option>
+            <option ${g.rsvp==='Tidak Hadir'?'selected':''}>Tidak Hadir</option>
+          </select>
+        </td>
+        <td>
+          <span class="badge ${g.invited?'badge-green':'badge-yellow'}" style="cursor:pointer;font-size:0.7rem" onclick="toggleInvited('${g.id}',${g.invited})">
+            ${g.invited?'✅ Terkirim':'📨 Belum'}
+          </span>
+        </td>
         <td>
           <button class="btn btn-outline btn-sm" onclick="editGuest('${g.id}')">✏️</button>
           <button class="btn btn-danger btn-sm" onclick="deleteGuest('${g.id}')">🗑️</button>
         </td>
       </tr>`).join('')}
-    </tbody></table>`;
+      </tbody>
+    </table>`;
   };
 
   window.updateRsvp = async (id, rsvp) => {
@@ -143,36 +291,55 @@
     document.getElementById('g-edit-id').value = '';
     document.getElementById('modal-guest-title').textContent = 'Tambah Tamu';
     ['g-name','g-group','g-phone','g-note'].forEach(id => document.getElementById(id).value = '');
-    document.getElementById('g-pax').value = 1;
-    document.getElementById('g-rsvp').value = 'Belum Konfirmasi';
+    document.getElementById('g-pax').value    = 1;
+    document.getElementById('g-rsvp').value   = 'Belum Konfirmasi';
     document.getElementById('g-invited').value = '0';
+    // preset gender & role sesuai tab aktif
+    document.getElementById('g-gender').value =
+      activeTab === 'wanita' || activeTab === 'bridesmaid' ? 'Wanita' : 'Pria';
+    document.getElementById('g-role').value =
+      activeTab === 'bridesmaid' ? 'Bridesmaid' :
+      activeTab === 'groomsman'  ? 'Groomsman'  : 'Tamu';
     openModal('modal-guest');
   };
 
   window.editGuest = (id) => {
     const g = allGuests.find(x => x.id === id);
     if (!g) return;
-    document.getElementById('g-edit-id').value = id;
+    document.getElementById('g-edit-id').value    = id;
     document.getElementById('modal-guest-title').textContent = 'Edit Tamu';
-    document.getElementById('g-name').value = g.name;
-    document.getElementById('g-group').value = g.group||'';
-    document.getElementById('g-phone').value = g.phone||'';
-    document.getElementById('g-pax').value = g.pax||1;
-    document.getElementById('g-rsvp').value = g.rsvp;
-    document.getElementById('g-invited').value = g.invited?'1':'0';
-    document.getElementById('g-note').value = g.note||'';
+    document.getElementById('g-name').value       = g.name;
+    document.getElementById('g-group').value      = g.group  || '';
+    document.getElementById('g-phone').value      = g.phone  || '';
+    document.getElementById('g-pax').value        = g.pax    || 1;
+    document.getElementById('g-rsvp').value       = g.rsvp;
+    document.getElementById('g-invited').value    = g.invited ? '1' : '0';
+    document.getElementById('g-note').value       = g.note   || '';
+    document.getElementById('g-gender').value     = g.gender || 'Pria';
+    document.getElementById('g-role').value       = g.role   || 'Tamu';
     openModal('modal-guest');
   };
 
   window.saveGuest = async () => {
     const name = document.getElementById('g-name').value.trim();
     if (!name) return toast('Nama tamu wajib diisi', 'error');
-    const id = document.getElementById('g-edit-id').value;
-    const data = { name, group: document.getElementById('g-group').value, phone: document.getElementById('g-phone').value, pax: parseInt(document.getElementById('g-pax').value)||1, rsvp: document.getElementById('g-rsvp').value, invited: document.getElementById('g-invited').value==='1', note: document.getElementById('g-note').value };
+    const id   = document.getElementById('g-edit-id').value;
+    const data = {
+      name,
+      group:   document.getElementById('g-group').value,
+      phone:   document.getElementById('g-phone').value,
+      pax:     parseInt(document.getElementById('g-pax').value) || 1,
+      rsvp:    document.getElementById('g-rsvp').value,
+      invited: document.getElementById('g-invited').value === '1',
+      note:    document.getElementById('g-note').value,
+      gender:  document.getElementById('g-gender').value,
+      role:    document.getElementById('g-role').value,
+    };
     if (id) await GuestList.update(uid, id, data);
-    else await GuestList.add(uid, data);
+    else    await GuestList.add(uid, data);
     allGuests = await GuestList.getAll(uid);
-    closeModal('modal-guest'); toast(id?'Data tamu diperbarui':'Tamu ditambahkan');
+    closeModal('modal-guest');
+    toast(id ? 'Data tamu diperbarui' : 'Tamu ditambahkan ✨');
     updateStats(); renderFilter();
   };
 
