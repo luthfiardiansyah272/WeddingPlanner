@@ -310,6 +310,59 @@ const Timeline = {
   async delete(uid, id) { await deleteDoc(doc(db, 'timelines', uid, 'items', id)); }
 };
 
+// ===== SESERAHAN =====
+const DEFAULT_SESERAHAN = [
+  // Perhiasan & Aksesoris
+  { name: 'Cincin Nikah', category: 'Perhiasan & Aksesoris', emoji: '💍', qty: '1 pasang', price: 3000000, desc: 'Cincin emas/perak untuk akad nikah', from: 'Pria', done: false },
+  { name: 'Gelang Emas', category: 'Perhiasan & Aksesoris', emoji: '📿', qty: '1 pasang', price: 2500000, desc: 'Gelang emas 24K', from: 'Pria', done: false },
+  { name: 'Kalung Emas', category: 'Perhiasan & Aksesoris', emoji: '📿', qty: '1 buah', price: 2000000, desc: 'Kalung emas dengan liontin', from: 'Pria', done: false },
+  { name: 'Anting Emas', category: 'Perhiasan & Aksesoris', emoji: '✨', qty: '1 pasang', price: 1500000, desc: 'Anting emas model terbaru', from: 'Pria', done: false },
+  // Busana & Pakaian
+  { name: 'Kebaya / Gaun', category: 'Busana & Pakaian', emoji: '👗', qty: '1 set', price: 2000000, desc: 'Kebaya pengantin lengkap dengan kain', from: 'Pria', done: false },
+  { name: 'Baju Tidur', category: 'Busana & Pakaian', emoji: '🛌', qty: '2 pasang', price: 500000, desc: 'Baju tidur couple', from: 'Pria', done: false },
+  { name: 'Pakaian Dalam', category: 'Busana & Pakaian', emoji: '👙', qty: '3 set', price: 300000, desc: 'Pakaian dalam wanita', from: 'Pria', done: false },
+  { name: 'Sepatu & Sandal', category: 'Busana & Pakaian', emoji: '👠', qty: '2 pasang', price: 800000, desc: 'Sepatu heels & sandal flat', from: 'Pria', done: false },
+  { name: 'Tas Tangan', category: 'Busana & Pakaian', emoji: '👜', qty: '1 buah', price: 1000000, desc: 'Tas tangan wanita branded', from: 'Pria', done: false },
+  // Perlengkapan Ibadah
+  { name: 'Al-Quran', category: 'Perlengkapan Ibadah', emoji: '📖', qty: '1 buah', price: 200000, desc: 'Al-Quran terjemahan edisi pengantin', from: 'Pria', done: false },
+  { name: 'Sajadah', category: 'Perlengkapan Ibadah', emoji: '🕌', qty: '1 buah', price: 150000, desc: 'Sajadah premium motif islami', from: 'Pria', done: false },
+  { name: 'Mukena', category: 'Perlengkapan Ibadah', emoji: '🧕', qty: '1 set', price: 300000, desc: 'Mukena putih bahan katun premium', from: 'Pria', done: false },
+  { name: 'Tasbih', category: 'Perlengkapan Ibadah', emoji: '📿', qty: '1 buah', price: 100000, desc: 'Tasbih kristal 99 butir', from: 'Pria', done: false },
+  // Kosmetik & Perawatan
+  { name: 'Parfum', category: 'Kosmetik & Perawatan', emoji: '🌸', qty: '1 set', price: 500000, desc: 'Parfum couple branded', from: 'Pria', done: false },
+  { name: 'Skincare Set', category: 'Kosmetik & Perawatan', emoji: '💆', qty: '1 set', price: 800000, desc: 'Paket skincare lengkap (toner, serum, moisturizer)', from: 'Pria', done: false },
+  { name: 'Makeup Set', category: 'Kosmetik & Perawatan', emoji: '💄', qty: '1 set', price: 600000, desc: 'Lipstik, bedak, maskara, eyeliner', from: 'Pria', done: false },
+  // Makanan & Minuman
+  { name: 'Kue Lapis / Kue Tradisional', category: 'Makanan & Minuman', emoji: '🎂', qty: '1 kotak', price: 200000, desc: 'Kue tradisional khas daerah', from: 'Pria', done: false },
+  { name: 'Cokelat Premium', category: 'Makanan & Minuman', emoji: '🍫', qty: '2 kotak', price: 300000, desc: 'Cokelat premium impor', from: 'Pria', done: false },
+  { name: 'Kurma', category: 'Makanan & Minuman', emoji: '🌴', qty: '1 kotak', price: 150000, desc: 'Kurma Medjool premium 500gr', from: 'Pria', done: false },
+  // Buah-buahan
+  { name: 'Buah Apel', category: 'Buah-buahan', emoji: '🍎', qty: '1 keranjang', price: 100000, desc: 'Apel merah segar', from: 'Pria', done: false },
+  { name: 'Buah Anggur', category: 'Buah-buahan', emoji: '🍇', qty: '1 keranjang', price: 150000, desc: 'Anggur hijau/merah segar', from: 'Pria', done: false },
+  { name: 'Buah Jeruk', category: 'Buah-buahan', emoji: '🍊', qty: '1 keranjang', price: 80000, desc: 'Jeruk mandarin segar', from: 'Pria', done: false },
+  // Perlengkapan Rumah
+  { name: 'Handuk', category: 'Perlengkapan Rumah', emoji: '🛁', qty: '2 pasang', price: 300000, desc: 'Handuk mandi couple premium', from: 'Pria', done: false },
+  { name: 'Sprei & Bed Cover', category: 'Perlengkapan Rumah', emoji: '🛏️', qty: '1 set', price: 500000, desc: 'Sprei + bed cover ukuran King', from: 'Pria', done: false },
+  // Uang & Mahar
+  { name: 'Mahar', category: 'Uang & Mahar', emoji: '💵', qty: '1 set', price: 0, desc: 'Mahar sesuai kesepakatan (uang/emas/dll)', from: 'Pria', done: false },
+];
+
+const Seserahan = {
+  async getAll(uid) {
+    const snap = await getDocs(collection(db, 'seserahan', uid, 'items'));
+    if (snap.empty) {
+      for (const item of DEFAULT_SESERAHAN) await addDoc(collection(db, 'seserahan', uid, 'items'), item);
+      const snap2 = await getDocs(collection(db, 'seserahan', uid, 'items'));
+      return snap2.docs.map(d => ({ id: d.id, ...d.data() }));
+    }
+    return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  },
+  async add(uid, item) { await addDoc(collection(db, 'seserahan', uid, 'items'), item); },
+  async update(uid, id, data) { await updateDoc(doc(db, 'seserahan', uid, 'items', id), data); },
+  async toggle(uid, id, done) { await updateDoc(doc(db, 'seserahan', uid, 'items', id), { done: !done }); },
+  async delete(uid, id) { await deleteDoc(doc(db, 'seserahan', uid, 'items', id)); },
+};
+
 // ===== PROFILE =====
 const Profile = {
   async update(uid, data) {
@@ -360,4 +413,4 @@ document.addEventListener('click', (e) => {
   if (e.target.classList.contains('modal-overlay')) e.target.classList.remove('active');
 });
 
-export { auth, db, Auth, Budget, Vendor, Recommendation, Checklist, GuestList, Timeline, Profile, fmt, stars, toast, openModal, closeModal, setupNav, showLoading };
+export { auth, db, Auth, Budget, Vendor, Recommendation, Checklist, GuestList, Timeline, Seserahan, Profile, fmt, stars, toast, openModal, closeModal, setupNav, showLoading };

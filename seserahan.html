@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Seserahan – Wedding Planner</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .ses-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      transition: box-shadow 0.2s;
+    }
+    .ses-card:hover { box-shadow: var(--shadow-hover); }
+    .ses-cat-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0.9rem 1.2rem;
+      background: linear-gradient(135deg, var(--primary-light), var(--nude-dark));
+      cursor: pointer;
+      user-select: none;
+    }
+    .ses-cat-header h4 { font-size: 1rem; color: var(--primary-dark); flex: 1; }
+    .ses-cat-header .cat-toggle { font-size: 0.8rem; color: var(--text-light); transition: transform 0.2s; }
+    .ses-cat-header.collapsed .cat-toggle { transform: rotate(-90deg); }
+    .ses-items { padding: 0.5rem 0; }
+    .ses-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 1.2rem;
+      border-bottom: 1px solid var(--nude-dark);
+      transition: background 0.15s;
+    }
+    .ses-item:last-child { border-bottom: none; }
+    .ses-item:hover { background: var(--nude); }
+    .ses-item.checked .item-name { text-decoration: line-through; color: var(--text-light); }
+    .ses-check {
+      width: 20px; height: 20px;
+      border-radius: 6px;
+      border: 2px solid var(--primary);
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      background: white;
+      transition: all 0.2s;
+    }
+    .ses-check.checked { background: var(--primary); border-color: var(--primary); }
+    .ses-check.checked::after { content: '✓'; color: white; font-size: 12px; font-weight: 700; }
+    .ses-emoji { font-size: 1.3rem; flex-shrink: 0; width: 28px; text-align: center; }
+    .item-info { flex: 1; min-width: 0; }
+    .item-name { font-size: 0.88rem; font-weight: 500; word-break: break-word; }
+    .item-detail { font-size: 0.75rem; color: var(--text-light); margin-top: 2px; }
+    .item-actions { display: flex; gap: 4px; flex-shrink: 0; }
+    .summary-ring { position: relative; display: inline-flex; align-items: center; justify-content: center; }
+    .summary-ring svg { transform: rotate(-90deg); }
+    .summary-ring .ring-text { position: absolute; font-size: 1.2rem; font-weight: 700; color: var(--primary-dark); font-family: 'Poppins', sans-serif; }
+  </style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-brand">💍 Wedding Planner</a>
+  <button class="nav-toggle" id="nav-toggle" onclick="document.getElementById('nav-links').classList.toggle('open')"><span></span><span></span><span></span></button>
+  <div class="nav-links" id="nav-links">
+    <a href="index.html">🏠 <span>Dashboard</span></a>
+    <a href="budget.html">💰 <span>Budget</span></a>
+    <a href="vendors.html">🤝 <span>Vendor</span></a>
+    <a href="recommendations.html">⭐ <span>Rekomendasi</span></a>
+    <a href="checklist.html">✅ <span>Checklist</span></a>
+    <a href="seserahan.html">🎁 <span>Seserahan</span></a>
+    <a href="guestlist.html">👥 <span>Tamu</span></a>
+    <a href="timeline.html">🕐 <span>Timeline</span></a>
+    <a href="profile.html">👤 <span>Profil</span></a>
+  </div>
+  <div class="nav-user">
+    <span id="nav-user-name"></span>
+    <button class="btn-logout" onclick="doLogout()">Keluar</button>
+  </div>
+</nav>
+
+<div class="container">
+  <div class="page-header">
+    <div><h2>🎁 Daftar Seserahan</h2><p>Kelola seserahan pernikahan secara rinci</p></div>
+    <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
+      <button class="btn btn-outline" onclick="printSeserahan()">🖨️ Print</button>
+      <button class="btn btn-primary" onclick="openAddModal()">+ Tambah Item</button>
+    </div>
+  </div>
+
+  <!-- SUMMARY -->
+  <div class="card" style="margin-bottom:1.5rem">
+    <div style="display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap">
+      <div class="summary-ring" style="flex-shrink:0">
+        <svg width="90" height="90" viewBox="0 0 110 110">
+          <circle cx="55" cy="55" r="46" fill="none" stroke="var(--nude-dark)" stroke-width="10"/>
+          <circle id="ring-fill" cx="55" cy="55" r="46" fill="none" stroke="var(--primary)" stroke-width="10" stroke-dasharray="289" stroke-dashoffset="289" stroke-linecap="round"/>
+        </svg>
+        <span class="ring-text" id="pct-text">0%</span>
+      </div>
+      <div style="flex:1;min-width:0">
+        <h3 style="font-size:1.1rem;color:var(--primary-dark);margin-bottom:0.6rem" id="summary-title">Mulai siapkan seserahan!</h3>
+        <div style="display:flex;gap:1.5rem;flex-wrap:wrap">
+          <div><span style="font-size:1.3rem;font-weight:700;color:var(--success)" id="done-count">0</span><p style="font-size:0.75rem;color:var(--text-light)">Siap</p></div>
+          <div><span style="font-size:1.3rem;font-weight:700;color:var(--warning)" id="pending-count">0</span><p style="font-size:0.75rem;color:var(--text-light)">Belum</p></div>
+          <div><span style="font-size:1.3rem;font-weight:700;color:var(--text)" id="total-count">0</span><p style="font-size:0.75rem;color:var(--text-light)">Total</p></div>
+          <div><span style="font-size:1.3rem;font-weight:700;color:var(--primary-dark)" id="total-harga">Rp 0</span><p style="font-size:0.75rem;color:var(--text-light)">Est. Total</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FILTER -->
+  <div class="filter-bar">
+    <input type="text" id="search" placeholder="🔍 Cari item seserahan..." oninput="renderAll()" />
+    <select id="filter-cat" onchange="renderAll()"><option value="">Semua Kategori</option></select>
+    <select id="filter-status" onchange="renderAll()">
+      <option value="">Semua Status</option>
+      <option value="done">✅ Sudah Siap</option>
+      <option value="pending">⏳ Belum Siap</option>
+    </select>
+  </div>
+
+  <div id="ses-list"></div>
+</div>
+
+<!-- MODAL ADD/EDIT -->
+<div class="modal-overlay" id="modal-ses">
+  <div class="modal" style="max-width:500px">
+    <div class="modal-header">
+      <h3 id="modal-ses-title">Tambah Item Seserahan</h3>
+      <button class="btn-close" onclick="closeModal('modal-ses')">✕</button>
+    </div>
+    <input type="hidden" id="s-edit-id" />
+    <div class="grid-2">
+      <div class="form-group">
+        <label>Nama Item</label>
+        <input type="text" id="s-name" placeholder="Contoh: Cincin Emas 24K" />
+      </div>
+      <div class="form-group">
+        <label>Kategori</label>
+        <select id="s-category">
+          <option>Perhiasan & Aksesoris</option>
+          <option>Busana & Pakaian</option>
+          <option>Perlengkapan Ibadah</option>
+          <option>Kosmetik & Perawatan</option>
+          <option>Makanan & Minuman</option>
+          <option>Perlengkapan Rumah</option>
+          <option>Uang & Mahar</option>
+          <option>Buah-buahan</option>
+          <option>Lainnya</option>
+        </select>
+      </div>
+    </div>
+    <div class="grid-2">
+      <div class="form-group">
+        <label>Emoji / Ikon</label>
+        <input type="text" id="s-emoji" placeholder="Contoh: 💍" maxlength="4" />
+      </div>
+      <div class="form-group">
+        <label>Jumlah / Satuan</label>
+        <input type="text" id="s-qty" placeholder="Contoh: 1 pasang, 3 pcs" />
+      </div>
+    </div>
+    <div class="grid-2">
+      <div class="form-group">
+        <label>Estimasi Harga (Rp)</label>
+        <input type="number" id="s-price" placeholder="0" min="0" />
+      </div>
+      <div class="form-group">
+        <label>Status</label>
+        <select id="s-status">
+          <option value="0">⏳ Belum Siap</option>
+          <option value="1">✅ Sudah Siap</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Deskripsi / Spesifikasi</label>
+      <textarea id="s-desc" rows="2" placeholder="Contoh: Emas 24K 10 gram, merk X, warna gold..."></textarea>
+    </div>
+    <div class="form-group">
+      <label>Dari Pihak</label>
+      <select id="s-from">
+        <option>Pria</option>
+        <option>Wanita</option>
+        <option>Kedua Pihak</option>
+      </select>
+    </div>
+    <div style="display:flex;gap:0.8rem">
+      <button class="btn btn-primary" style="flex:1;justify-content:center" onclick="saveItem()">Simpan</button>
+      <button class="btn btn-outline" onclick="closeModal('modal-ses')">Batal</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  import { Auth, Seserahan, fmt, setupNav, toast, openModal, closeModal, showLoading } from './js/firebase.js';
+
+  window.doLogout = () => Auth.logout();
+  window.openModal = openModal;
+  window.closeModal = closeModal;
+
+  let uid, allItems = [];
+
+  const catEmoji = {
+    'Perhiasan & Aksesoris': '💍',
+    'Busana & Pakaian': '👗',
+    'Perlengkapan Ibadah': '🕌',
+    'Kosmetik & Perawatan': '💄',
+    'Makanan & Minuman': '🍱',
+    'Perlengkapan Rumah': '🏠',
+    'Uang & Mahar': '💵',
+    'Buah-buahan': '🍎',
+    'Lainnya': '📦'
+  };
+
+  function updateSummary() {
+    const done = allItems.filter(i => i.done).length;
+    const total = allItems.length;
+    const pct = total ? Math.round(done / total * 100) : 0;
+    const totalHarga = allItems.reduce((s, i) => s + (i.price || 0), 0);
+    document.getElementById('ring-fill').style.strokeDashoffset = 289 - (pct / 100 * 289);
+    document.getElementById('pct-text').textContent = pct + '%';
+    document.getElementById('done-count').textContent = done;
+    document.getElementById('pending-count').textContent = total - done;
+    document.getElementById('total-count').textContent = total;
+    document.getElementById('total-harga').textContent = fmt(totalHarga);
+    document.getElementById('summary-title').textContent =
+      pct === 100 ? '🎉 Semua seserahan sudah siap!' :
+      pct >= 75 ? '💪 Hampir lengkap!' :
+      pct >= 50 ? '🌸 Setengah sudah siap!' :
+      pct >= 25 ? '✨ Terus semangat!' : '🎁 Mulai siapkan seserahan!';
+  }
+
+  window.renderAll = () => {
+    const search = document.getElementById('search').value.toLowerCase();
+    const cat = document.getElementById('filter-cat').value;
+    const status = document.getElementById('filter-status').value;
+
+    // rebuild category filter
+    const cats = [...new Set(allItems.map(i => i.category))];
+    const catEl = document.getElementById('filter-cat');
+    const curCat = catEl.value;
+    catEl.innerHTML = '<option value="">Semua Kategori</option>' + cats.map(c => `<option ${c === curCat ? 'selected' : ''}>${c}</option>`).join('');
+
+    let items = allItems.filter(i =>
+      (!search || i.name.toLowerCase().includes(search) || (i.desc || '').toLowerCase().includes(search)) &&
+      (!cat || i.category === cat) &&
+      (!status || (status === 'done' ? i.done : !i.done))
+    );
+
+    const el = document.getElementById('ses-list');
+    if (!items.length) {
+      el.innerHTML = '<div class="empty-state card"><div class="empty-icon">🎁</div><p>Belum ada item seserahan.</p></div>';
+      return;
+    }
+
+    const grouped = {};
+    items.forEach(i => { if (!grouped[i.category]) grouped[i.category] = []; grouped[i.category].push(i); });
+
+    el.innerHTML = Object.entries(grouped).map(([cat, catItems]) => {
+      const catDone = catItems.filter(i => i.done).length;
+      const catTotal = catItems.length;
+      const catPrice = catItems.reduce((s, i) => s + (i.price || 0), 0);
+      return `
+        <div class="ses-card" style="margin-bottom:1rem">
+          <div class="ses-cat-header" onclick="toggleCat(this)">
+            <span style="font-size:1.3rem">${catEmoji[cat] || '📦'}</span>
+            <h4>${cat}</h4>
+            <span class="badge ${catDone === catTotal ? 'badge-green' : 'badge-yellow'}">${catDone}/${catTotal}</span>
+            <span style="font-size:0.8rem;color:var(--primary-dark);font-weight:600">${fmt(catPrice)}</span>
+            <span class="cat-toggle">▼</span>
+          </div>
+          <div class="ses-items">
+            ${catItems.map(i => `
+              <div class="ses-item ${i.done ? 'checked' : ''}" id="item-row-${i.id}">
+                <div class="ses-check ${i.done ? 'checked' : ''}" onclick="toggleItem('${i.id}', ${i.done})"></div>
+                <span class="ses-emoji">${i.emoji || catEmoji[i.category] || '📦'}</span>
+                <div class="item-info">
+                  <div class="item-name">${i.name}</div>
+                  <div class="item-detail">
+                    ${i.qty ? `<span>📦 ${i.qty}</span>` : ''}
+                    ${i.price ? `<span style="margin-left:8px">💰 ${fmt(i.price)}</span>` : ''}
+                    ${i.from ? `<span style="margin-left:8px">👤 Dari: ${i.from}</span>` : ''}
+                    ${i.desc ? `<div style="margin-top:2px;color:var(--text-light)">${i.desc}</div>` : ''}
+                  </div>
+                </div>
+                <div class="item-actions">
+                  <button class="btn btn-outline btn-sm" onclick="editItem('${i.id}')" style="padding:3px 8px">✏️</button>
+                  <button class="btn btn-danger btn-sm" onclick="deleteItem('${i.id}')" style="padding:3px 8px">🗑️</button>
+                </div>
+              </div>`).join('')}
+          </div>
+        </div>`;
+    }).join('');
+  };
+
+  window.toggleCat = (header) => {
+    header.classList.toggle('collapsed');
+    header.nextElementSibling.style.display = header.classList.contains('collapsed') ? 'none' : 'block';
+  };
+
+  window.toggleItem = async (id, done) => {
+    await Seserahan.toggle(uid, id, done);
+    allItems = await Seserahan.getAll(uid);
+    updateSummary(); renderAll();
+  };
+
+  window.openAddModal = () => {
+    document.getElementById('s-edit-id').value = '';
+    document.getElementById('modal-ses-title').textContent = 'Tambah Item Seserahan';
+    ['s-name', 's-emoji', 's-qty', 's-desc'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('s-price').value = '';
+    document.getElementById('s-category').value = 'Perhiasan & Aksesoris';
+    document.getElementById('s-status').value = '0';
+    document.getElementById('s-from').value = 'Pria';
+    openModal('modal-ses');
+  };
+
+  window.editItem = (id) => {
+    const i = allItems.find(x => x.id === id);
+    if (!i) return;
+    document.getElementById('s-edit-id').value = id;
+    document.getElementById('modal-ses-title').textContent = 'Edit Item Seserahan';
+    document.getElementById('s-name').value = i.name;
+    document.getElementById('s-category').value = i.category;
+    document.getElementById('s-emoji').value = i.emoji || '';
+    document.getElementById('s-qty').value = i.qty || '';
+    document.getElementById('s-price').value = i.price || '';
+    document.getElementById('s-status').value = i.done ? '1' : '0';
+    document.getElementById('s-desc').value = i.desc || '';
+    document.getElementById('s-from').value = i.from || 'Pria';
+    openModal('modal-ses');
+  };
+
+  window.saveItem = async () => {
+    const name = document.getElementById('s-name').value.trim();
+    if (!name) return toast('Nama item wajib diisi', 'error');
+    const id = document.getElementById('s-edit-id').value;
+    const data = {
+      name,
+      category: document.getElementById('s-category').value,
+      emoji: document.getElementById('s-emoji').value,
+      qty: document.getElementById('s-qty').value,
+      price: parseFloat(document.getElementById('s-price').value) || 0,
+      done: document.getElementById('s-status').value === '1',
+      desc: document.getElementById('s-desc').value,
+      from: document.getElementById('s-from').value,
+    };
+    if (id) await Seserahan.update(uid, id, data);
+    else await Seserahan.add(uid, data);
+    allItems = await Seserahan.getAll(uid);
+    closeModal('modal-ses');
+    toast(id ? 'Item diperbarui' : 'Item ditambahkan');
+    updateSummary(); renderAll();
+  };
+
+  window.deleteItem = async (id) => {
+    if (!confirm('Hapus item ini?')) return;
+    await Seserahan.delete(uid, id);
+    allItems = await Seserahan.getAll(uid);
+    toast('Item dihapus'); updateSummary(); renderAll();
+  };
+
+  window.printSeserahan = () => {
+    const grouped = {};
+    allItems.forEach(i => { if (!grouped[i.category]) grouped[i.category] = []; grouped[i.category].push(i); });
+    const totalHarga = allItems.reduce((s, i) => s + (i.price || 0), 0);
+    const done = allItems.filter(i => i.done).length;
+    const win = window.open('', '_blank');
+    win.document.write(`<html><head><title>Daftar Seserahan</title>
+    <style>
+      body{font-family:Arial,sans-serif;padding:30px;color:#333}
+      h1{color:#a07070;text-align:center;margin-bottom:4px}
+      .sub{text-align:center;color:#888;margin-bottom:24px;font-size:13px}
+      .summary{display:flex;gap:16px;margin-bottom:24px;flex-wrap:wrap}
+      .sum-box{background:#f5ebe0;padding:10px 18px;border-radius:8px}
+      .sum-box p{margin:0;font-size:11px;color:#888}.sum-box h3{margin:4px 0 0;color:#a07070;font-size:15px}
+      h2{color:#c9a0a0;font-size:14px;margin:20px 0 8px;border-bottom:1px solid #e8d5c4;padding-bottom:4px}
+      table{width:100%;border-collapse:collapse;margin-bottom:16px}
+      th{background:#f5ebe0;padding:8px 10px;text-align:left;font-size:12px}
+      td{padding:8px 10px;border-bottom:1px solid #eee;font-size:12px}
+      .done{color:#7ab89a;font-weight:600}.pending{color:#e0b870}
+      @media print{body{padding:15px}}
+    </style></head><body>
+    <h1>🎁 Daftar Seserahan Pernikahan</h1>
+    <p class="sub">Dicetak: ${new Date().toLocaleString('id-ID')}</p>
+    <div class="summary">
+      <div class="sum-box"><p>Total Item</p><h3>${allItems.length}</h3></div>
+      <div class="sum-box"><p>Sudah Siap</p><h3>${done}</h3></div>
+      <div class="sum-box"><p>Belum Siap</p><h3>${allItems.length - done}</h3></div>
+      <div class="sum-box"><p>Estimasi Total</p><h3>Rp ${totalHarga.toLocaleString('id-ID')}</h3></div>
+    </div>
+    ${Object.entries(grouped).map(([cat, items]) => `
+      <h2>${catEmoji[cat] || '📦'} ${cat}</h2>
+      <table><thead><tr><th>No</th><th>Item</th><th>Jumlah</th><th>Spesifikasi</th><th>Dari</th><th>Harga</th><th>Status</th></tr></thead>
+      <tbody>${items.map((i, idx) => `<tr>
+        <td>${idx + 1}</td>
+        <td>${i.emoji || ''} <strong>${i.name}</strong></td>
+        <td>${i.qty || '-'}</td>
+        <td>${i.desc || '-'}</td>
+        <td>${i.from || '-'}</td>
+        <td>Rp ${(i.price || 0).toLocaleString('id-ID')}</td>
+        <td class="${i.done ? 'done' : 'pending'}">${i.done ? '✅ Siap' : '⏳ Belum'}</td>
+      </tr>`).join('')}</tbody></table>`).join('')}
+    </body></html>`);
+    win.document.close(); win.print();
+  };
+
+  const catEmoji = {
+    'Perhiasan & Aksesoris': '💍', 'Busana & Pakaian': '👗',
+    'Perlengkapan Ibadah': '🕌', 'Kosmetik & Perawatan': '💄',
+    'Makanan & Minuman': '🍱', 'Perlengkapan Rumah': '🏠',
+    'Uang & Mahar': '💵', 'Buah-buahan': '🍎', 'Lainnya': '📦'
+  };
+
+  Auth.requireAuth(async (user) => {
+    showLoading(true);
+    uid = user.uid;
+    const profile = await Auth.getProfile();
+    setupNav(profile);
+    allItems = await Seserahan.getAll(uid);
+    updateSummary(); renderAll();
+    showLoading(false);
+  });
+</script>
+</body>
+</html>
