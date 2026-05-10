@@ -33,7 +33,31 @@
     <div>
       <div class="card" style="margin-bottom:1.2rem">
         <div style="text-align:center;padding:0.8rem 0 1.2rem">
-          <div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--primary-light),var(--primary));display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 1rem">💍</div>
+          <!-- FOTO PASANGAN -->
+          <div style="display:flex;justify-content:center;gap:1.5rem;margin-bottom:1rem;flex-wrap:wrap">
+            <!-- Foto Pengantin 1 -->
+            <div style="text-align:center">
+              <div id="photo1-wrap" style="position:relative;width:90px;height:90px;margin:0 auto 6px">
+                <div id="photo1-placeholder" style="width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,var(--primary-light),var(--primary));display:flex;align-items:center;justify-content:center;font-size:2rem;border:3px solid var(--white);box-shadow:var(--shadow)">👤</div>
+                <img id="photo1-img" src="" alt="" style="display:none;width:90px;height:90px;border-radius:50%;object-fit:cover;border:3px solid var(--white);box-shadow:var(--shadow)" />
+                <label for="input-photo1" style="position:absolute;bottom:0;right:0;width:26px;height:26px;background:var(--primary);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:var(--shadow);font-size:0.75rem">📷</label>
+                <input type="file" id="input-photo1" accept="image/*" style="display:none" onchange="handlePhoto(event,'photo1')" />
+              </div>
+              <p style="font-size:0.75rem;color:var(--text-light)" id="label-photo1">Foto Kamu</p>
+            </div>
+            <!-- Cincin tengah -->
+            <div style="display:flex;align-items:center;font-size:1.5rem;padding-top:10px">💍</div>
+            <!-- Foto Pengantin 2 -->
+            <div style="text-align:center">
+              <div id="photo2-wrap" style="position:relative;width:90px;height:90px;margin:0 auto 6px">
+                <div id="photo2-placeholder" style="width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,var(--primary-light),var(--primary));display:flex;align-items:center;justify-content:center;font-size:2rem;border:3px solid var(--white);box-shadow:var(--shadow)">👤</div>
+                <img id="photo2-img" src="" alt="" style="display:none;width:90px;height:90px;border-radius:50%;object-fit:cover;border:3px solid var(--white);box-shadow:var(--shadow)" />
+                <label for="input-photo2" style="position:absolute;bottom:0;right:0;width:26px;height:26px;background:var(--primary);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:var(--shadow);font-size:0.75rem">📷</label>
+                <input type="file" id="input-photo2" accept="image/*" style="display:none" onchange="handlePhoto(event,'photo2')" />
+              </div>
+              <p style="font-size:0.75rem;color:var(--text-light)" id="label-photo2">Foto Pasangan</p>
+            </div>
+          </div>
           <h3 id="profile-names" style="color:var(--primary-dark);font-size:1.3rem"></h3>
           <p id="profile-date" style="color:var(--text-light);font-size:0.85rem;margin-top:4px"></p>
           <p id="profile-countdown" style="color:var(--primary);font-weight:600;margin-top:6px"></p>
@@ -95,6 +119,35 @@
 
   let uid, profile, bData, vendors, checkItems, guestItems;
 
+  // ===== FOTO HANDLER =====
+  window.handlePhoto = (e, key) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (file.size > 2 * 1024 * 1024) return toast('Ukuran foto maksimal 2MB', 'error');
+    const reader = new FileReader();
+    reader.onload = async (ev) => {
+      const base64 = ev.target.result;
+      showPhoto(key, base64);
+      await Profile.update(uid, { [key]: base64 });
+      profile[key] = base64;
+      toast('Foto berhasil disimpan ✨');
+    };
+    reader.readAsDataURL(file);
+  };
+
+  function showPhoto(key, src) {
+    const img = document.getElementById(key + '-img');
+    const placeholder = document.getElementById(key + '-placeholder');
+    if (src) {
+      img.src = src;
+      img.style.display = 'block';
+      placeholder.style.display = 'none';
+    } else {
+      img.style.display = 'none';
+      placeholder.style.display = 'flex';
+    }
+  }
+
   function loadUI() {
     document.getElementById('p-name').value = profile.name;
     document.getElementById('p-partner').value = profile.partnerName;
@@ -103,6 +156,10 @@
     document.getElementById('p-location').value = profile.location||'';
     document.getElementById('p-theme').value = profile.theme||'';
     document.getElementById('profile-names').textContent = `${profile.name} & ${profile.partnerName}`;
+    document.getElementById('label-photo1').textContent = profile.name || 'Foto Kamu';
+    document.getElementById('label-photo2').textContent = profile.partnerName || 'Foto Pasangan';
+    showPhoto('photo1', profile.photo1 || '');
+    showPhoto('photo2', profile.photo2 || '');
     if (profile.weddingDate) {
       const d = new Date(profile.weddingDate);
       document.getElementById('profile-date').textContent = d.toLocaleDateString('id-ID',{weekday:'long',year:'numeric',month:'long',day:'numeric'});

@@ -103,7 +103,11 @@
   <!-- HERO -->
   <div class="hero-card">
     <p class="welcome">Selamat datang kembali,</p>
-    <h2 class="names" id="hero-names">...</h2>
+    <div style="display:flex;justify-content:center;align-items:center;gap:1rem;margin-bottom:0.8rem;flex-wrap:wrap">
+      <div id="hero-photo1" style="width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,0.3);display:flex;align-items:center;justify-content:center;font-size:1.8rem;border:3px solid rgba(255,255,255,0.6);overflow:hidden;flex-shrink:0">👤</div>
+      <h2 class="names" id="hero-names">...</h2>
+      <div id="hero-photo2" style="width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,0.3);display:flex;align-items:center;justify-content:center;font-size:1.8rem;border:3px solid rgba(255,255,255,0.6);overflow:hidden;flex-shrink:0">👤</div>
+    </div>
     <div id="countdown" style="display:flex;justify-content:center;gap:1rem;flex-wrap:wrap"></div>
     <p class="hero-date" id="wedding-date-label"></p>
   </div>
@@ -234,6 +238,14 @@
     const names = `${profile.name} & ${profile.partnerName || '...'}`;
     document.getElementById('hero-names').textContent = names;
     document.getElementById('footer-names').textContent = names;
+
+    // Foto pasangan di hero
+    function setHeroPhoto(id, src) {
+      const el = document.getElementById(id);
+      if (src) el.innerHTML = `<img src="${src}" style="width:100%;height:100%;object-fit:cover" />`;
+    }
+    setHeroPhoto('hero-photo1', profile.photo1);
+    setHeroPhoto('hero-photo2', profile.photo2);
 
     // Countdown
     function updateCountdown() {
