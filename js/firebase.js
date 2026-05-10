@@ -423,6 +423,46 @@ const Seserahan = {
   async delete(uid, id) { await deleteDoc(doc(db, 'seserahan', uid, 'items', id)); },
 };
 
+// ===== PANITIA =====
+const DEFAULT_DIVISI = [
+  { id: 'ketua',       label: 'Ketua Panitia',         emoji: '👑', desc: 'Koordinator utama seluruh rangkaian acara', order: 0 },
+  { id: 'penerima',    label: 'Penerima Tamu',          emoji: '🤝', desc: 'Menyambut & mengarahkan tamu undangan', order: 1 },
+  { id: 'buku',        label: 'Jaga Buku Tamu',         emoji: '📖', desc: 'Mencatat kehadiran & mengelola buku tamu', order: 2 },
+  { id: 'prasmanan',   label: 'Prasmanan',              emoji: '🍽️', desc: 'Melayani hidangan makanan & minuman tamu', order: 3 },
+  { id: 'masak',       label: 'Tim Masak / Dapur',      emoji: '👨‍🍳', desc: 'Menyiapkan & memasak hidangan pernikahan', order: 4 },
+  { id: 'dekorasi',    label: 'Dekorasi & Kebersihan',  emoji: '🌸', desc: 'Menata dekorasi & menjaga kebersihan venue', order: 5 },
+  { id: 'parkir',      label: 'Parkir & Keamanan',      emoji: '🚗', desc: 'Mengatur parkir & keamanan area acara', order: 6 },
+  { id: 'dokumentasi', label: 'Dokumentasi',            emoji: '📸', desc: 'Membantu fotografer & videografer', order: 7 },
+  { id: 'perlengkapan',label: 'Perlengkapan',           emoji: '🔧', desc: 'Menyiapkan & mengatur perlengkapan acara', order: 8 },
+  { id: 'souvenir',    label: 'Souvenir & Undangan',    emoji: '🎁', desc: 'Membagikan souvenir & undangan kepada tamu', order: 9 },
+];
+
+const Panitia = {
+  async getDivisi(uid) {
+    const snap = await getDocs(collection(db, 'panitia', uid, 'divisi'));
+    if (snap.empty) {
+      for (const d of DEFAULT_DIVISI) await setDoc(doc(db, 'panitia', uid, 'divisi', d.id), d);
+      const snap2 = await getDocs(collection(db, 'panitia', uid, 'divisi'));
+      return snap2.docs.map(d => d.data()).sort((a,b) => a.order - b.order);
+    }
+    return snap.docs.map(d => d.data()).sort((a,b) => a.order - b.order);
+  },
+  async addDivisi(uid, divisi) { await setDoc(doc(db, 'panitia', uid, 'divisi', divisi.id), divisi); },
+  async updateDivisi(uid, id, data) { await updateDoc(doc(db, 'panitia', uid, 'divisi', id), data); },
+  async deleteDivisi(uid, id) {
+    await deleteDoc(doc(db, 'panitia', uid, 'divisi', id));
+    const snap = await getDocs(collection(db, 'panitia', uid, 'anggota'));
+    for (const d of snap.docs) { if (d.data().divisiId === id) await deleteDoc(d.ref); }
+  },
+  async getAnggota(uid) {
+    const snap = await getDocs(collection(db, 'panitia', uid, 'anggota'));
+    return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  },
+  async addAnggota(uid, anggota) { await addDoc(collection(db, 'panitia', uid, 'anggota'), anggota); },
+  async updateAnggota(uid, id, data) { await updateDoc(doc(db, 'panitia', uid, 'anggota', id), data); },
+  async deleteAnggota(uid, id) { await deleteDoc(doc(db, 'panitia', uid, 'anggota', id)); },
+};
+
 // ===== PROFILE =====
 const Profile = {
   async update(uid, data) {
@@ -473,4 +513,4 @@ document.addEventListener('click', (e) => {
   if (e.target.classList.contains('modal-overlay')) e.target.classList.remove('active');
 });
 
-export { auth, db, Auth, Budget, Vendor, Recommendation, Checklist, GuestList, TimelineSession, Timeline, Seserahan, Profile, fmt, stars, toast, openModal, closeModal, setupNav, showLoading };
+export { auth, db, Auth, Budget, Vendor, Recommendation, Checklist, GuestList, TimelineSession, Timeline, Seserahan, Panitia, Profile, fmt, stars, toast, openModal, closeModal, setupNav, showLoading };
