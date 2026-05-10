@@ -233,6 +233,7 @@ input:focus, select:focus, textarea:focus { border-color: var(--primary); }
 .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.2rem; }
 .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
 .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.2rem; }
+.grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1rem; }
 
 /* HAMBURGER */
 .nav-toggle {
@@ -291,7 +292,7 @@ input:focus, select:focus, textarea:focus { border-color: var(--primary); }
 
   /* --- LAYOUT --- */
   .container { padding: 1rem 0.8rem; }
-  .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; gap: 0.8rem; }
+  .grid-2, .grid-3, .grid-4, .grid-5 { grid-template-columns: 1fr; gap: 0.8rem; }
 
   /* --- PAGE HEADER --- */
   .page-header {
@@ -588,4 +589,21 @@ tr:hover td { background: var(--nude); }
 
   /* stat card text overflow */
   .stat-info h3 { font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+}
+
+/* ===== FOOTER ===== */
+footer {
+  background: var(--white);
+  border-top: 1px solid var(--nude-dark);
+  padding: 1.5rem 2rem;
+  text-align: center;
+  margin-top: 3rem;
+}
+footer p { font-size: 0.8rem; color: var(--text-light); }
+footer strong { color: var(--primary-dark); }
+
+@media (max-width: 768px) {
+  footer { padding: 1.2rem 1rem; margin-top: 2rem; }
+  .grid-5 { grid-template-columns: repeat(2, 1fr) !important; }
+  .grid-5 > *:last-child { grid-column: span 2; }
 }

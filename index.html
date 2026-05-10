@@ -5,6 +5,77 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dashboard – Wedding Planner</title>
   <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .hero-card {
+      background: linear-gradient(135deg, #c9a0a0 0%, #a07070 100%);
+      border-radius: var(--radius);
+      padding: 2rem 1.5rem;
+      text-align: center;
+      margin-bottom: 1.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-card::before {
+      content: '💍';
+      position: absolute;
+      font-size: 8rem;
+      opacity: 0.08;
+      top: -10px;
+      right: -10px;
+      line-height: 1;
+    }
+    .hero-card .welcome { font-size: 0.85rem; color: rgba(255,255,255,0.8); margin-bottom: 4px; }
+    .hero-card .names { font-size: 1.8rem; color: white; margin-bottom: 1.2rem; font-family: 'Playfair Display', serif; }
+    .countdown-box {
+      background: rgba(255,255,255,0.18);
+      border-radius: 12px;
+      padding: 10px 16px;
+      min-width: 64px;
+      text-align: center;
+      backdrop-filter: blur(4px);
+    }
+    .countdown-box .num { font-size: 1.6rem; font-weight: 700; color: white; line-height: 1; }
+    .countdown-box .lbl { font-size: 0.62rem; color: rgba(255,255,255,0.8); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .hero-date { margin-top: 1rem; font-size: 0.82rem; color: rgba(255,255,255,0.85); }
+
+    .urgent-banner {
+      background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+      border: 1.5px solid #e0b870;
+      border-radius: var(--radius-sm);
+      padding: 0.9rem 1.2rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .urgent-banner .urgent-icon { font-size: 1.3rem; flex-shrink: 0; }
+    .urgent-banner p { font-size: 0.83rem; color: #856404; flex: 1; }
+    .urgent-banner a { color: #856404; font-weight: 600; text-decoration: underline; }
+
+    .section-title {
+      font-size: 1rem;
+      color: var(--primary-dark);
+      font-family: 'Playfair Display', serif;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .overview-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--nude-dark); }
+    .overview-row:last-child { border-bottom: none; }
+    .overview-row .dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+    footer {
+      background: var(--white);
+      border-top: 1px solid var(--nude-dark);
+      padding: 1.5rem 2rem;
+      text-align: center;
+      margin-top: 3rem;
+    }
+    footer p { font-size: 0.8rem; color: var(--text-light); }
+    footer strong { color: var(--primary-dark); }
+  </style>
 </head>
 <body>
 <nav>
@@ -28,73 +99,129 @@
 </nav>
 
 <div class="container">
-  <div class="card" style="background:linear-gradient(135deg,var(--primary-light),var(--nude-dark));margin-bottom:1.5rem;text-align:center;padding:1.5rem">
-    <p style="font-size:0.9rem;color:var(--text-light);margin-bottom:4px">Selamat datang kembali,</p>
-    <h2 id="hero-names" style="font-size:1.8rem;color:var(--primary-dark);margin-bottom:1rem"></h2>
-    <div id="countdown" style="display:flex;justify-content:center;gap:1.5rem;flex-wrap:wrap"></div>
-    <p id="wedding-date-label" style="margin-top:1rem;font-size:0.85rem;color:var(--text-light)"></p>
+
+  <!-- HERO -->
+  <div class="hero-card">
+    <p class="welcome">Selamat datang kembali,</p>
+    <h2 class="names" id="hero-names">...</h2>
+    <div id="countdown" style="display:flex;justify-content:center;gap:1rem;flex-wrap:wrap"></div>
+    <p class="hero-date" id="wedding-date-label"></p>
   </div>
 
+  <!-- URGENT ALERT -->
+  <div id="urgent-banner" style="display:none" class="urgent-banner">
+    <span class="urgent-icon">⚠️</span>
+    <p id="urgent-text"></p>
+  </div>
+
+  <!-- STAT BUDGET -->
   <div class="grid-4" style="margin-bottom:1.5rem">
-    <div class="stat-card"><div class="stat-icon">💰</div><div class="stat-info"><p>Total Budget</p><h3 id="stat-total">Rp 0</h3></div></div>
-    <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-info"><p>Sudah Dipakai</p><h3 id="stat-spent">Rp 0</h3></div></div>
-    <div class="stat-card"><div class="stat-icon">📋</div><div class="stat-info"><p>Direncanakan</p><h3 id="stat-planned">Rp 0</h3></div></div>
-    <div class="stat-card"><div class="stat-icon">💸</div><div class="stat-info"><p>Sisa Budget</p><h3 id="stat-remaining">Rp 0</h3></div></div>
+    <div class="stat-card">
+      <div class="stat-icon" style="background:#fef3cd">💰</div>
+      <div class="stat-info"><p>Total Budget</p><h3 id="stat-total">Rp 0</h3></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon" style="background:#d4edda">✅</div>
+      <div class="stat-info"><p>Sudah Dipakai</p><h3 id="stat-spent">Rp 0</h3></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon" style="background:#d0e8f5">📋</div>
+      <div class="stat-info"><p>Direncanakan</p><h3 id="stat-planned">Rp 0</h3></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon" style="background:#e8c9c9">💸</div>
+      <div class="stat-info"><p>Sisa Budget</p><h3 id="stat-remaining">Rp 0</h3></div>
+    </div>
   </div>
 
-  <div class="grid-4" style="margin-bottom:1.5rem">
-    <a href="seserahan.html" style="text-decoration:none"><div class="stat-card" style="cursor:pointer"><div class="stat-icon">🎁</div><div class="stat-info"><p>Seserahan</p><h3 id="stat-seserahan" style="font-size:1rem">0%</h3></div></div></a>
-    <a href="checklist.html" style="text-decoration:none"><div class="stat-card" style="cursor:pointer"><div class="stat-icon">✅</div><div class="stat-info"><p>Checklist</p><h3 id="stat-checklist" style="font-size:1rem">0%</h3></div></div></a>
-    <a href="guestlist.html" style="text-decoration:none"><div class="stat-card" style="cursor:pointer"><div class="stat-icon">👥</div><div class="stat-info"><p>Tamu</p><h3 id="stat-guests" style="font-size:1rem">0 orang</h3></div></div></a>
-    <a href="vendors.html" style="text-decoration:none"><div class="stat-card" style="cursor:pointer"><div class="stat-icon">🤝</div><div class="stat-info"><p>Vendor</p><h3 id="stat-vendors" style="font-size:1rem">0 vendor</h3></div></div></a>
-    <a href="timeline.html" style="text-decoration:none"><div class="stat-card" style="cursor:pointer"><div class="stat-icon">🕐</div><div class="stat-info"><p>Timeline</p><h3 id="stat-timeline" style="font-size:1rem">0 acara</h3></div></div></a>
+  <!-- STAT FITUR -->
+  <div class="grid-5" style="margin-bottom:1.5rem">
+    <a href="checklist.html" style="text-decoration:none">
+      <div class="stat-card" style="cursor:pointer">
+        <div class="stat-icon">✅</div>
+        <div class="stat-info"><p>Checklist</p><h3 id="stat-checklist" style="font-size:1rem">0%</h3></div>
+      </div>
+    </a>
+    <a href="seserahan.html" style="text-decoration:none">
+      <div class="stat-card" style="cursor:pointer">
+        <div class="stat-icon">🎁</div>
+        <div class="stat-info"><p>Seserahan</p><h3 id="stat-seserahan" style="font-size:1rem">0%</h3></div>
+      </div>
+    </a>
+    <a href="guestlist.html" style="text-decoration:none">
+      <div class="stat-card" style="cursor:pointer">
+        <div class="stat-icon">👥</div>
+        <div class="stat-info"><p>Tamu</p><h3 id="stat-guests" style="font-size:1rem">0</h3></div>
+      </div>
+    </a>
+    <a href="vendors.html" style="text-decoration:none">
+      <div class="stat-card" style="cursor:pointer">
+        <div class="stat-icon">🤝</div>
+        <div class="stat-info"><p>Vendor</p><h3 id="stat-vendors" style="font-size:1rem">0</h3></div>
+      </div>
+    </a>
+    <a href="timeline.html" style="text-decoration:none">
+      <div class="stat-card" style="cursor:pointer">
+        <div class="stat-icon">🕐</div>
+        <div class="stat-info"><p>Timeline</p><h3 id="stat-timeline" style="font-size:1rem">0</h3></div>
+      </div>
+    </a>
   </div>
 
-  <div class="grid-2">
+  <!-- ROW 1: Budget + Vendor -->
+  <div class="grid-2" style="margin-bottom:1.2rem">
     <div class="card">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.2rem">
-        <h3 style="font-size:1.1rem;color:var(--primary-dark)">Ringkasan Budget</h3>
+      <div class="section-title">
+        💰 Ringkasan Budget
         <a href="budget.html" class="btn btn-outline btn-sm">Lihat Semua</a>
       </div>
       <div id="budget-overview"></div>
     </div>
     <div class="card">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.2rem">
-        <h3 style="font-size:1.1rem;color:var(--primary-dark)">Vendor Saya</h3>
+      <div class="section-title">
+        🤝 Vendor Saya
         <a href="vendors.html" class="btn btn-outline btn-sm">Lihat Semua</a>
       </div>
       <div id="vendor-overview"></div>
     </div>
   </div>
 
-  <div class="grid-2" style="margin-top:1.2rem">
+  <!-- ROW 2: Checklist + Tamu -->
+  <div class="grid-2" style="margin-bottom:1.2rem">
     <div class="card">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.2rem">
-        <h3 style="font-size:1.1rem;color:var(--primary-dark)">Checklist Terbaru</h3>
+      <div class="section-title">
+        ✅ Tugas Belum Selesai
         <a href="checklist.html" class="btn btn-outline btn-sm">Lihat Semua</a>
       </div>
       <div id="checklist-overview"></div>
     </div>
     <div class="card">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.2rem">
-        <h3 style="font-size:1.1rem;color:var(--primary-dark)">Status Tamu</h3>
+      <div class="section-title">
+        👥 Status Tamu
         <a href="guestlist.html" class="btn btn-outline btn-sm">Lihat Semua</a>
       </div>
       <div id="guest-overview"></div>
     </div>
   </div>
 
-  <div class="card" style="margin-top:1.2rem">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.2rem">
-      <h3 style="font-size:1.1rem;color:var(--primary-dark)">🎁 Seserahan</h3>
+  <!-- ROW 3: Seserahan full width -->
+  <div class="card">
+    <div class="section-title">
+      🎁 Seserahan
       <a href="seserahan.html" class="btn btn-outline btn-sm">Lihat Semua</a>
     </div>
     <div id="seserahan-overview"></div>
   </div>
+
 </div>
 
+<footer>
+  <p>Dibuat dengan ❤️ untuk membantu pasangan merencanakan hari istimewa mereka</p>
+  <p style="margin-top:4px"><strong>💍 Wedding Planner</strong> &nbsp;·&nbsp; <span id="footer-names"></span></p>
+</footer>
+
 <script type="module">
-  import { Auth, Budget, Vendor, Checklist, GuestList, Timeline, Seserahan, fmt, setupNav, showLoading } from './js/firebase.js';
+  import { Auth, Budget, Vendor, Checklist, GuestList, TimelineSession, Timeline, Seserahan, fmt, setupNav, showLoading } from './js/firebase.js';
 
   window.doLogout = () => Auth.logout();
 
@@ -104,108 +231,201 @@
     if (!profile) { window.location.href = 'login.html'; return; }
     setupNav(profile);
 
-    document.getElementById('hero-names').textContent = `${profile.name} & ${profile.partnerName || '...'}`;
+    const names = `${profile.name} & ${profile.partnerName || '...'}`;
+    document.getElementById('hero-names').textContent = names;
+    document.getElementById('footer-names').textContent = names;
 
     // Countdown
     function updateCountdown() {
-      if (!profile.weddingDate) return;
+      if (!profile.weddingDate) {
+        document.getElementById('countdown').innerHTML = '<p style="color:rgba(255,255,255,0.8);font-size:0.85rem">Belum ada tanggal pernikahan. <a href="profile.html" style="color:white;font-weight:600;text-decoration:underline">Atur sekarang</a></p>';
+        return;
+      }
       const wedding = new Date(profile.weddingDate);
       const diff = wedding - new Date();
-      if (diff <= 0) { document.getElementById('countdown').innerHTML = '<p style="font-size:1.2rem;color:var(--primary-dark)">🎉 Selamat atas pernikahan Anda!</p>'; return; }
-      const days = Math.floor(diff/86400000), hours = Math.floor((diff%86400000)/3600000);
-      const mins = Math.floor((diff%3600000)/60000), secs = Math.floor((diff%60000)/1000);
-      const box = (n,l) => `<div style="background:white;border-radius:12px;padding:10px 14px;min-width:60px;text-align:center;box-shadow:var(--shadow)"><div style="font-size:1.4rem;font-weight:700;color:var(--primary-dark)">${n}</div><div style="font-size:0.65rem;color:var(--text-light)">${l}</div></div>`;
-      document.getElementById('countdown').innerHTML = box(days,'Hari')+box(hours,'Jam')+box(mins,'Menit')+box(secs,'Detik');
-      document.getElementById('wedding-date-label').textContent = '📅 ' + wedding.toLocaleDateString('id-ID',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+      if (diff <= 0) {
+        document.getElementById('countdown').innerHTML = '<p style="font-size:1.3rem;color:white">🎉 Selamat atas pernikahan Anda!</p>';
+        return;
+      }
+      const days  = Math.floor(diff / 86400000);
+      const hours = Math.floor((diff % 86400000) / 3600000);
+      const mins  = Math.floor((diff % 3600000) / 60000);
+      const secs  = Math.floor((diff % 60000) / 1000);
+      const box   = (n, l) => `<div class="countdown-box"><div class="num">${n}</div><div class="lbl">${l}</div></div>`;
+      document.getElementById('countdown').innerHTML = box(days,'Hari') + box(hours,'Jam') + box(mins,'Menit') + box(secs,'Detik');
+      document.getElementById('wedding-date-label').textContent = '📅 ' + wedding.toLocaleDateString('id-ID', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
     }
-    updateCountdown(); setInterval(updateCountdown, 1000);
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
 
-    // Load all data parallel
-    const [bData, vendors, checkItems, guestItems, timelineItems, sesItems] = await Promise.all([
-      Budget.get(user.uid), Vendor.getAll(user.uid), Checklist.getAll(user.uid),
-      GuestList.getAll(user.uid), Timeline.getAll(user.uid), Seserahan.getAll(user.uid)
+    // Load semua data paralel
+    const [bData, vendors, checkItems, guestItems, sesItems, sessions] = await Promise.all([
+      Budget.get(user.uid),
+      Vendor.getAll(user.uid),
+      Checklist.getAll(user.uid),
+      GuestList.getAll(user.uid),
+      Seserahan.getAll(user.uid),
+      TimelineSession.getAll(user.uid),
     ]);
 
+    // Hitung total timeline dari semua sesi
+    let totalTimeline = 0;
+    await Promise.all(sessions.map(async s => {
+      const ev = await Timeline.getAll(user.uid, s.id);
+      totalTimeline += ev.length;
+    }));
+    document.getElementById('stat-timeline').textContent = totalTimeline + ' acara';
+
+    // ===== URGENT ALERT =====
+    const urgentTasks = checkItems.filter(t => !t.done && t.priority === 'Tinggi');
+    const daysLeft = profile.weddingDate ? Math.floor((new Date(profile.weddingDate) - new Date()) / 86400000) : null;
+    if (urgentTasks.length > 0 || (daysLeft !== null && daysLeft <= 30 && daysLeft > 0)) {
+      const banner = document.getElementById('urgent-banner');
+      const text   = document.getElementById('urgent-text');
+      banner.style.display = 'flex';
+      if (daysLeft !== null && daysLeft <= 30 && daysLeft > 0) {
+        text.innerHTML = `⏰ Tinggal <strong>${daysLeft} hari</strong> lagi! Masih ada <strong>${urgentTasks.length} tugas prioritas tinggi</strong> yang belum selesai. <a href="checklist.html">Cek sekarang →</a>`;
+      } else if (urgentTasks.length > 0) {
+        text.innerHTML = `Ada <strong>${urgentTasks.length} tugas prioritas tinggi</strong> yang belum selesai: <em>${urgentTasks.slice(0,2).map(t=>t.task).join(', ')}${urgentTasks.length>2?'...':''}</em>. <a href="checklist.html">Selesaikan →</a>`;
+      }
+    }
+
+    // ===== BUDGET STATS =====
     const s = Budget.summary(bData);
-    document.getElementById('stat-total').textContent = fmt(s.total);
-    document.getElementById('stat-spent').textContent = fmt(s.spent);
-    document.getElementById('stat-planned').textContent = fmt(s.planned);
+    document.getElementById('stat-total').textContent    = fmt(s.total);
+    document.getElementById('stat-spent').textContent    = fmt(s.spent);
+    document.getElementById('stat-planned').textContent  = fmt(s.planned);
     const remEl = document.getElementById('stat-remaining');
-    remEl.textContent = fmt(s.remaining);
-    remEl.style.color = s.remaining < 0 ? 'var(--danger)' : 'var(--text)';
+    remEl.textContent  = fmt(s.remaining);
+    remEl.style.color  = s.remaining < 0 ? 'var(--danger)' : 'var(--success)';
 
-    document.getElementById('stat-vendors').textContent = vendors.length + ' vendor';
-    document.getElementById('stat-timeline').textContent = timelineItems.length + ' acara';
-
-    // Budget overview
-    const boEl = document.getElementById('budget-overview');
-    if (!bData.items.length) {
-      boEl.innerHTML = '<div class="empty-state"><div class="empty-icon">💰</div><p>Belum ada item budget.<br><a href="budget.html" style="color:var(--primary-dark)">Tambah sekarang</a></p></div>';
-    } else {
-      boEl.innerHTML = bData.items.slice(0,5).map(item => {
-        const pct = bData.total ? Math.min((item.actual||0)/bData.total*100,100) : 0;
-        const over = (item.actual||0) > (item.planned||0);
-        return `<div style="margin-bottom:1rem"><div style="display:flex;justify-content:space-between;font-size:0.85rem;margin-bottom:4px"><span>${item.category}</span><span style="color:${over?'var(--danger)':'var(--text-light)'}">${fmt(item.actual||0)} / ${fmt(item.planned||0)}</span></div><div class="progress-bar"><div class="progress-fill ${over?'over':''}" style="width:${pct}%"></div></div></div>`;
-      }).join('');
-    }
-
-    // Vendor overview
-    const voEl = document.getElementById('vendor-overview');
-    if (!vendors.length) {
-      voEl.innerHTML = '<div class="empty-state"><div class="empty-icon">🤝</div><p>Belum ada vendor.<br><a href="vendors.html" style="color:var(--primary-dark)">Tambah sekarang</a></p></div>';
-    } else {
-      const sc = {'Terkonfirmasi':'badge-green','Negosiasi':'badge-yellow','Kandidat':'badge-blue'};
-      voEl.innerHTML = `<table><thead><tr><th>Vendor</th><th>Kategori</th><th>Status</th></tr></thead><tbody>${vendors.slice(0,5).map(v=>`<tr><td><strong>${v.name}</strong></td><td><span class="badge badge-pink">${v.category}</span></td><td><span class="badge ${sc[v.status]||'badge-blue'}">${v.status}</span></td></tr>`).join('')}</tbody></table>`;
-    }
-
-    // Checklist overview
+    // ===== FITUR STATS =====
     const prog = Checklist.progress(checkItems);
     document.getElementById('stat-checklist').textContent = prog.pct + '%';
-    const coEl = document.getElementById('checklist-overview');
-    const pending = checkItems.filter(t => !t.done).slice(0,5);
-    if (!pending.length) {
-      coEl.innerHTML = '<div class="empty-state"><div class="empty-icon">🎉</div><p>Semua checklist selesai!</p></div>';
+    const sesDone = sesItems.filter(i => i.done).length;
+    document.getElementById('stat-seserahan').textContent = sesItems.length ? Math.round(sesDone / sesItems.length * 100) + '%' : '0%';
+    const gs = GuestList.summary(guestItems);
+    document.getElementById('stat-guests').textContent  = gs.total + ' orang';
+    document.getElementById('stat-vendors').textContent = vendors.length + ' vendor';
+
+    // ===== BUDGET OVERVIEW =====
+    const boEl = document.getElementById('budget-overview');
+    if (!bData.items.length) {
+      boEl.innerHTML = `<div class="empty-state"><div class="empty-icon">💰</div><p>Belum ada item budget.<br><a href="budget.html" style="color:var(--primary-dark)">Tambah sekarang →</a></p></div>`;
     } else {
-      coEl.innerHTML = pending.map(t => `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--nude-dark)"><div style="width:10px;height:10px;border-radius:50%;background:${t.priority==='Tinggi'?'var(--danger)':t.priority==='Sedang'?'var(--warning)':'var(--success)'};flex-shrink:0"></div><span style="font-size:0.85rem;flex:1">${t.task}</span><span class="badge badge-pink" style="font-size:0.7rem">${t.category}</span></div>`).join('');
+      const pctTotal = s.total ? Math.min(Math.round(s.spent / s.total * 100), 100) : 0;
+      boEl.innerHTML = `
+        <div style="display:flex;justify-content:space-between;font-size:0.8rem;margin-bottom:4px">
+          <span style="color:var(--text-light)">Total terpakai</span>
+          <span style="font-weight:600;color:${s.remaining<0?'var(--danger)':'var(--primary-dark)'}">${pctTotal}%</span>
+        </div>
+        <div class="progress-bar" style="margin-bottom:1rem"><div class="progress-fill ${s.remaining<0?'over':''}" style="width:${pctTotal}%"></div></div>
+        ${bData.items.slice(0,4).map(item => {
+          const pct  = bData.total ? Math.min((item.actual||0) / bData.total * 100, 100) : 0;
+          const over = (item.actual||0) > (item.planned||0);
+          return `<div style="margin-bottom:0.8rem">
+            <div style="display:flex;justify-content:space-between;font-size:0.82rem;margin-bottom:3px">
+              <span>${item.category}</span>
+              <span style="color:${over?'var(--danger)':'var(--text-light)'}">${fmt(item.actual||0)}</span>
+            </div>
+            <div class="progress-bar" style="height:6px;margin-top:0"><div class="progress-fill ${over?'over':''}" style="width:${pct}%"></div></div>
+          </div>`;
+        }).join('')}`;
     }
 
-    // Seserahan stat
-    const sesDone = sesItems.filter(i => i.done).length;
-    const sesPct = sesItems.length ? Math.round(sesDone / sesItems.length * 100) : 0;
-    document.getElementById('stat-seserahan').textContent = sesPct + '%';
+    // ===== VENDOR OVERVIEW =====
+    const voEl = document.getElementById('vendor-overview');
+    if (!vendors.length) {
+      voEl.innerHTML = `<div class="empty-state"><div class="empty-icon">🤝</div><p>Belum ada vendor.<br><a href="vendors.html" style="color:var(--primary-dark)">Tambah sekarang →</a></p></div>`;
+    } else {
+      const sc = { 'Terkonfirmasi':'badge-green', 'Negosiasi':'badge-yellow', 'Kandidat':'badge-blue' };
+      const confirmed = vendors.filter(v => v.status === 'Terkonfirmasi').length;
+      voEl.innerHTML = `
+        <div style="display:flex;gap:1rem;margin-bottom:1rem;flex-wrap:wrap">
+          <div style="text-align:center"><div style="font-size:1.3rem;font-weight:700;color:var(--success)">${confirmed}</div><div style="font-size:0.72rem;color:var(--text-light)">Terkonfirmasi</div></div>
+          <div style="text-align:center"><div style="font-size:1.3rem;font-weight:700;color:var(--warning)">${vendors.filter(v=>v.status==='Negosiasi').length}</div><div style="font-size:0.72rem;color:var(--text-light)">Negosiasi</div></div>
+          <div style="text-align:center"><div style="font-size:1.3rem;font-weight:700;color:var(--text-light)">${vendors.filter(v=>v.status==='Kandidat').length}</div><div style="font-size:0.72rem;color:var(--text-light)">Kandidat</div></div>
+        </div>
+        ${vendors.slice(0,4).map(v => `
+          <div class="overview-row">
+            <span style="font-size:0.85rem;flex:1;font-weight:500">${v.name}</span>
+            <span class="badge badge-pink" style="font-size:0.68rem">${v.category}</span>
+            <span class="badge ${sc[v.status]||'badge-blue'}" style="font-size:0.68rem">${v.status}</span>
+          </div>`).join('')}`;
+    }
 
-    // Guest overview
-    const gs = GuestList.summary(guestItems);
+    // ===== CHECKLIST OVERVIEW =====
+    const coEl = document.getElementById('checklist-overview');
+    const pending = checkItems.filter(t => !t.done);
+    const urgentPending = pending.filter(t => t.priority === 'Tinggi').slice(0, 5);
+    const showItems = urgentPending.length ? urgentPending : pending.slice(0, 5);
+    if (!pending.length) {
+      coEl.innerHTML = `<div class="empty-state"><div class="empty-icon">🎉</div><p>Semua checklist selesai! Luar biasa!</p></div>`;
+    } else {
+      const pColor = { Tinggi: 'var(--danger)', Sedang: 'var(--warning)', Rendah: 'var(--success)' };
+      coEl.innerHTML = `
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:0.8rem">
+          <div class="progress-bar" style="flex:1;margin-top:0"><div class="progress-fill" style="width:${prog.pct}%"></div></div>
+          <span style="font-size:0.8rem;font-weight:600;color:var(--primary-dark);flex-shrink:0">${prog.pct}%</span>
+        </div>
+        ${showItems.map(t => `
+          <div class="overview-row">
+            <div class="dot" style="background:${pColor[t.priority]||'var(--success)'}"></div>
+            <span style="font-size:0.83rem;flex:1">${t.task}</span>
+            <span class="badge ${t.priority==='Tinggi'?'badge-pink':t.priority==='Sedang'?'badge-yellow':'badge-green'}" style="font-size:0.65rem">${t.priority}</span>
+          </div>`).join('')}
+        ${pending.length > 5 ? `<p style="font-size:0.78rem;color:var(--text-light);margin-top:8px;text-align:center">+${pending.length - 5} tugas lainnya</p>` : ''}`;
+    }
+
+    // ===== GUEST OVERVIEW =====
     document.getElementById('stat-guests').textContent = gs.total + ' orang';
     const goEl = document.getElementById('guest-overview');
     if (!gs.total) {
-      goEl.innerHTML = '<div class="empty-state"><div class="empty-icon">👥</div><p>Belum ada tamu.<br><a href="guestlist.html" style="color:var(--primary-dark)">Tambah sekarang</a></p></div>';
+      goEl.innerHTML = `<div class="empty-state"><div class="empty-icon">👥</div><p>Belum ada tamu.<br><a href="guestlist.html" style="color:var(--primary-dark)">Tambah sekarang →</a></p></div>`;
     } else {
-      const pctHadir = gs.total ? Math.round(gs.confirmed/gs.total*100) : 0;
-      goEl.innerHTML = `<div style="display:flex;justify-content:space-around;text-align:center;margin-bottom:1.2rem"><div><div style="font-size:1.8rem;font-weight:700;color:var(--success)">${gs.confirmed}</div><div style="font-size:0.8rem;color:var(--text-light)">Hadir</div></div><div><div style="font-size:1.8rem;font-weight:700;color:var(--warning)">${gs.pending}</div><div style="font-size:0.8rem;color:var(--text-light)">Belum Konfirmasi</div></div><div><div style="font-size:1.8rem;font-weight:700;color:var(--danger)">${gs.declined}</div><div style="font-size:0.8rem;color:var(--text-light)">Tidak Hadir</div></div></div><div class="progress-bar"><div class="progress-fill" style="width:${pctHadir}%"></div></div><p style="font-size:0.75rem;color:var(--text-light);margin-top:6px">${pctHadir}% tamu sudah konfirmasi · Total ${gs.totalPax} kursi</p>`;
+      const pctHadir = Math.round(gs.confirmed / gs.total * 100);
+      goEl.innerHTML = `
+        <div style="display:flex;justify-content:space-around;text-align:center;margin-bottom:1rem">
+          <div><div style="font-size:1.6rem;font-weight:700;color:var(--success)">${gs.confirmed}</div><div style="font-size:0.72rem;color:var(--text-light)">✅ Hadir</div></div>
+          <div><div style="font-size:1.6rem;font-weight:700;color:var(--warning)">${gs.pending}</div><div style="font-size:0.72rem;color:var(--text-light)">⏳ Pending</div></div>
+          <div><div style="font-size:1.6rem;font-weight:700;color:var(--danger)">${gs.declined}</div><div style="font-size:0.72rem;color:var(--text-light)">❌ Tidak Hadir</div></div>
+          <div><div style="font-size:1.6rem;font-weight:700;color:var(--primary-dark)">${gs.totalPax}</div><div style="font-size:0.72rem;color:var(--text-light)">🪑 Kursi</div></div>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" style="width:${pctHadir}%"></div></div>
+        <p style="font-size:0.75rem;color:var(--text-light);margin-top:6px;text-align:center">${pctHadir}% tamu sudah konfirmasi kehadiran</p>`;
     }
 
-    // Seserahan overview
+    // ===== SESERAHAN OVERVIEW =====
     const soEl = document.getElementById('seserahan-overview');
     if (!sesItems.length) {
-      soEl.innerHTML = '<div class="empty-state"><div class="empty-icon">🎁</div><p>Belum ada seserahan.<br><a href="seserahan.html" style="color:var(--primary-dark)">Tambah sekarang</a></p></div>';
+      soEl.innerHTML = `<div class="empty-state"><div class="empty-icon">🎁</div><p>Belum ada seserahan.<br><a href="seserahan.html" style="color:var(--primary-dark)">Tambah sekarang →</a></p></div>`;
     } else {
-      const sesTotalHarga = sesItems.reduce((s, i) => s + (i.price || 0), 0);
+      const sesTotalHarga = sesItems.reduce((sum, i) => sum + (i.price || 0), 0);
+      const sesPct = Math.round(sesDone / sesItems.length * 100);
       const grouped = {};
-      sesItems.forEach(i => { if (!grouped[i.category]) grouped[i.category] = { done: 0, total: 0 }; grouped[i.category].total++; if (i.done) grouped[i.category].done++; });
+      sesItems.forEach(i => {
+        if (!grouped[i.category]) grouped[i.category] = { done: 0, total: 0 };
+        grouped[i.category].total++;
+        if (i.done) grouped[i.category].done++;
+      });
       soEl.innerHTML = `
-        <div style="display:flex;gap:1.5rem;flex-wrap:wrap;margin-bottom:1.2rem">
-          <div style="text-align:center"><div style="font-size:1.5rem;font-weight:700;color:var(--success)">${sesDone}</div><div style="font-size:0.75rem;color:var(--text-light)">Sudah Siap</div></div>
-          <div style="text-align:center"><div style="font-size:1.5rem;font-weight:700;color:var(--warning)">${sesItems.length - sesDone}</div><div style="font-size:0.75rem;color:var(--text-light)">Belum Siap</div></div>
-          <div style="text-align:center"><div style="font-size:1.5rem;font-weight:700;color:var(--text)">${sesItems.length}</div><div style="font-size:0.75rem;color:var(--text-light)">Total Item</div></div>
-          <div style="text-align:center"><div style="font-size:1.1rem;font-weight:700;color:var(--primary-dark)">${fmt(sesTotalHarga)}</div><div style="font-size:0.75rem;color:var(--text-light)">Est. Total</div></div>
+        <div style="display:flex;gap:1.5rem;flex-wrap:wrap;margin-bottom:1rem;align-items:center">
+          <div style="text-align:center"><div style="font-size:1.4rem;font-weight:700;color:var(--success)">${sesDone}</div><div style="font-size:0.72rem;color:var(--text-light)">Sudah Siap</div></div>
+          <div style="text-align:center"><div style="font-size:1.4rem;font-weight:700;color:var(--warning)">${sesItems.length - sesDone}</div><div style="font-size:0.72rem;color:var(--text-light)">Belum Siap</div></div>
+          <div style="text-align:center"><div style="font-size:1.4rem;font-weight:700;color:var(--text)">${sesItems.length}</div><div style="font-size:0.72rem;color:var(--text-light)">Total Item</div></div>
+          <div style="text-align:center"><div style="font-size:1rem;font-weight:700;color:var(--primary-dark)">${fmt(sesTotalHarga)}</div><div style="font-size:0.72rem;color:var(--text-light)">Est. Total</div></div>
+          <div style="flex:1;min-width:120px">
+            <div style="display:flex;justify-content:space-between;font-size:0.78rem;margin-bottom:3px"><span style="color:var(--text-light)">Progress</span><span style="font-weight:600;color:var(--primary-dark)">${sesPct}%</span></div>
+            <div class="progress-bar" style="margin-top:0"><div class="progress-fill" style="width:${sesPct}%"></div></div>
+          </div>
         </div>
-        <div class="progress-bar" style="margin-bottom:1rem"><div class="progress-fill" style="width:${sesPct}%"></div></div>
-        ${Object.entries(grouped).map(([cat, v]) => `
-          <div style="display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--nude-dark)">
-            <span style="font-size:0.85rem;flex:1">${cat}</span>
-            <span class="badge ${v.done === v.total ? 'badge-green' : 'badge-yellow'}">${v.done}/${v.total}</span>
-          </div>`).join('')}`;
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:0.5rem">
+          ${Object.entries(grouped).map(([cat, v]) => `
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;background:var(--nude);border-radius:8px">
+              <span style="font-size:0.8rem">${cat}</span>
+              <span class="badge ${v.done===v.total?'badge-green':'badge-yellow'}" style="font-size:0.65rem">${v.done}/${v.total}</span>
+            </div>`).join('')}
+        </div>`;
     }
 
     showLoading(false);
