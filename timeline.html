@@ -6,13 +6,49 @@
   <title>Timeline – Wedding Planner</title>
   <link rel="stylesheet" href="css/style.css" />
   <style>
-    .timeline-wrap { position:relative;padding-left:40px; }
-    .timeline-wrap::before { content:'';position:absolute;left:16px;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--primary-light),var(--primary)); }
-    .timeline-item { position:relative;margin-bottom:1.2rem; }
-    .timeline-dot { position:absolute;left:-32px;top:14px;width:14px;height:14px;border-radius:50%;background:var(--primary);border:3px solid var(--white);box-shadow:0 0 0 2px var(--primary); }
-    .timeline-card { background:var(--white);border-radius:var(--radius-sm);padding:1rem 1.2rem;box-shadow:var(--shadow);display:flex;align-items:center;gap:1rem;transition:box-shadow 0.2s; }
+    .timeline-tabs {
+      display: flex;
+      background: var(--nude);
+      border-radius: 25px;
+      padding: 4px;
+      margin-bottom: 1.5rem;
+      gap: 4px;
+    }
+    .timeline-tabs button {
+      flex: 1;
+      padding: 10px 8px;
+      border: none;
+      background: none;
+      border-radius: 20px;
+      cursor: pointer;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--text-light);
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .timeline-tabs button.active {
+      background: var(--white);
+      color: var(--primary-dark);
+      font-weight: 600;
+      box-shadow: var(--shadow);
+    }
+    .timeline-wrap { position: relative; padding-left: 32px; }
+    .timeline-wrap::before { content:''; position:absolute; left:10px; top:0; bottom:0; width:2px; background:linear-gradient(to bottom,var(--primary-light),var(--primary)); }
+    .timeline-item { position: relative; margin-bottom: 1.2rem; }
+    .timeline-dot { position:absolute; left:-22px; top:14px; width:12px; height:12px; border-radius:50%; background:var(--primary); border:3px solid var(--white); box-shadow:0 0 0 2px var(--primary); }
+    .timeline-card { background:var(--white); border-radius:var(--radius-sm); padding:1rem 1.2rem; box-shadow:var(--shadow); display:flex; align-items:center; gap:1rem; flex-wrap:wrap; transition:box-shadow 0.2s; }
     .timeline-card:hover { box-shadow:var(--shadow-hover); }
-    .timeline-time { font-size:1.1rem;font-weight:700;color:var(--primary-dark);min-width:60px;font-family:'Poppins',sans-serif; }
+    .timeline-time { font-size:1rem; font-weight:700; color:var(--primary-dark); min-width:52px; font-family:'Poppins',sans-serif; flex-shrink:0; }
+    .tab-info-card {
+      border-radius: var(--radius);
+      padding: 1rem 1.2rem;
+      margin-bottom: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
   </style>
 </head>
 <body>
@@ -35,13 +71,14 @@
 
 <div class="container">
   <div class="page-header">
-    <div><h2>🕐 Timeline Hari H</h2><p>Rundown acara pernikahan Anda</p></div>
+    <div><h2>🕐 Timeline Acara</h2><p>Rundown lengkap Akad, Resepsi & Ngunduh Mantu</p></div>
     <div style="display:flex;gap:0.6rem;flex-wrap:wrap">
       <button class="btn btn-outline" style="flex:1;justify-content:center" onclick="printTimeline()">🖨️ Print</button>
       <button class="btn btn-primary" style="flex:1;justify-content:center" onclick="openAddModal()">+ Tambah Acara</button>
     </div>
   </div>
 
+  <!-- INFO CARD -->
   <div class="card" style="margin-bottom:1.5rem;background:linear-gradient(135deg,var(--primary-light),var(--nude-dark))">
     <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap">
       <div style="font-size:2rem">💍</div>
@@ -49,22 +86,49 @@
         <h3 id="wedding-names" style="color:var(--primary-dark);font-size:1rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></h3>
         <p id="wedding-date-full" style="color:var(--text-light);font-size:0.82rem"></p>
       </div>
-      <div style="text-align:right;flex-shrink:0"><p style="font-size:0.75rem;color:var(--text-light)">Total Acara</p><p id="total-events" style="font-size:1.4rem;font-weight:700;color:var(--primary-dark)">0</p></div>
+      <div style="text-align:right;flex-shrink:0">
+        <p style="font-size:0.75rem;color:var(--text-light)">Total Acara</p>
+        <p id="total-events" style="font-size:1.4rem;font-weight:700;color:var(--primary-dark)">0</p>
+      </div>
     </div>
   </div>
 
-  <div class="card" id="timeline-container" style="padding:1.5rem 2rem"></div>
+  <!-- TABS -->
+  <div class="timeline-tabs">
+    <button id="tab-akad" class="active" onclick="switchTab('akad')">🕌 Akad Nikah</button>
+    <button id="tab-resepsi" onclick="switchTab('resepsi')">🎊 Resepsi</button>
+    <button id="tab-ngunduh" onclick="switchTab('ngunduh')">🏠 Ngunduh Mantu</button>
+  </div>
+
+  <!-- TAB DESC -->
+  <div id="tab-desc" class="tab-info-card" style="background:var(--white);box-shadow:var(--shadow)"></div>
+
+  <!-- TIMELINE LIST -->
+  <div class="card" id="timeline-container" style="padding:1.5rem 1.5rem"></div>
 </div>
 
 <!-- MODAL -->
 <div class="modal-overlay" id="modal-event">
   <div class="modal" style="max-width:500px">
-    <div class="modal-header"><h3 id="modal-event-title">Tambah Acara</h3><button class="btn-close" onclick="closeModal('modal-event')">✕</button></div>
+    <div class="modal-header">
+      <h3 id="modal-event-title">Tambah Acara</h3>
+      <button class="btn-close" onclick="closeModal('modal-event')">✕</button>
+    </div>
     <input type="hidden" id="e-edit-id" />
     <div class="grid-2">
       <div class="form-group"><label>Waktu</label><input type="time" id="e-time" /></div>
       <div class="form-group"><label>Kategori</label>
-        <select id="e-category"><option>Persiapan</option><option>Venue</option><option>Akad</option><option>Dokumentasi</option><option>Resepsi</option><option>Hiburan</option><option>Penutup</option></select>
+        <select id="e-category">
+          <option>Persiapan</option>
+          <option>Venue</option>
+          <option>Akad</option>
+          <option>Dokumentasi</option>
+          <option>Resepsi</option>
+          <option>Ngunduh Mantu</option>
+          <option>Hiburan</option>
+          <option>Acara</option>
+          <option>Penutup</option>
+        </select>
       </div>
     </div>
     <div class="form-group"><label>Nama Acara</label><input type="text" id="e-event" placeholder="Contoh: Prosesi Akad Nikah" /></div>
@@ -78,31 +142,71 @@
 </div>
 
 <script type="module">
-  import { Auth, Timeline, setupNav, toast, openModal, closeModal, showLoading, fmt } from './js/firebase.js';
+  import { Auth, Timeline, setupNav, toast, openModal, closeModal, showLoading } from './js/firebase.js';
 
   window.doLogout = () => Auth.logout();
   window.openModal = openModal;
   window.closeModal = closeModal;
 
-  let uid, allEvents = [], profile;
-  const catBadge = { Persiapan:'badge-pink', Venue:'badge-green', Akad:'badge-yellow', Dokumentasi:'badge-blue', Resepsi:'badge-pink', Hiburan:'badge-blue', Penutup:'badge-yellow' };
+  let uid, profile;
+  let activeTab = 'akad';
+  let tabData = { akad: [], resepsi: [], ngunduh: [] };
+
+  const tabMeta = {
+    akad:    { label: '🕌 Akad Nikah',    emoji: '🕌', color: '#fef3cd', desc: 'Rundown prosesi akad nikah — ijab kabul, serah terima mahar & seserahan, sungkeman, hingga sesi foto resmi.' },
+    resepsi: { label: '🎊 Resepsi',        emoji: '🎊', color: '#d4edda', desc: 'Rundown pesta resepsi pernikahan — penyambutan tamu, makan, hiburan, potong kue, hingga penutupan.' },
+    ngunduh: { label: '🏠 Ngunduh Mantu',  emoji: '🏠', color: '#d0e8f5', desc: 'Rundown acara ngunduh mantu di keluarga pria — penjemputan, sambutan keluarga, sungkeman, makan bersama & penutupan.' },
+  };
+
+  const catBadge = {
+    Persiapan:'badge-pink', Venue:'badge-green', Akad:'badge-yellow',
+    Dokumentasi:'badge-blue', Resepsi:'badge-green', 'Ngunduh Mantu':'badge-blue',
+    Hiburan:'badge-blue', Acara:'badge-pink', Penutup:'badge-yellow'
+  };
+
+  window.switchTab = async (tab) => {
+    activeTab = tab;
+    document.querySelectorAll('.timeline-tabs button').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + (tab === 'ngunduh' ? 'ngunduh' : tab)).classList.add('active');
+    render();
+  };
 
   function render() {
-    document.getElementById('total-events').textContent = allEvents.length;
+    const meta = tabMeta[activeTab];
+    const events = tabData[activeTab];
+
+    // tab desc
+    document.getElementById('tab-desc').innerHTML = `
+      <span style="font-size:2rem">${meta.emoji}</span>
+      <div style="flex:1;min-width:0">
+        <strong style="color:var(--primary-dark)">${meta.label}</strong>
+        <p style="font-size:0.82rem;color:var(--text-light);margin-top:2px">${meta.desc}</p>
+      </div>
+      <span class="badge badge-pink" style="flex-shrink:0">${events.length} acara</span>`;
+    document.getElementById('tab-desc').style.background = meta.color;
+
+    // total all tabs
+    const total = tabData.akad.length + tabData.resepsi.length + tabData.ngunduh.length;
+    document.getElementById('total-events').textContent = total;
+
     const el = document.getElementById('timeline-container');
-    if (!allEvents.length) { el.innerHTML = '<div class="empty-state"><div class="empty-icon">🕐</div><p>Belum ada acara. Tambahkan rundown hari H Anda!</p></div>'; return; }
-    el.innerHTML = `<div class="timeline-wrap">${allEvents.map(e => `
+    if (!events.length) {
+      el.innerHTML = '<div class="empty-state"><div class="empty-icon">🕐</div><p>Belum ada acara di sesi ini.<br>Klik "+ Tambah Acara" untuk mulai.</p></div>';
+      return;
+    }
+
+    el.innerHTML = `<div class="timeline-wrap">${events.map(e => `
       <div class="timeline-item">
         <div class="timeline-dot"></div>
-        <div class="timeline-card" style="flex-wrap:wrap">
+        <div class="timeline-card">
           <div class="timeline-time">${e.time}</div>
           <div style="flex:1;min-width:0">
             <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;flex-wrap:wrap">
-              <strong style="font-size:0.95rem">${e.event}</strong>
+              <strong style="font-size:0.92rem">${e.event}</strong>
               <span class="badge ${catBadge[e.category]||'badge-pink'}">${e.category}</span>
             </div>
-            ${e.desc?`<p style="font-size:0.82rem;color:var(--text-light);margin-bottom:3px">${e.desc}</p>`:''}
-            ${e.pic?`<p style="font-size:0.8rem;color:var(--primary-dark)">👤 ${e.pic}</p>`:''}
+            ${e.desc ? `<p style="font-size:0.8rem;color:var(--text-light);margin-bottom:3px">${e.desc}</p>` : ''}
+            ${e.pic  ? `<p style="font-size:0.78rem;color:var(--primary-dark)">👤 ${e.pic}</p>` : ''}
           </div>
           <div style="display:flex;gap:6px;flex-shrink:0">
             <button class="btn btn-outline btn-sm" onclick="editEvent('${e.id}')">✏️</button>
@@ -114,52 +218,76 @@
 
   window.openAddModal = () => {
     document.getElementById('e-edit-id').value = '';
-    document.getElementById('modal-event-title').textContent = 'Tambah Acara';
+    document.getElementById('modal-event-title').textContent = 'Tambah Acara — ' + tabMeta[activeTab].label;
     ['e-event','e-desc','e-pic'].forEach(id => document.getElementById(id).value = '');
     document.getElementById('e-time').value = '08:00';
+    document.getElementById('e-category').value = activeTab === 'akad' ? 'Akad' : activeTab === 'resepsi' ? 'Resepsi' : 'Ngunduh Mantu';
     openModal('modal-event');
   };
 
   window.editEvent = (id) => {
-    const e = allEvents.find(x => x.id === id);
+    const e = tabData[activeTab].find(x => x.id === id);
     if (!e) return;
     document.getElementById('e-edit-id').value = id;
     document.getElementById('modal-event-title').textContent = 'Edit Acara';
     document.getElementById('e-time').value = e.time;
     document.getElementById('e-category').value = e.category;
     document.getElementById('e-event').value = e.event;
-    document.getElementById('e-desc').value = e.desc||'';
-    document.getElementById('e-pic').value = e.pic||'';
+    document.getElementById('e-desc').value = e.desc || '';
+    document.getElementById('e-pic').value = e.pic || '';
     openModal('modal-event');
   };
 
   window.saveEvent = async () => {
     const event = document.getElementById('e-event').value.trim();
-    const time = document.getElementById('e-time').value;
+    const time  = document.getElementById('e-time').value;
     if (!event || !time) return toast('Waktu dan nama acara wajib diisi', 'error');
-    const id = document.getElementById('e-edit-id').value;
+    const id   = document.getElementById('e-edit-id').value;
     const data = { time, category: document.getElementById('e-category').value, event, desc: document.getElementById('e-desc').value, pic: document.getElementById('e-pic').value };
-    if (id) await Timeline.update(uid, id, data);
-    else await Timeline.add(uid, data);
-    allEvents = await Timeline.getAll(uid);
-    closeModal('modal-event'); toast(id?'Acara diperbarui':'Acara ditambahkan'); render();
+    if (id) await Timeline.update(uid, id, data, activeTab);
+    else    await Timeline.add(uid, data, activeTab);
+    tabData[activeTab] = await Timeline.getAll(uid, activeTab);
+    closeModal('modal-event');
+    toast(id ? 'Acara diperbarui' : 'Acara ditambahkan');
+    render();
   };
 
   window.deleteEvent = async (id) => {
     if (!confirm('Hapus acara ini?')) return;
-    await Timeline.delete(uid, id);
-    allEvents = await Timeline.getAll(uid);
+    await Timeline.delete(uid, id, activeTab);
+    tabData[activeTab] = await Timeline.getAll(uid, activeTab);
     toast('Acara dihapus'); render();
   };
 
   window.printTimeline = () => {
-    const dateStr = profile?.weddingDate ? new Date(profile.weddingDate).toLocaleDateString('id-ID',{weekday:'long',year:'numeric',month:'long',day:'numeric'}) : '';
-    const win = window.open('','_blank');
-    win.document.write(`<html><head><title>Timeline Pernikahan</title><style>body{font-family:Arial,sans-serif;padding:30px;color:#333}h1{color:#a07070;text-align:center}p.sub{text-align:center;color:#888;margin-bottom:30px}table{width:100%;border-collapse:collapse}th{background:#f5ebe0;padding:10px;text-align:left}td{padding:10px;border-bottom:1px solid #eee}.cat{background:#e8c9c9;padding:2px 8px;border-radius:10px;font-size:12px}</style></head><body>
-      <h1>💍 Timeline Pernikahan</h1><p class="sub">${profile?.name} & ${profile?.partnerName} — ${dateStr}</p>
-      <table><thead><tr><th>Waktu</th><th>Acara</th><th>Kategori</th><th>Deskripsi</th><th>PIC</th></tr></thead>
-      <tbody>${allEvents.map(e=>`<tr><td><strong>${e.time}</strong></td><td>${e.event}</td><td><span class="cat">${e.category}</span></td><td>${e.desc||'-'}</td><td>${e.pic||'-'}</td></tr>`).join('')}</tbody>
-      </table></body></html>`);
+    const dateStr = profile?.weddingDate
+      ? new Date(profile.weddingDate).toLocaleDateString('id-ID',{weekday:'long',year:'numeric',month:'long',day:'numeric'})
+      : '';
+    const meta = tabMeta[activeTab];
+    const events = tabData[activeTab];
+    const win = window.open('', '_blank');
+    win.document.write(`<html><head><title>${meta.label}</title>
+    <style>
+      body{font-family:Arial,sans-serif;padding:30px;color:#333}
+      h1{color:#a07070;text-align:center}
+      p.sub{text-align:center;color:#888;margin-bottom:30px;font-size:13px}
+      table{width:100%;border-collapse:collapse}
+      th{background:#f5ebe0;padding:10px;text-align:left;font-size:12px}
+      td{padding:10px;border-bottom:1px solid #eee;font-size:12px}
+      .cat{background:#e8c9c9;padding:2px 8px;border-radius:10px;font-size:11px}
+      @media print{body{padding:15px}}
+    </style></head><body>
+    <h1>${meta.emoji} ${meta.label}</h1>
+    <p class="sub">${profile?.name} & ${profile?.partnerName} — ${dateStr}</p>
+    <table><thead><tr><th>Waktu</th><th>Acara</th><th>Kategori</th><th>Deskripsi</th><th>PIC</th></tr></thead>
+    <tbody>${events.map(e=>`<tr>
+      <td><strong>${e.time}</strong></td>
+      <td>${e.event}</td>
+      <td><span class="cat">${e.category}</span></td>
+      <td>${e.desc||'-'}</td>
+      <td>${e.pic||'-'}</td>
+    </tr>`).join('')}</tbody></table>
+    </body></html>`);
     win.document.close(); win.print();
   };
 
@@ -169,9 +297,19 @@
     profile = await Auth.getProfile();
     setupNav(profile);
     document.getElementById('wedding-names').textContent = `${profile.name} & ${profile.partnerName}`;
-    if (profile.weddingDate) document.getElementById('wedding-date-full').textContent = new Date(profile.weddingDate).toLocaleDateString('id-ID',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
-    allEvents = await Timeline.getAll(uid);
-    render(); showLoading(false);
+    if (profile.weddingDate)
+      document.getElementById('wedding-date-full').textContent =
+        new Date(profile.weddingDate).toLocaleDateString('id-ID',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+
+    // load semua tab paralel
+    [tabData.akad, tabData.resepsi, tabData.ngunduh] = await Promise.all([
+      Timeline.getAll(uid, 'akad'),
+      Timeline.getAll(uid, 'resepsi'),
+      Timeline.getAll(uid, 'ngunduh'),
+    ]);
+
+    render();
+    showLoading(false);
   });
 </script>
 </body>

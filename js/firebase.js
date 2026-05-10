@@ -282,32 +282,61 @@ const GuestList = {
 };
 
 // ===== TIMELINE =====
-const DEFAULT_TIMELINE = [
-  { time: '06:00', event: 'Persiapan Pengantin Wanita', desc: 'Makeup, hair do, dan pemakaian busana', pic: 'Tim MUA', category: 'Persiapan' },
-  { time: '07:00', event: 'Persiapan Pengantin Pria', desc: 'Grooming dan pemakaian jas', pic: 'Keluarga', category: 'Persiapan' },
-  { time: '08:00', event: 'Dekorasi Venue Selesai', desc: 'Pengecekan akhir dekorasi', pic: 'Tim Dekorasi', category: 'Venue' },
-  { time: '09:00', event: 'Tamu Mulai Berdatangan', desc: 'Registrasi tamu & penyambutan', pic: 'Panitia', category: 'Acara' },
-  { time: '10:00', event: 'Prosesi Akad Nikah', desc: 'Ijab kabul & penandatanganan dokumen', pic: 'Penghulu', category: 'Akad' },
-  { time: '11:00', event: 'Sesi Foto Resmi', desc: 'Foto bersama keluarga & sesi couple', pic: 'Fotografer', category: 'Dokumentasi' },
-  { time: '12:00', event: 'Makan Siang & Resepsi', desc: 'Pembukaan resepsi & makan bersama', pic: 'MC', category: 'Resepsi' },
-  { time: '13:00', event: 'Hiburan & Penampilan', desc: 'Live music & entertainment', pic: 'Band/Hiburan', category: 'Hiburan' },
-  { time: '14:00', event: 'Potong Kue & Lempar Buket', desc: 'Tradisi potong kue pengantin', pic: 'MC', category: 'Resepsi' },
-  { time: '15:00', event: 'Penutupan Resepsi', desc: 'Ucapan terima kasih & pelepasan tamu', pic: 'MC', category: 'Penutup' },
-];
+const DEFAULT_TIMELINE = {
+  akad: [
+    { time: '05:00', event: 'Persiapan Pengantin Wanita', desc: 'Makeup, hair do, dan pemakaian busana pengantin', pic: 'Tim MUA', category: 'Persiapan' },
+    { time: '06:00', event: 'Persiapan Pengantin Pria', desc: 'Grooming, pemakaian jas & baju koko', pic: 'Keluarga', category: 'Persiapan' },
+    { time: '07:00', event: 'Dekorasi Venue Selesai', desc: 'Pengecekan akhir dekorasi pelaminan & ruangan', pic: 'Tim Dekorasi', category: 'Venue' },
+    { time: '07:30', event: 'Keluarga & Tamu Undangan Hadir', desc: 'Penyambutan tamu & registrasi undangan', pic: 'Panitia', category: 'Acara' },
+    { time: '08:00', event: 'Prosesi Ijab Kabul', desc: 'Akad nikah, ijab kabul & penandatanganan dokumen resmi', pic: 'Penghulu / KUA', category: 'Akad' },
+    { time: '08:30', event: 'Serah Terima Mahar & Seserahan', desc: 'Penyerahan mahar dan seserahan dari pihak pria ke wanita', pic: 'Keluarga Pria', category: 'Akad' },
+    { time: '09:00', event: 'Sungkeman', desc: 'Sungkeman kepada orang tua kedua mempelai', pic: 'Kedua Mempelai', category: 'Akad' },
+    { time: '09:30', event: 'Sesi Foto Resmi Akad', desc: 'Foto bersama keluarga inti, saudara & sesi couple', pic: 'Fotografer', category: 'Dokumentasi' },
+    { time: '10:30', event: 'Ramah Tamah & Makan', desc: 'Makan bersama keluarga & tamu undangan akad', pic: 'Panitia', category: 'Acara' },
+    { time: '11:30', event: 'Penutupan Acara Akad', desc: 'Doa penutup & ucapan terima kasih', pic: 'MC', category: 'Penutup' },
+  ],
+  resepsi: [
+    { time: '10:00', event: 'Persiapan Venue Resepsi', desc: 'Pengecekan akhir dekorasi, katering & sound system', pic: 'Tim Dekorasi & Katering', category: 'Venue' },
+    { time: '11:00', event: 'Pengantin Siap di Pelaminan', desc: 'Kedua mempelai duduk di pelaminan, siap menyambut tamu', pic: 'Kedua Mempelai', category: 'Persiapan' },
+    { time: '11:30', event: 'Pembukaan Resepsi', desc: 'Sambutan MC, pembacaan doa & lagu pembuka', pic: 'MC', category: 'Resepsi' },
+    { time: '12:00', event: 'Tamu Undangan Berdatangan', desc: 'Penyambutan tamu, foto bersama pengantin di pelaminan', pic: 'Panitia', category: 'Acara' },
+    { time: '12:30', event: 'Makan Siang Prasmanan', desc: 'Tamu menikmati hidangan katering', pic: 'Tim Katering', category: 'Resepsi' },
+    { time: '13:00', event: 'Hiburan Live Music', desc: 'Penampilan band / organ tunggal / entertainment', pic: 'Tim Hiburan', category: 'Hiburan' },
+    { time: '13:30', event: 'Potong Kue Pengantin', desc: 'Prosesi potong kue & suap-suapan pengantin', pic: 'MC', category: 'Resepsi' },
+    { time: '14:00', event: 'Lempar Buket Bunga', desc: 'Tradisi lempar buket bunga untuk tamu undangan wanita', pic: 'MC', category: 'Resepsi' },
+    { time: '14:30', event: 'Sesi Foto Keluarga Besar', desc: 'Foto bersama keluarga besar kedua mempelai', pic: 'Fotografer', category: 'Dokumentasi' },
+    { time: '15:00', event: 'Penutupan Resepsi', desc: 'Sambutan penutup, doa & ucapan terima kasih kepada tamu', pic: 'MC', category: 'Penutup' },
+    { time: '15:30', event: 'Beres-beres & Selesai', desc: 'Pengembalian perlengkapan & pembersihan venue', pic: 'Panitia', category: 'Penutup' },
+  ],
+  ngunduh: [
+    { time: '09:00', event: 'Persiapan Pengantin & Venue', desc: 'Pengantin bersiap, dekorasi venue ngunduh mantu', pic: 'Tim MUA & Dekorasi', category: 'Persiapan' },
+    { time: '10:00', event: 'Penjemputan Pengantin Wanita', desc: 'Rombongan keluarga pria menjemput pengantin wanita ke rumah pria', pic: 'Keluarga Pria', category: 'Acara' },
+    { time: '10:30', event: 'Tiba di Rumah Keluarga Pria', desc: 'Prosesi penyambutan pengantin wanita oleh keluarga pria', pic: 'Keluarga Pria', category: 'Acara' },
+    { time: '11:00', event: 'Pembukaan Acara Ngunduh Mantu', desc: 'Sambutan MC, pembacaan doa & perkenalan kedua keluarga', pic: 'MC', category: 'Ngunduh Mantu' },
+    { time: '11:15', event: 'Sambutan Keluarga Pria', desc: 'Sambutan resmi dari orang tua / wali pihak pria', pic: 'Orang Tua Pria', category: 'Ngunduh Mantu' },
+    { time: '11:30', event: 'Sambutan Keluarga Wanita', desc: 'Sambutan resmi dari orang tua / wali pihak wanita', pic: 'Orang Tua Wanita', category: 'Ngunduh Mantu' },
+    { time: '11:45', event: 'Sungkeman kepada Keluarga Pria', desc: 'Kedua mempelai sungkeman kepada orang tua pria', pic: 'Kedua Mempelai', category: 'Ngunduh Mantu' },
+    { time: '12:00', event: 'Makan Siang Bersama', desc: 'Makan siang bersama seluruh keluarga & tamu undangan', pic: 'Tim Katering', category: 'Acara' },
+    { time: '13:00', event: 'Hiburan & Ramah Tamah', desc: 'Hiburan keluarga, foto bersama & ramah tamah', pic: 'Tim Hiburan', category: 'Hiburan' },
+    { time: '14:00', event: 'Sesi Foto Keluarga Besar Pria', desc: 'Foto bersama seluruh keluarga besar pihak pria', pic: 'Fotografer', category: 'Dokumentasi' },
+    { time: '14:30', event: 'Pemberian Hadiah & Cinderamata', desc: 'Penyerahan hadiah dari keluarga pria kepada pengantin', pic: 'Keluarga Pria', category: 'Ngunduh Mantu' },
+    { time: '15:00', event: 'Penutupan Ngunduh Mantu', desc: 'Doa penutup, ucapan terima kasih & pamitan tamu', pic: 'MC', category: 'Penutup' },
+  ]
+};
 
 const Timeline = {
-  async getAll(uid) {
-    const snap = await getDocs(collection(db, 'timelines', uid, 'items'));
+  async getAll(uid, jenis = 'akad') {
+    const snap = await getDocs(collection(db, 'timelines', uid, jenis));
     if (snap.empty) {
-      for (const t of DEFAULT_TIMELINE) await addDoc(collection(db, 'timelines', uid, 'items'), t);
-      const snap2 = await getDocs(collection(db, 'timelines', uid, 'items'));
+      for (const t of (DEFAULT_TIMELINE[jenis] || [])) await addDoc(collection(db, 'timelines', uid, jenis), t);
+      const snap2 = await getDocs(collection(db, 'timelines', uid, jenis));
       return snap2.docs.map(d => ({ id: d.id, ...d.data() })).sort((a,b) => a.time.localeCompare(b.time));
     }
     return snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a,b) => a.time.localeCompare(b.time));
   },
-  async add(uid, item) { await addDoc(collection(db, 'timelines', uid, 'items'), item); },
-  async update(uid, id, updated) { await updateDoc(doc(db, 'timelines', uid, 'items', id), updated); },
-  async delete(uid, id) { await deleteDoc(doc(db, 'timelines', uid, 'items', id)); }
+  async add(uid, item, jenis = 'akad') { await addDoc(collection(db, 'timelines', uid, jenis), item); },
+  async update(uid, id, updated, jenis = 'akad') { await updateDoc(doc(db, 'timelines', uid, jenis, id), updated); },
+  async delete(uid, id, jenis = 'akad') { await deleteDoc(doc(db, 'timelines', uid, jenis, id)); }
 };
 
 // ===== SESERAHAN =====
