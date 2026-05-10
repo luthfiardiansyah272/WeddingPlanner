@@ -281,6 +281,37 @@ const GuestList = {
   }
 };
 
+// ===== TIMELINE SESSIONS =====
+const DEFAULT_SESSIONS = [
+  { id: 'akad',    label: 'Akad Nikah',   emoji: '🕌', desc: 'Prosesi ijab kabul, serah terima mahar & seserahan, sungkeman', order: 0 },
+  { id: 'resepsi', label: 'Resepsi',      emoji: '🎊', desc: 'Pesta resepsi pernikahan, penyambutan tamu & hiburan',          order: 1 },
+  { id: 'ngunduh', label: 'Ngunduh Mantu',emoji: '🏠', desc: 'Acara ngunduh mantu di keluarga pihak pria',                   order: 2 },
+];
+
+const TimelineSession = {
+  async getAll(uid) {
+    const snap = await getDocs(collection(db, 'timeline_sessions', uid, 'list'));
+    if (snap.empty) {
+      for (const s of DEFAULT_SESSIONS) await setDoc(doc(db, 'timeline_sessions', uid, 'list', s.id), s);
+      const snap2 = await getDocs(collection(db, 'timeline_sessions', uid, 'list'));
+      return snap2.docs.map(d => d.data()).sort((a,b) => a.order - b.order);
+    }
+    return snap.docs.map(d => d.data()).sort((a,b) => a.order - b.order);
+  },
+  async add(uid, session) {
+    await setDoc(doc(db, 'timeline_sessions', uid, 'list', session.id), session);
+  },
+  async update(uid, id, data) {
+    await updateDoc(doc(db, 'timeline_sessions', uid, 'list', id), data);
+  },
+  async delete(uid, id) {
+    // hapus sesi + semua item di dalamnya
+    await deleteDoc(doc(db, 'timeline_sessions', uid, 'list', id));
+    const snap = await getDocs(collection(db, 'timelines', uid, id));
+    for (const d of snap.docs) await deleteDoc(d.ref);
+  }
+};
+
 // ===== TIMELINE =====
 const DEFAULT_TIMELINE = {
   akad: [
@@ -442,4 +473,4 @@ document.addEventListener('click', (e) => {
   if (e.target.classList.contains('modal-overlay')) e.target.classList.remove('active');
 });
 
-export { auth, db, Auth, Budget, Vendor, Recommendation, Checklist, GuestList, Timeline, Seserahan, Profile, fmt, stars, toast, openModal, closeModal, setupNav, showLoading };
+export { auth, db, Auth, Budget, Vendor, Recommendation, Checklist, GuestList, TimelineSession, Timeline, Seserahan, Profile, fmt, stars, toast, openModal, closeModal, setupNav, showLoading };

@@ -6,20 +6,22 @@
   <title>Timeline – Wedding Planner</title>
   <link rel="stylesheet" href="css/style.css" />
   <style>
-    .timeline-tabs {
+    .session-tabs-wrap {
       display: flex;
-      background: var(--nude);
-      border-radius: 25px;
-      padding: 4px;
+      align-items: center;
+      gap: 0.5rem;
       margin-bottom: 1.5rem;
-      gap: 4px;
+      flex-wrap: wrap;
     }
-    .timeline-tabs button {
-      flex: 1;
-      padding: 10px 8px;
-      border: none;
-      background: none;
+    .session-tabs { display: flex; gap: 0.4rem; flex-wrap: wrap; flex: 1; }
+    .session-tab {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
       border-radius: 20px;
+      border: 1.5px solid var(--primary-light);
+      background: var(--white);
       cursor: pointer;
       font-family: 'Poppins', sans-serif;
       font-size: 0.82rem;
@@ -28,12 +30,47 @@
       transition: all 0.2s;
       white-space: nowrap;
     }
-    .timeline-tabs button.active {
-      background: var(--white);
-      color: var(--primary-dark);
+    .session-tab.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: white;
       font-weight: 600;
-      box-shadow: var(--shadow);
     }
+    .session-tab .tab-actions {
+      display: none;
+      gap: 2px;
+      margin-left: 4px;
+    }
+    .session-tab.active .tab-actions { display: inline-flex; }
+    .tab-btn {
+      background: rgba(255,255,255,0.25);
+      border: none;
+      border-radius: 50%;
+      width: 18px; height: 18px;
+      cursor: pointer;
+      font-size: 0.65rem;
+      display: flex; align-items: center; justify-content: center;
+      color: white;
+      transition: background 0.15s;
+      padding: 0;
+    }
+    .tab-btn:hover { background: rgba(255,255,255,0.45); }
+    .tab-btn.del { background: rgba(220,80,80,0.5); }
+    .tab-btn.del:hover { background: rgba(220,80,80,0.8); }
+    .btn-add-session {
+      background: none;
+      border: 1.5px dashed var(--primary);
+      color: var(--primary-dark);
+      padding: 7px 14px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 500;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .btn-add-session:hover { background: var(--primary-light); }
     .timeline-wrap { position: relative; padding-left: 32px; }
     .timeline-wrap::before { content:''; position:absolute; left:10px; top:0; bottom:0; width:2px; background:linear-gradient(to bottom,var(--primary-light),var(--primary)); }
     .timeline-item { position: relative; margin-bottom: 1.2rem; }
@@ -41,14 +78,6 @@
     .timeline-card { background:var(--white); border-radius:var(--radius-sm); padding:1rem 1.2rem; box-shadow:var(--shadow); display:flex; align-items:center; gap:1rem; flex-wrap:wrap; transition:box-shadow 0.2s; }
     .timeline-card:hover { box-shadow:var(--shadow-hover); }
     .timeline-time { font-size:1rem; font-weight:700; color:var(--primary-dark); min-width:52px; font-family:'Poppins',sans-serif; flex-shrink:0; }
-    .tab-info-card {
-      border-radius: var(--radius);
-      padding: 1rem 1.2rem;
-      margin-bottom: 1.2rem;
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
   </style>
 </head>
 <body>
@@ -71,10 +100,10 @@
 
 <div class="container">
   <div class="page-header">
-    <div><h2>🕐 Timeline Acara</h2><p>Rundown lengkap Akad, Resepsi & Ngunduh Mantu</p></div>
+    <div><h2>🕐 Timeline Acara</h2><p>Kelola rundown setiap sesi acara pernikahan</p></div>
     <div style="display:flex;gap:0.6rem;flex-wrap:wrap">
       <button class="btn btn-outline" style="flex:1;justify-content:center" onclick="printTimeline()">🖨️ Print</button>
-      <button class="btn btn-primary" style="flex:1;justify-content:center" onclick="openAddModal()">+ Tambah Acara</button>
+      <button class="btn btn-primary" style="flex:1;justify-content:center" onclick="openAddEventModal()">+ Tambah Acara</button>
     </div>
   </div>
 
@@ -83,7 +112,7 @@
     <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap">
       <div style="font-size:2rem">💍</div>
       <div style="flex:1;min-width:0">
-        <h3 id="wedding-names" style="color:var(--primary-dark);font-size:1rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></h3>
+        <h3 id="wedding-names" style="color:var(--primary-dark);font-size:1rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></h3>
         <p id="wedding-date-full" style="color:var(--text-light);font-size:0.82rem"></p>
       </div>
       <div style="text-align:right;flex-shrink:0">
@@ -93,21 +122,53 @@
     </div>
   </div>
 
-  <!-- TABS -->
-  <div class="timeline-tabs">
-    <button id="tab-akad" class="active" onclick="switchTab('akad')">🕌 Akad Nikah</button>
-    <button id="tab-resepsi" onclick="switchTab('resepsi')">🎊 Resepsi</button>
-    <button id="tab-ngunduh" onclick="switchTab('ngunduh')">🏠 Ngunduh Mantu</button>
+  <!-- SESSION TABS -->
+  <div class="session-tabs-wrap">
+    <div class="session-tabs" id="session-tabs"></div>
+    <button class="btn-add-session" onclick="openAddSessionModal()">＋ Tambah Sesi</button>
   </div>
 
-  <!-- TAB DESC -->
-  <div id="tab-desc" class="tab-info-card" style="background:var(--white);box-shadow:var(--shadow)"></div>
+  <!-- ACTIVE SESSION DESC -->
+  <div id="session-desc" class="card" style="margin-bottom:1rem;padding:0.9rem 1.2rem;display:flex;align-items:center;gap:10px"></div>
 
   <!-- TIMELINE LIST -->
-  <div class="card" id="timeline-container" style="padding:1.5rem 1.5rem"></div>
+  <div class="card" id="timeline-container" style="padding:1.5rem"></div>
 </div>
 
-<!-- MODAL -->
+<!-- MODAL TAMBAH/EDIT SESI -->
+<div class="modal-overlay" id="modal-session">
+  <div class="modal" style="max-width:420px">
+    <div class="modal-header">
+      <h3 id="modal-session-title">Tambah Sesi Acara</h3>
+      <button class="btn-close" onclick="closeModal('modal-session')">✕</button>
+    </div>
+    <input type="hidden" id="sess-edit-id" />
+    <div class="form-group">
+      <label>Nama Sesi</label>
+      <input type="text" id="sess-label" placeholder="Contoh: Siraman, Pengajian, Midodareni" />
+    </div>
+    <div class="grid-2">
+      <div class="form-group">
+        <label>Emoji / Ikon</label>
+        <input type="text" id="sess-emoji" placeholder="Contoh: 🌸" maxlength="4" />
+      </div>
+      <div class="form-group">
+        <label>Urutan</label>
+        <input type="number" id="sess-order" placeholder="0, 1, 2..." min="0" />
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Deskripsi Singkat</label>
+      <textarea id="sess-desc" rows="2" placeholder="Deskripsi singkat sesi ini..."></textarea>
+    </div>
+    <div style="display:flex;gap:0.8rem">
+      <button class="btn btn-primary" style="flex:1;justify-content:center" onclick="saveSession()">Simpan</button>
+      <button class="btn btn-outline" onclick="closeModal('modal-session')">Batal</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL TAMBAH/EDIT ACARA -->
 <div class="modal-overlay" id="modal-event">
   <div class="modal" style="max-width:500px">
     <div class="modal-header">
@@ -119,15 +180,9 @@
       <div class="form-group"><label>Waktu</label><input type="time" id="e-time" /></div>
       <div class="form-group"><label>Kategori</label>
         <select id="e-category">
-          <option>Persiapan</option>
-          <option>Venue</option>
-          <option>Akad</option>
-          <option>Dokumentasi</option>
-          <option>Resepsi</option>
-          <option>Ngunduh Mantu</option>
-          <option>Hiburan</option>
-          <option>Acara</option>
-          <option>Penutup</option>
+          <option>Persiapan</option><option>Venue</option><option>Akad</option>
+          <option>Dokumentasi</option><option>Resepsi</option><option>Ngunduh Mantu</option>
+          <option>Hiburan</option><option>Acara</option><option>Penutup</option><option>Lainnya</option>
         </select>
       </div>
     </div>
@@ -142,59 +197,57 @@
 </div>
 
 <script type="module">
-  import { Auth, Timeline, setupNav, toast, openModal, closeModal, showLoading } from './js/firebase.js';
+  import { Auth, TimelineSession, Timeline, setupNav, toast, openModal, closeModal, showLoading } from './js/firebase.js';
 
-  window.doLogout = () => Auth.logout();
-  window.openModal = openModal;
+  window.doLogout  = () => Auth.logout();
+  window.openModal  = openModal;
   window.closeModal = closeModal;
 
   let uid, profile;
-  let activeTab = 'akad';
-  let tabData = { akad: [], resepsi: [], ngunduh: [] };
-
-  const tabMeta = {
-    akad:    { label: '🕌 Akad Nikah',    emoji: '🕌', color: '#fef3cd', desc: 'Rundown prosesi akad nikah — ijab kabul, serah terima mahar & seserahan, sungkeman, hingga sesi foto resmi.' },
-    resepsi: { label: '🎊 Resepsi',        emoji: '🎊', color: '#d4edda', desc: 'Rundown pesta resepsi pernikahan — penyambutan tamu, makan, hiburan, potong kue, hingga penutupan.' },
-    ngunduh: { label: '🏠 Ngunduh Mantu',  emoji: '🏠', color: '#d0e8f5', desc: 'Rundown acara ngunduh mantu di keluarga pria — penjemputan, sambutan keluarga, sungkeman, makan bersama & penutupan.' },
-  };
+  let sessions = [];       // [{id, label, emoji, desc, order}]
+  let activeId  = null;
+  let eventData = {};      // { sessionId: [...events] }
 
   const catBadge = {
     Persiapan:'badge-pink', Venue:'badge-green', Akad:'badge-yellow',
     Dokumentasi:'badge-blue', Resepsi:'badge-green', 'Ngunduh Mantu':'badge-blue',
-    Hiburan:'badge-blue', Acara:'badge-pink', Penutup:'badge-yellow'
+    Hiburan:'badge-blue', Acara:'badge-pink', Penutup:'badge-yellow', Lainnya:'badge-pink'
   };
 
-  window.switchTab = async (tab) => {
-    activeTab = tab;
-    document.querySelectorAll('.timeline-tabs button').forEach(b => b.classList.remove('active'));
-    document.getElementById('tab-' + (tab === 'ngunduh' ? 'ngunduh' : tab)).classList.add('active');
-    render();
-  };
-
-  function render() {
-    const meta = tabMeta[activeTab];
-    const events = tabData[activeTab];
-
-    // tab desc
-    document.getElementById('tab-desc').innerHTML = `
-      <span style="font-size:2rem">${meta.emoji}</span>
-      <div style="flex:1;min-width:0">
-        <strong style="color:var(--primary-dark)">${meta.label}</strong>
-        <p style="font-size:0.82rem;color:var(--text-light);margin-top:2px">${meta.desc}</p>
-      </div>
-      <span class="badge badge-pink" style="flex-shrink:0">${events.length} acara</span>`;
-    document.getElementById('tab-desc').style.background = meta.color;
-
-    // total all tabs
-    const total = tabData.akad.length + tabData.resepsi.length + tabData.ngunduh.length;
+  // ===== RENDER TABS =====
+  function renderTabs() {
+    const total = Object.values(eventData).reduce((s, arr) => s + arr.length, 0);
     document.getElementById('total-events').textContent = total;
 
+    document.getElementById('session-tabs').innerHTML = sessions.map(s => `
+      <button class="session-tab ${s.id === activeId ? 'active' : ''}" onclick="switchTab('${s.id}')">
+        ${s.emoji || '📋'} ${s.label}
+        <span class="tab-actions">
+          <span class="tab-btn" onclick="event.stopPropagation();openEditSessionModal('${s.id}')" title="Edit sesi">✏️</span>
+          <span class="tab-btn del" onclick="event.stopPropagation();deleteSession('${s.id}')" title="Hapus sesi">✕</span>
+        </span>
+      </button>`).join('');
+  }
+
+  // ===== RENDER EVENTS =====
+  function renderEvents() {
+    const sess = sessions.find(s => s.id === activeId);
+    if (!sess) return;
+
+    document.getElementById('session-desc').innerHTML = `
+      <span style="font-size:1.5rem">${sess.emoji || '📋'}</span>
+      <div style="flex:1;min-width:0">
+        <strong style="color:var(--primary-dark)">${sess.label}</strong>
+        ${sess.desc ? `<p style="font-size:0.8rem;color:var(--text-light);margin-top:2px">${sess.desc}</p>` : ''}
+      </div>
+      <span class="badge badge-pink">${(eventData[activeId]||[]).length} acara</span>`;
+
+    const events = eventData[activeId] || [];
     const el = document.getElementById('timeline-container');
     if (!events.length) {
       el.innerHTML = '<div class="empty-state"><div class="empty-icon">🕐</div><p>Belum ada acara di sesi ini.<br>Klik "+ Tambah Acara" untuk mulai.</p></div>';
       return;
     }
-
     el.innerHTML = `<div class="timeline-wrap">${events.map(e => `
       <div class="timeline-item">
         <div class="timeline-dot"></div>
@@ -216,17 +269,79 @@
       </div>`).join('')}</div>`;
   }
 
-  window.openAddModal = () => {
+  // ===== SWITCH TAB =====
+  window.switchTab = (id) => { activeId = id; renderTabs(); renderEvents(); };
+
+  // ===== SESSION CRUD =====
+  window.openAddSessionModal = () => {
+    document.getElementById('sess-edit-id').value = '';
+    document.getElementById('modal-session-title').textContent = 'Tambah Sesi Acara';
+    ['sess-label','sess-emoji','sess-desc'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('sess-order').value = sessions.length;
+    openModal('modal-session');
+  };
+
+  window.openEditSessionModal = (id) => {
+    const s = sessions.find(x => x.id === id);
+    if (!s) return;
+    document.getElementById('sess-edit-id').value = id;
+    document.getElementById('modal-session-title').textContent = 'Edit Sesi Acara';
+    document.getElementById('sess-label').value = s.label;
+    document.getElementById('sess-emoji').value = s.emoji || '';
+    document.getElementById('sess-order').value = s.order ?? 0;
+    document.getElementById('sess-desc').value = s.desc || '';
+    openModal('modal-session');
+  };
+
+  window.saveSession = async () => {
+    const label = document.getElementById('sess-label').value.trim();
+    if (!label) return toast('Nama sesi wajib diisi', 'error');
+    const editId = document.getElementById('sess-edit-id').value;
+    const data = {
+      label,
+      emoji: document.getElementById('sess-emoji').value || '📋',
+      order: parseInt(document.getElementById('sess-order').value) || 0,
+      desc:  document.getElementById('sess-desc').value,
+    };
+    if (editId) {
+      await TimelineSession.update(uid, editId, data);
+    } else {
+      // buat id dari label
+      const newId = label.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '') + '_' + Date.now();
+      data.id = newId;
+      await TimelineSession.add(uid, data);
+      eventData[newId] = [];
+    }
+    sessions = await TimelineSession.getAll(uid);
+    if (!editId) activeId = data.id;
+    closeModal('modal-session');
+    toast(editId ? 'Sesi diperbarui' : 'Sesi ditambahkan');
+    renderTabs(); renderEvents();
+  };
+
+  window.deleteSession = async (id) => {
+    if (sessions.length <= 1) return toast('Minimal harus ada 1 sesi', 'error');
+    if (!confirm(`Hapus sesi "${sessions.find(s=>s.id===id)?.label}"?\nSemua acara di sesi ini juga akan dihapus.`)) return;
+    await TimelineSession.delete(uid, id);
+    delete eventData[id];
+    sessions = await TimelineSession.getAll(uid);
+    if (activeId === id) activeId = sessions[0]?.id || null;
+    toast('Sesi dihapus');
+    renderTabs(); renderEvents();
+  };
+
+  // ===== EVENT CRUD =====
+  window.openAddEventModal = () => {
     document.getElementById('e-edit-id').value = '';
-    document.getElementById('modal-event-title').textContent = 'Tambah Acara — ' + tabMeta[activeTab].label;
+    document.getElementById('modal-event-title').textContent = 'Tambah Acara — ' + (sessions.find(s=>s.id===activeId)?.label || '');
     ['e-event','e-desc','e-pic'].forEach(id => document.getElementById(id).value = '');
     document.getElementById('e-time').value = '08:00';
-    document.getElementById('e-category').value = activeTab === 'akad' ? 'Akad' : activeTab === 'resepsi' ? 'Resepsi' : 'Ngunduh Mantu';
+    document.getElementById('e-category').value = 'Acara';
     openModal('modal-event');
   };
 
   window.editEvent = (id) => {
-    const e = tabData[activeTab].find(x => x.id === id);
+    const e = (eventData[activeId]||[]).find(x => x.id === id);
     if (!e) return;
     document.getElementById('e-edit-id').value = id;
     document.getElementById('modal-event-title').textContent = 'Edit Acara';
@@ -244,53 +359,41 @@
     if (!event || !time) return toast('Waktu dan nama acara wajib diisi', 'error');
     const id   = document.getElementById('e-edit-id').value;
     const data = { time, category: document.getElementById('e-category').value, event, desc: document.getElementById('e-desc').value, pic: document.getElementById('e-pic').value };
-    if (id) await Timeline.update(uid, id, data, activeTab);
-    else    await Timeline.add(uid, data, activeTab);
-    tabData[activeTab] = await Timeline.getAll(uid, activeTab);
+    if (id) await Timeline.update(uid, id, data, activeId);
+    else    await Timeline.add(uid, data, activeId);
+    eventData[activeId] = await Timeline.getAll(uid, activeId);
     closeModal('modal-event');
     toast(id ? 'Acara diperbarui' : 'Acara ditambahkan');
-    render();
+    renderTabs(); renderEvents();
   };
 
   window.deleteEvent = async (id) => {
     if (!confirm('Hapus acara ini?')) return;
-    await Timeline.delete(uid, id, activeTab);
-    tabData[activeTab] = await Timeline.getAll(uid, activeTab);
-    toast('Acara dihapus'); render();
+    await Timeline.delete(uid, id, activeId);
+    eventData[activeId] = await Timeline.getAll(uid, activeId);
+    toast('Acara dihapus');
+    renderTabs(); renderEvents();
   };
 
+  // ===== PRINT =====
   window.printTimeline = () => {
+    const sess = sessions.find(s => s.id === activeId);
+    const events = eventData[activeId] || [];
     const dateStr = profile?.weddingDate
-      ? new Date(profile.weddingDate).toLocaleDateString('id-ID',{weekday:'long',year:'numeric',month:'long',day:'numeric'})
-      : '';
-    const meta = tabMeta[activeTab];
-    const events = tabData[activeTab];
+      ? new Date(profile.weddingDate).toLocaleDateString('id-ID',{weekday:'long',year:'numeric',month:'long',day:'numeric'}) : '';
     const win = window.open('', '_blank');
-    win.document.write(`<html><head><title>${meta.label}</title>
-    <style>
-      body{font-family:Arial,sans-serif;padding:30px;color:#333}
-      h1{color:#a07070;text-align:center}
-      p.sub{text-align:center;color:#888;margin-bottom:30px;font-size:13px}
-      table{width:100%;border-collapse:collapse}
-      th{background:#f5ebe0;padding:10px;text-align:left;font-size:12px}
-      td{padding:10px;border-bottom:1px solid #eee;font-size:12px}
-      .cat{background:#e8c9c9;padding:2px 8px;border-radius:10px;font-size:11px}
-      @media print{body{padding:15px}}
-    </style></head><body>
-    <h1>${meta.emoji} ${meta.label}</h1>
+    win.document.write(`<html><head><title>${sess?.label||'Timeline'}</title>
+    <style>body{font-family:Arial,sans-serif;padding:30px;color:#333}h1{color:#a07070;text-align:center}p.sub{text-align:center;color:#888;margin-bottom:30px;font-size:13px}table{width:100%;border-collapse:collapse}th{background:#f5ebe0;padding:10px;text-align:left;font-size:12px}td{padding:10px;border-bottom:1px solid #eee;font-size:12px}.cat{background:#e8c9c9;padding:2px 8px;border-radius:10px;font-size:11px}</style>
+    </head><body>
+    <h1>${sess?.emoji||'🕐'} ${sess?.label||'Timeline'}</h1>
     <p class="sub">${profile?.name} & ${profile?.partnerName} — ${dateStr}</p>
     <table><thead><tr><th>Waktu</th><th>Acara</th><th>Kategori</th><th>Deskripsi</th><th>PIC</th></tr></thead>
-    <tbody>${events.map(e=>`<tr>
-      <td><strong>${e.time}</strong></td>
-      <td>${e.event}</td>
-      <td><span class="cat">${e.category}</span></td>
-      <td>${e.desc||'-'}</td>
-      <td>${e.pic||'-'}</td>
-    </tr>`).join('')}</tbody></table>
-    </body></html>`);
+    <tbody>${events.map(e=>`<tr><td><strong>${e.time}</strong></td><td>${e.event}</td><td><span class="cat">${e.category}</span></td><td>${e.desc||'-'}</td><td>${e.pic||'-'}</td></tr>`).join('')}</tbody>
+    </table></body></html>`);
     win.document.close(); win.print();
   };
 
+  // ===== INIT =====
   Auth.requireAuth(async (user) => {
     showLoading(true);
     uid = user.uid;
@@ -301,14 +404,15 @@
       document.getElementById('wedding-date-full').textContent =
         new Date(profile.weddingDate).toLocaleDateString('id-ID',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
 
-    // load semua tab paralel
-    [tabData.akad, tabData.resepsi, tabData.ngunduh] = await Promise.all([
-      Timeline.getAll(uid, 'akad'),
-      Timeline.getAll(uid, 'resepsi'),
-      Timeline.getAll(uid, 'ngunduh'),
-    ]);
+    sessions = await TimelineSession.getAll(uid);
+    activeId  = sessions[0]?.id || null;
 
-    render();
+    // load semua event paralel
+    await Promise.all(sessions.map(async s => {
+      eventData[s.id] = await Timeline.getAll(uid, s.id);
+    }));
+
+    renderTabs(); renderEvents();
     showLoading(false);
   });
 </script>
