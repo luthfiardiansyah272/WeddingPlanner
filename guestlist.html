@@ -54,7 +54,7 @@
     .role-pria    { background:#dbeafe; color:#1d4ed8; }
     .role-wanita  { background:#fce7f3; color:#be185d; }
     .role-bridesmaid { background:#f3e8ff; color:#7c3aed; }
-    .role-groomsman  { background:#dcfce7; color:#15803d; }
+    .role-vip        { background:#fef9c3; color:#854d0e; }
   </style>
 </head>
 <body>
@@ -94,6 +94,7 @@
     <button class="guest-tab active" id="tab-semua"       onclick="switchTab('semua')">👥 Semua <span class="tab-count" id="cnt-semua">0</span></button>
     <button class="guest-tab"        id="tab-pria"        onclick="switchTab('pria')">👨 Pria <span class="tab-count" id="cnt-pria">0</span></button>
     <button class="guest-tab"        id="tab-wanita"      onclick="switchTab('wanita')">👩 Wanita <span class="tab-count" id="cnt-wanita">0</span></button>
+    <button class="guest-tab"        id="tab-vip"         onclick="switchTab('vip')">⭐ VIP <span class="tab-count" id="cnt-vip">0</span></button>
     <button class="guest-tab"        id="tab-bridesmaid"  onclick="switchTab('bridesmaid')">💐 Bridesmaid <span class="tab-count" id="cnt-bridesmaid">0</span></button>
     <button class="guest-tab"        id="tab-groomsman"   onclick="switchTab('groomsman')">🤵 Groomsman <span class="tab-count" id="cnt-groomsman">0</span></button>
   </div>
@@ -135,6 +136,7 @@
         <label>Peran</label>
         <select id="g-role">
           <option value="Tamu">👥 Tamu Biasa</option>
+          <option value="VIP">⭐ VIP</option>
           <option value="Bridesmaid">💐 Bridesmaid</option>
           <option value="Groomsman">🤵 Groomsman</option>
         </select>
@@ -171,17 +173,20 @@
 
   const roleClass = {
     Pria: 'role-pria', Wanita: 'role-wanita',
-    Bridesmaid: 'role-bridesmaid', Groomsman: 'role-groomsman', Tamu: 'badge-pink'
+    Bridesmaid: 'role-bridesmaid', Groomsman: 'role-groomsman',
+    VIP: 'role-vip', Tamu: 'badge-pink'
   };
   const roleLabel = {
     Pria:'👨 Pria', Wanita:'👩 Wanita',
-    Bridesmaid:'💐 Bridesmaid', Groomsman:'🤵 Groomsman', Tamu:'👥 Tamu'
+    Bridesmaid:'💐 Bridesmaid', Groomsman:'🤵 Groomsman',
+    VIP:'⭐ VIP', Tamu:'👥 Tamu'
   };
 
   function getTabGuests(tab) {
     if (tab === 'semua')      return allGuests;
-    if (tab === 'pria')       return allGuests.filter(g => g.gender === 'Pria' && g.role !== 'Groomsman');
-    if (tab === 'wanita')     return allGuests.filter(g => g.gender === 'Wanita' && g.role !== 'Bridesmaid');
+    if (tab === 'pria')       return allGuests.filter(g => g.gender === 'Pria' && g.role !== 'Groomsman' && g.role !== 'VIP');
+    if (tab === 'wanita')     return allGuests.filter(g => g.gender === 'Wanita' && g.role !== 'Bridesmaid' && g.role !== 'VIP');
+    if (tab === 'vip')        return allGuests.filter(g => g.role === 'VIP');
     if (tab === 'bridesmaid') return allGuests.filter(g => g.role === 'Bridesmaid');
     if (tab === 'groomsman')  return allGuests.filter(g => g.role === 'Groomsman');
     return allGuests;
@@ -196,8 +201,9 @@
 
     // update tab counts
     document.getElementById('cnt-semua').textContent      = allGuests.length;
-    document.getElementById('cnt-pria').textContent       = allGuests.filter(g => g.gender === 'Pria' && g.role !== 'Groomsman').length;
-    document.getElementById('cnt-wanita').textContent     = allGuests.filter(g => g.gender === 'Wanita' && g.role !== 'Bridesmaid').length;
+    document.getElementById('cnt-pria').textContent       = allGuests.filter(g => g.gender === 'Pria' && g.role !== 'Groomsman' && g.role !== 'VIP').length;
+    document.getElementById('cnt-wanita').textContent     = allGuests.filter(g => g.gender === 'Wanita' && g.role !== 'Bridesmaid' && g.role !== 'VIP').length;
+    document.getElementById('cnt-vip').textContent        = allGuests.filter(g => g.role === 'VIP').length;
     document.getElementById('cnt-bridesmaid').textContent = allGuests.filter(g => g.role === 'Bridesmaid').length;
     document.getElementById('cnt-groomsman').textContent  = allGuests.filter(g => g.role === 'Groomsman').length;
   }
@@ -235,6 +241,7 @@
         semua: 'Belum ada tamu. Klik "+ Tambah" untuk mulai.',
         pria: 'Belum ada tamu pria.',
         wanita: 'Belum ada tamu wanita.',
+        vip: 'Belum ada tamu VIP. Tambahkan dengan memilih Peran = VIP.',
         bridesmaid: 'Belum ada bridesmaid. Tambahkan dengan memilih Peran = Bridesmaid.',
         groomsman: 'Belum ada groomsman. Tambahkan dengan memilih Peran = Groomsman.',
       };
@@ -299,7 +306,8 @@
       activeTab === 'wanita' || activeTab === 'bridesmaid' ? 'Wanita' : 'Pria';
     document.getElementById('g-role').value =
       activeTab === 'bridesmaid' ? 'Bridesmaid' :
-      activeTab === 'groomsman'  ? 'Groomsman'  : 'Tamu';
+      activeTab === 'groomsman'  ? 'Groomsman'  :
+      activeTab === 'vip'        ? 'VIP'         : 'Tamu';
     openModal('modal-guest');
   };
 
