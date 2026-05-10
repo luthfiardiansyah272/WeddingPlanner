@@ -164,7 +164,7 @@
       <label>Deskripsi Singkat</label>
       <textarea id="sess-desc" rows="2" placeholder="Deskripsi singkat sesi ini..."></textarea>
     </div>
-    <div style="display:flex;gap:0.8rem">
+    <div style="display:flex;gap:0.8rem;position:sticky;bottom:0;background:var(--white);padding-top:1rem;margin-top:0.5rem">
       <button class="btn btn-primary" style="flex:1;justify-content:center" onclick="saveSession()">Simpan</button>
       <button class="btn btn-outline" onclick="closeModal('modal-session')">Batal</button>
     </div>
@@ -192,7 +192,7 @@
     <div class="form-group"><label>Nama Acara</label><input type="text" id="e-event" placeholder="Contoh: Prosesi Akad Nikah" /></div>
     <div class="form-group"><label>Deskripsi</label><textarea id="e-desc" rows="2" placeholder="Detail acara..."></textarea></div>
     <div class="form-group"><label>Penanggung Jawab (PIC)</label><input type="text" id="e-pic" placeholder="Contoh: MC, Fotografer, Panitia" /></div>
-    <div style="display:flex;gap:0.8rem">
+    <div style="display:flex;gap:0.8rem;position:sticky;bottom:0;background:var(--white);padding-top:1rem;margin-top:0.5rem">
       <button class="btn btn-primary" style="flex:1;justify-content:center" onclick="saveEvent()">Simpan</button>
       <button class="btn btn-outline" onclick="closeModal('modal-event')">Batal</button>
     </div>

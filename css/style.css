@@ -331,9 +331,10 @@ input:focus, select:focus, textarea:focus { border-color: var(--primary); }
     width: 100%;
     max-width: 100%;
     border-radius: var(--radius) var(--radius) 0 0;
-    padding: 1.5rem 1rem;
-    max-height: 90vh;
+    padding: 1.5rem 1rem 2rem;
+    max-height: 85vh;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
   .modal .grid-2 { grid-template-columns: 1fr; }
 
