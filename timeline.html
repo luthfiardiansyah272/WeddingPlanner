@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Timeline – Wedding Planner</title>
   <link rel="stylesheet" href="css/style.css" />
+  <script defer src="js/nav-fix.js"></script>
   <style>
     .session-tabs-wrap {
       display: flex;
@@ -23,7 +24,7 @@
       border: 1.5px solid var(--primary-light);
       background: var(--white);
       cursor: pointer;
-      font-family: 'Poppins', sans-serif;
+      font-family: 'DM Sans', sans-serif;
       font-size: 0.82rem;
       font-weight: 500;
       color: var(--text-light);
@@ -42,7 +43,7 @@
       margin-left: 4px;
     }
     .tab-btn {
-      background: rgba(160,112,112,0.15);
+      background: rgba(14, 165, 233, 0.15);
       border: none;
       border-radius: 50%;
       width: 20px; height: 20px;
@@ -53,7 +54,7 @@
       transition: background 0.15s;
       padding: 0;
     }
-    .tab-btn:hover { background: rgba(160,112,112,0.3); }
+    .tab-btn:hover { background: rgba(14, 165, 233, 0.28); }
     .session-tab.active .tab-btn { color: white; background: rgba(255,255,255,0.25); }
     .session-tab.active .tab-btn:hover { background: rgba(255,255,255,0.45); }
     .tab-btn.del { background: rgba(220,80,80,0.15); color: var(--danger); }
@@ -67,7 +68,7 @@
       padding: 7px 14px;
       border-radius: 20px;
       cursor: pointer;
-      font-family: 'Poppins', sans-serif;
+      font-family: 'DM Sans', sans-serif;
       font-size: 0.82rem;
       font-weight: 500;
       transition: all 0.2s;
@@ -80,7 +81,7 @@
     .timeline-dot { position:absolute; left:-22px; top:14px; width:12px; height:12px; border-radius:50%; background:var(--primary); border:3px solid var(--white); box-shadow:0 0 0 2px var(--primary); }
     .timeline-card { background:var(--white); border-radius:var(--radius-sm); padding:1rem 1.2rem; box-shadow:var(--shadow); display:flex; align-items:center; gap:1rem; flex-wrap:wrap; transition:box-shadow 0.2s; }
     .timeline-card:hover { box-shadow:var(--shadow-hover); }
-    .timeline-time { font-size:1rem; font-weight:700; color:var(--primary-dark); min-width:52px; font-family:'Poppins',sans-serif; flex-shrink:0; }
+    .timeline-time { font-size:1rem; font-weight:700; color:var(--primary-dark); min-width:52px; font-family:'DM Sans',sans-serif; flex-shrink:0; }
   </style>
 </head>
 <body>
@@ -94,7 +95,7 @@
     <a href="recommendations.html">⭐ <span>Rekomendasi</span></a>
     <a href="checklist.html">✅ <span>Checklist</span></a>
     <a href="seserahan.html">🎁 <span>Seserahan</span></a>
-    <a href="guestlist.html">👥 <span>Tamu</span></a>`n    <a href="panitia.html>?? <span>Panitia</span></a>
+    <a href="guestlist.html">👥 <span>Tamu</span></a>
     <a href="timeline.html">🕐 <span>Timeline</span></a>
     <a href="profile.html">👤 <span>Profil</span></a>
   </div>
@@ -386,7 +387,7 @@
       ? new Date(profile.weddingDate).toLocaleDateString('id-ID',{weekday:'long',year:'numeric',month:'long',day:'numeric'}) : '';
     const win = window.open('', '_blank');
     win.document.write(`<html><head><title>${sess?.label||'Timeline'}</title>
-    <style>body{font-family:Arial,sans-serif;padding:30px;color:#333}h1{color:#a07070;text-align:center}p.sub{text-align:center;color:#888;margin-bottom:30px;font-size:13px}table{width:100%;border-collapse:collapse}th{background:#f5ebe0;padding:10px;text-align:left;font-size:12px}td{padding:10px;border-bottom:1px solid #eee;font-size:12px}.cat{background:#e8c9c9;padding:2px 8px;border-radius:10px;font-size:11px}</style>
+    <style>body{font-family:Arial,sans-serif;padding:30px;color:#333}h1{color:#0369a1;text-align:center}p.sub{text-align:center;color:#888;margin-bottom:30px;font-size:13px}table{width:100%;border-collapse:collapse}th{background:#e2e8f0;padding:10px;text-align:left;font-size:12px}td{padding:10px;border-bottom:1px solid #eee;font-size:12px}.cat{background:#bae6fd;padding:2px 8px;border-radius:10px;font-size:11px}</style>
     </head><body>
     <h1>${sess?.emoji||'🕐'} ${sess?.label||'Timeline'}</h1>
     <p class="sub">${profile?.name} & ${profile?.partnerName} — ${dateStr}</p>

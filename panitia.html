@@ -1,60 +1,11 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Panitia – Wedding Planner</title>
-  <link rel="stylesheet" href="css/style.css" />
-  <style>
-    .divisi-card {
-      background: var(--white);
-      border-radius: var(--radius);
-      overflow: hidden;
-      box-shadow: var(--shadow);
-      margin-bottom: 1rem;
-      transition: box-shadow 0.2s;
-    }
-    .divisi-card:hover { box-shadow: var(--shadow-hover); }
-    .divisi-header {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 0.9rem 1.2rem;
-      background: linear-gradient(135deg, var(--primary-light), var(--nude-dark));
-      cursor: pointer;
-      user-select: none;
-    }
-    .divisi-header h4 { font-size: 1rem; color: var(--primary-dark); flex: 1; }
-    .divisi-header .toggle { font-size: 0.8rem; color: var(--text-light); transition: transform 0.2s; }
-    .divisi-header.collapsed .toggle { transform: rotate(-90deg); }
-    .divisi-body { padding: 0.8rem 1.2rem; }
-    .divisi-desc { font-size: 0.8rem; color: var(--text-light); margin-bottom: 0.8rem; font-style: italic; }
-    .anggota-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 8px 0;
-      border-bottom: 1px solid var(--nude-dark);
-    }
-    .anggota-item:last-child { border-bottom: none; }
-    .anggota-avatar {
-      width: 36px; height: 36px;
-      border-radius: 50%;
-      background: var(--primary-light);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1rem;
-      flex-shrink: 0;
-      font-weight: 700;
-      color: var(--primary-dark);
-    }
-    .anggota-info { flex: 1; min-width: 0; }
-    .anggota-name { font-size: 0.88rem; font-weight: 600; }
-    .anggota-detail { font-size: 0.75rem; color: var(--text-light); margin-top: 1px; }
-    .jabatan-badge { font-size: 0.7rem; padding: 2px 8px; border-radius: 10px; font-weight: 600; }
-    .jabatan-ketua   { background: #fef9c3; color: #854d0e; }
-    .jabatan-wakil   { background: #dbeafe; color: #1d4ed8; }
-    .jabatan-anggota { background: var(--primary-light); color: var(--primary-dark); }
-  </style>
+  <link rel="stylesheet" href="css/style.css">
+  <script defer src="js/nav-fix.js"></script>
 </head>
 <body>
 <nav>
@@ -68,330 +19,30 @@
     <a href="checklist.html">✅ <span>Checklist</span></a>
     <a href="seserahan.html">🎁 <span>Seserahan</span></a>
     <a href="guestlist.html">👥 <span>Tamu</span></a>
-    <a href="panitia.html">🎪 <span>Panitia</span></a>
     <a href="timeline.html">🕐 <span>Timeline</span></a>
     <a href="profile.html">👤 <span>Profil</span></a>
   </div>
-  <div class="nav-user"><span id="nav-user-name"></span><button class="btn-logout" onclick="doLogout()">Keluar</button></div>
+  <div class="nav-user">
+    <button class="btn-logout" onclick="window.location.href='login.html'">Keluar</button>
+  </div>
 </nav>
-
-<div class="container">
-  <div class="page-header">
-    <div><h2>🎪 Panitia Acara</h2><p>Kelola susunan panitia & pembagian tugas</p></div>
-    <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
-      <button class="btn btn-outline" onclick="printPanitia()">🖨️ Print</button>
-      <button class="btn btn-outline" onclick="openAddDivisiModal()">+ Divisi</button>
-      <button class="btn btn-primary" onclick="openAddAnggotaModal()">+ Anggota</button>
+<main class="container">
+  <section class="page-hero">
+    <div>
+      <h1>Panitia</h1>
+      <p>Kelola tim panitia dan pembagian tugas acara pernikahan Anda.</p>
     </div>
-  </div>
-
-  <!-- SUMMARY -->
-  <div class="grid-4" style="margin-bottom:1.5rem">
-    <div class="stat-card"><div class="stat-icon">🎪</div><div class="stat-info"><p>Total Divisi</p><h3 id="s-divisi">0</h3></div></div>
-    <div class="stat-card"><div class="stat-icon" style="background:#d4edda">👥</div><div class="stat-info"><p>Total Anggota</p><h3 id="s-anggota">0</h3></div></div>
-    <div class="stat-card"><div class="stat-icon" style="background:#fef9c3">👑</div><div class="stat-info"><p>Ketua Divisi</p><h3 id="s-ketua">0</h3></div></div>
-    <div class="stat-card"><div class="stat-icon" style="background:#fce7f3">📋</div><div class="stat-info"><p>Belum Ada Anggota</p><h3 id="s-kosong">0</h3></div></div>
-  </div>
-
-  <!-- FILTER -->
-  <div class="filter-bar">
-    <input type="text" id="search" placeholder="🔍 Cari nama anggota..." oninput="renderAll()" />
-    <select id="filter-divisi" onchange="renderAll()"><option value="">Semua Divisi</option></select>
-  </div>
-
-  <div id="panitia-list"></div>
-</div>
-
-<!-- MODAL DIVISI -->
-<div class="modal-overlay" id="modal-divisi">
-  <div class="modal" style="max-width:420px">
-    <div class="modal-header">
-      <h3 id="modal-divisi-title">Tambah Divisi</h3>
-      <button class="btn-close" onclick="closeModal('modal-divisi')">✕</button>
+  </section>
+  <section style="margin-top:2rem;">
+    <div class="card">
+      <h2>Halaman Panitia</h2>
+      <p>Halaman ini masih dalam pengembangan. Kembali ke menu lain atau tambahkan anggota panitia di data Anda.</p>
     </div>
-    <input type="hidden" id="d-edit-id" />
-    <div class="form-group"><label>Nama Divisi</label><input type="text" id="d-label" placeholder="Contoh: Penerima Tamu" /></div>
-    <div class="grid-2">
-      <div class="form-group"><label>Emoji</label><input type="text" id="d-emoji" placeholder="🤝" maxlength="4" /></div>
-      <div class="form-group"><label>Urutan</label><input type="number" id="d-order" min="0" placeholder="0,1,2..." /></div>
-    </div>
-    <div class="form-group"><label>Deskripsi Tugas</label><textarea id="d-desc" rows="2" placeholder="Tugas & tanggung jawab divisi ini..."></textarea></div>
-    <div style="display:flex;gap:0.8rem;position:sticky;bottom:0;background:var(--white);padding-top:1rem;margin-top:0.5rem">
-      <button class="btn btn-primary" style="flex:1;justify-content:center" onclick="saveDivisi()">Simpan</button>
-      <button class="btn btn-outline" onclick="closeModal('modal-divisi')">Batal</button>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL ANGGOTA -->
-<div class="modal-overlay" id="modal-anggota">
-  <div class="modal" style="max-width:480px">
-    <div class="modal-header">
-      <h3 id="modal-anggota-title">Tambah Anggota Panitia</h3>
-      <button class="btn-close" onclick="closeModal('modal-anggota')">✕</button>
-    </div>
-    <input type="hidden" id="a-edit-id" />
-    <div class="grid-2">
-      <div class="form-group"><label>Nama Lengkap</label><input type="text" id="a-name" placeholder="Nama anggota" /></div>
-      <div class="form-group">
-        <label>Divisi</label>
-        <select id="a-divisi"></select>
-      </div>
-    </div>
-    <div class="grid-2">
-      <div class="form-group">
-        <label>Jabatan</label>
-        <select id="a-jabatan">
-          <option value="Anggota">👤 Anggota</option>
-          <option value="Ketua">👑 Ketua Divisi</option>
-          <option value="Wakil">🥈 Wakil Ketua</option>
-        </select>
-      </div>
-      <div class="form-group"><label>No. HP / WhatsApp</label><input type="text" id="a-phone" placeholder="08xx-xxxx-xxxx" /></div>
-    </div>
-    <div class="form-group"><label>Tugas Spesifik</label><textarea id="a-tugas" rows="2" placeholder="Contoh: Jaga meja registrasi pintu utama, shift pagi 07.00-12.00"></textarea></div>
-    <div class="form-group"><label>Catatan</label><input type="text" id="a-note" placeholder="Catatan tambahan..." /></div>
-    <div style="display:flex;gap:0.8rem;position:sticky;bottom:0;background:var(--white);padding-top:1rem;margin-top:0.5rem">
-      <button class="btn btn-primary" style="flex:1;justify-content:center" onclick="saveAnggota()">Simpan</button>
-      <button class="btn btn-outline" onclick="closeModal('modal-anggota')">Batal</button>
-    </div>
-  </div>
-</div>
-
-<script type="module">
-  import { Auth, Panitia, setupNav, toast, openModal, closeModal, showLoading } from './js/firebase.js';
-
-  window.doLogout  = () => Auth.logout();
-  window.openModal  = openModal;
-  window.closeModal = closeModal;
-
-  let uid, allDivisi = [], allAnggota = [];
-
-  const jabatanClass = { Ketua: 'jabatan-ketua', Wakil: 'jabatan-wakil', Anggota: 'jabatan-anggota' };
-  const jabatanIcon  = { Ketua: '👑', Wakil: '🥈', Anggota: '👤' };
-
-  function updateStats() {
-    document.getElementById('s-divisi').textContent  = allDivisi.length;
-    document.getElementById('s-anggota').textContent = allAnggota.length;
-    document.getElementById('s-ketua').textContent   = allAnggota.filter(a => a.jabatan === 'Ketua').length;
-    const kosong = allDivisi.filter(d => !allAnggota.some(a => a.divisiId === d.id)).length;
-    document.getElementById('s-kosong').textContent  = kosong;
-  }
-
-  function rebuildDivisiSelect(selectedId = '') {
-    const sel = document.getElementById('a-divisi');
-    sel.innerHTML = allDivisi.map(d => `<option value="${d.id}" ${d.id===selectedId?'selected':''}>${d.emoji||'📋'} ${d.label}</option>`).join('');
-  }
-
-  function rebuildFilterDivisi() {
-    const sel = document.getElementById('filter-divisi');
-    const cur = sel.value;
-    sel.innerHTML = '<option value="">Semua Divisi</option>' + allDivisi.map(d => `<option value="${d.id}" ${d.id===cur?'selected':''}>${d.emoji||'📋'} ${d.label}</option>`).join('');
-  }
-
-  window.renderAll = () => {
-    const search      = document.getElementById('search').value.toLowerCase();
-    const filterDiv   = document.getElementById('filter-divisi').value;
-    rebuildFilterDivisi();
-
-    const el = document.getElementById('panitia-list');
-    const divisiToShow = filterDiv ? allDivisi.filter(d => d.id === filterDiv) : allDivisi;
-
-    if (!divisiToShow.length) {
-      el.innerHTML = '<div class="empty-state card"><div class="empty-icon">🎪</div><p>Belum ada divisi panitia.</p></div>';
-      return;
-    }
-
-    el.innerHTML = divisiToShow.map(d => {
-      let anggota = allAnggota.filter(a => a.divisiId === d.id);
-      if (search) anggota = anggota.filter(a => a.name.toLowerCase().includes(search) || (a.tugas||'').toLowerCase().includes(search));
-
-      return `
-        <div class="divisi-card">
-          <div class="divisi-header" onclick="toggleDiv(this)">
-            <span style="font-size:1.4rem">${d.emoji||'📋'}</span>
-            <h4>${d.label}</h4>
-            <span class="badge ${anggota.length?'badge-green':'badge-yellow'}">${anggota.length} orang</span>
-            <div style="display:flex;gap:4px">
-              <button class="btn btn-outline btn-sm" style="padding:3px 8px;font-size:0.7rem" onclick="event.stopPropagation();openEditDivisiModal('${d.id}')">✏️</button>
-              <button class="btn btn-danger btn-sm" style="padding:3px 8px;font-size:0.7rem" onclick="event.stopPropagation();deleteDivisi('${d.id}')">🗑️</button>
-            </div>
-            <span class="toggle">▼</span>
-          </div>
-          <div class="divisi-body">
-            ${d.desc ? `<p class="divisi-desc">📌 ${d.desc}</p>` : ''}
-            ${anggota.length === 0
-              ? `<div style="text-align:center;padding:1rem;color:var(--text-light);font-size:0.85rem">
-                  Belum ada anggota.
-                  <button class="btn btn-outline btn-sm" style="margin-left:8px" onclick="openAddAnggotaModal('${d.id}')">+ Tambah</button>
-                </div>`
-              : anggota.map(a => `
-                  <div class="anggota-item">
-                    <div class="anggota-avatar">${a.name.charAt(0).toUpperCase()}</div>
-                    <div class="anggota-info">
-                      <div class="anggota-name">${a.name}
-                        <span class="jabatan-badge ${jabatanClass[a.jabatan]||'jabatan-anggota'}" style="margin-left:6px">${jabatanIcon[a.jabatan]||'👤'} ${a.jabatan||'Anggota'}</span>
-                      </div>
-                      <div class="anggota-detail">
-                        ${a.phone ? `📞 ${a.phone}` : ''}
-                        ${a.tugas ? `<div style="margin-top:2px">📋 ${a.tugas}</div>` : ''}
-                        ${a.note  ? `<div style="margin-top:1px;color:var(--text-light)">${a.note}</div>` : ''}
-                      </div>
-                    </div>
-                    <div style="display:flex;gap:4px;flex-shrink:0">
-                      <button class="btn btn-outline btn-sm" style="padding:3px 8px" onclick="editAnggota('${a.id}')">✏️</button>
-                      <button class="btn btn-danger btn-sm" style="padding:3px 8px" onclick="deleteAnggota('${a.id}')">🗑️</button>
-                    </div>
-                  </div>`).join('')
-            }
-            <div style="margin-top:0.6rem">
-              <button class="btn btn-outline btn-sm" onclick="openAddAnggotaModal('${d.id}')">+ Tambah Anggota</button>
-            </div>
-          </div>
-        </div>`;
-    }).join('');
-  };
-
-  window.toggleDiv = (header) => {
-    header.classList.toggle('collapsed');
-    header.nextElementSibling.style.display = header.classList.contains('collapsed') ? 'none' : 'block';
-  };
-
-  // ===== DIVISI CRUD =====
-  window.openAddDivisiModal = () => {
-    document.getElementById('d-edit-id').value = '';
-    document.getElementById('modal-divisi-title').textContent = 'Tambah Divisi';
-    ['d-label','d-emoji','d-desc'].forEach(id => document.getElementById(id).value = '');
-    document.getElementById('d-order').value = allDivisi.length;
-    openModal('modal-divisi');
-  };
-
-  window.openEditDivisiModal = (id) => {
-    const d = allDivisi.find(x => x.id === id);
-    if (!d) return;
-    document.getElementById('d-edit-id').value  = id;
-    document.getElementById('modal-divisi-title').textContent = 'Edit Divisi';
-    document.getElementById('d-label').value    = d.label;
-    document.getElementById('d-emoji').value    = d.emoji  || '';
-    document.getElementById('d-order').value    = d.order  ?? 0;
-    document.getElementById('d-desc').value     = d.desc   || '';
-    openModal('modal-divisi');
-  };
-
-  window.saveDivisi = async () => {
-    const label = document.getElementById('d-label').value.trim();
-    if (!label) return toast('Nama divisi wajib diisi', 'error');
-    const editId = document.getElementById('d-edit-id').value;
-    const data = {
-      label,
-      emoji: document.getElementById('d-emoji').value || '📋',
-      order: parseInt(document.getElementById('d-order').value) || 0,
-      desc:  document.getElementById('d-desc').value,
-    };
-    if (editId) {
-      await Panitia.updateDivisi(uid, editId, data);
-    } else {
-      const newId = label.toLowerCase().replace(/\s+/g,'_').replace(/[^a-z0-9_]/g,'') + '_' + Date.now();
-      data.id = newId;
-      await Panitia.addDivisi(uid, data);
-    }
-    allDivisi = await Panitia.getDivisi(uid);
-    closeModal('modal-divisi');
-    toast(editId ? 'Divisi diperbarui' : 'Divisi ditambahkan ✨');
-    updateStats(); rebuildDivisiSelect(); renderAll();
-  };
-
-  window.deleteDivisi = async (id) => {
-    const d = allDivisi.find(x => x.id === id);
-    const count = allAnggota.filter(a => a.divisiId === id).length;
-    if (!confirm(`Hapus divisi "${d?.label}"?${count ? `\n${count} anggota di divisi ini juga akan dihapus.` : ''}`)) return;
-    await Panitia.deleteDivisi(uid, id);
-    allDivisi  = await Panitia.getDivisi(uid);
-    allAnggota = await Panitia.getAnggota(uid);
-    toast('Divisi dihapus'); updateStats(); rebuildDivisiSelect(); renderAll();
-  };
-
-  // ===== ANGGOTA CRUD =====
-  window.openAddAnggotaModal = (divisiId = '') => {
-    document.getElementById('a-edit-id').value = '';
-    document.getElementById('modal-anggota-title').textContent = 'Tambah Anggota Panitia';
-    ['a-name','a-phone','a-tugas','a-note'].forEach(id => document.getElementById(id).value = '');
-    document.getElementById('a-jabatan').value = 'Anggota';
-    rebuildDivisiSelect(divisiId || allDivisi[0]?.id || '');
-    openModal('modal-anggota');
-  };
-
-  window.editAnggota = (id) => {
-    const a = allAnggota.find(x => x.id === id);
-    if (!a) return;
-    document.getElementById('a-edit-id').value  = id;
-    document.getElementById('modal-anggota-title').textContent = 'Edit Anggota';
-    document.getElementById('a-name').value     = a.name;
-    document.getElementById('a-phone').value    = a.phone  || '';
-    document.getElementById('a-tugas').value    = a.tugas  || '';
-    document.getElementById('a-note').value     = a.note   || '';
-    document.getElementById('a-jabatan').value  = a.jabatan || 'Anggota';
-    rebuildDivisiSelect(a.divisiId);
-    openModal('modal-anggota');
-  };
-
-  window.saveAnggota = async () => {
-    const name = document.getElementById('a-name').value.trim();
-    if (!name) return toast('Nama anggota wajib diisi', 'error');
-    const id   = document.getElementById('a-edit-id').value;
-    const data = {
-      name,
-      divisiId: document.getElementById('a-divisi').value,
-      jabatan:  document.getElementById('a-jabatan').value,
-      phone:    document.getElementById('a-phone').value,
-      tugas:    document.getElementById('a-tugas').value,
-      note:     document.getElementById('a-note').value,
-    };
-    if (id) await Panitia.updateAnggota(uid, id, data);
-    else    await Panitia.addAnggota(uid, data);
-    allAnggota = await Panitia.getAnggota(uid);
-    closeModal('modal-anggota');
-    toast(id ? 'Anggota diperbarui' : 'Anggota ditambahkan ✨');
-    updateStats(); renderAll();
-  };
-
-  window.deleteAnggota = async (id) => {
-    if (!confirm('Hapus anggota ini?')) return;
-    await Panitia.deleteAnggota(uid, id);
-    allAnggota = await Panitia.getAnggota(uid);
-    toast('Anggota dihapus'); updateStats(); renderAll();
-  };
-
-  // ===== PRINT =====
-  window.printPanitia = () => {
-    const win = window.open('', '_blank');
-    win.document.write(`<html><head><title>Susunan Panitia</title>
-    <style>body{font-family:Arial,sans-serif;padding:30px;color:#333}h1{color:#a07070;text-align:center;margin-bottom:4px}p.sub{text-align:center;color:#888;margin-bottom:24px;font-size:13px}h2{color:#c9a0a0;font-size:14px;margin:20px 0 6px;border-bottom:1px solid #e8d5c4;padding-bottom:4px}table{width:100%;border-collapse:collapse;margin-bottom:12px}th{background:#f5ebe0;padding:8px;text-align:left;font-size:12px}td{padding:8px;border-bottom:1px solid #eee;font-size:12px}.ketua{color:#854d0e;font-weight:600}.wakil{color:#1d4ed8;font-weight:600}</style>
-    </head><body>
-    <h1>🎪 Susunan Panitia Pernikahan</h1>
-    <p class="sub">Dicetak: ${new Date().toLocaleString('id-ID')}</p>
-    ${allDivisi.map(d => {
-      const anggota = allAnggota.filter(a => a.divisiId === d.id);
-      return `<h2>${d.emoji||'📋'} ${d.label} ${d.desc?`<span style="font-weight:normal;color:#888;font-size:12px">— ${d.desc}</span>`:''}</h2>
-      ${anggota.length === 0 ? '<p style="color:#aaa;font-size:12px;font-style:italic">Belum ada anggota</p>' :
-      `<table><thead><tr><th>No</th><th>Nama</th><th>Jabatan</th><th>No. HP</th><th>Tugas</th></tr></thead>
-      <tbody>${anggota.map((a,i) => `<tr><td>${i+1}</td><td>${a.name}</td><td class="${a.jabatan==='Ketua'?'ketua':a.jabatan==='Wakil'?'wakil':''}">${a.jabatan||'Anggota'}</td><td>${a.phone||'-'}</td><td>${a.tugas||'-'}</td></tr>`).join('')}</tbody></table>`}`;
-    }).join('')}
-    </body></html>`);
-    win.document.close(); win.print();
-  };
-
-  Auth.requireAuth(async (user) => {
-    showLoading(true);
-    uid = user.uid;
-    const profile = await Auth.getProfile();
-    setupNav(profile);
-    [allDivisi, allAnggota] = await Promise.all([
-      Panitia.getDivisi(uid),
-      Panitia.getAnggota(uid),
-    ]);
-    updateStats(); rebuildDivisiSelect(); renderAll();
-    showLoading(false);
+  </section>
+</main>
+<script>
+  document.querySelectorAll('.nav-links a').forEach(a => {
+    if (a.getAttribute('href') === 'panitia.html') a.classList.add('active');
   });
 </script>
 </body>

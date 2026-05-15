@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Rekomendasi – Wedding Planner</title>
   <link rel="stylesheet" href="css/style.css" />
+  <script defer src="js/nav-fix.js"></script>
 </head>
 <body>
 <nav>
@@ -17,7 +18,7 @@
     <a href="recommendations.html">⭐ <span>Rekomendasi</span></a>
     <a href="checklist.html">✅ <span>Checklist</span></a>
     <a href="seserahan.html">🎁 <span>Seserahan</span></a>
-    <a href="guestlist.html">👥 <span>Tamu</span></a>`n    <a href="panitia.html>?? <span>Panitia</span></a>
+    <a href="guestlist.html">👥 <span>Tamu</span></a>
     <a href="timeline.html">🕐 <span>Timeline</span></a>
     <a href="profile.html">👤 <span>Profil</span></a>
   </div>
@@ -163,7 +164,7 @@
     return `<div class="vendor-card">
       <div class="vendor-card-img" style="font-size:3rem;position:relative">
         ${r.emoji||catEmoji[r.category]||'📦'}
-        ${r.region?`<span style="position:absolute;top:8px;right:8px;font-size:0.7rem;background:rgba(255,255,255,0.9);padding:2px 8px;border-radius:10px;color:var(--primary-dark);font-family:'Poppins',sans-serif">${regionFlag[r.region]||'📍'} ${r.region}</span>`:''}
+        ${r.region?`<span style="position:absolute;top:8px;right:8px;font-size:0.7rem;background:rgba(255,255,255,0.9);padding:2px 8px;border-radius:10px;color:var(--primary-dark);font-family:'DM Sans',sans-serif">${regionFlag[r.region]||'📍'} ${r.region}</span>`:''}
       </div>
       <div class="vendor-card-body">
         <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:6px">

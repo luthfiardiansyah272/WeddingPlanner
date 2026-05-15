@@ -5,77 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dashboard – Wedding Planner</title>
   <link rel="stylesheet" href="css/style.css" />
-  <style>
-    .hero-card {
-      background: linear-gradient(135deg, #c9a0a0 0%, #a07070 100%);
-      border-radius: var(--radius);
-      padding: 2rem 1.5rem;
-      text-align: center;
-      margin-bottom: 1.5rem;
-      position: relative;
-      overflow: hidden;
-    }
-    .hero-card::before {
-      content: '💍';
-      position: absolute;
-      font-size: 8rem;
-      opacity: 0.08;
-      top: -10px;
-      right: -10px;
-      line-height: 1;
-    }
-    .hero-card .welcome { font-size: 0.85rem; color: rgba(255,255,255,0.8); margin-bottom: 4px; }
-    .hero-card .names { font-size: 1.8rem; color: white; margin-bottom: 1.2rem; font-family: 'Playfair Display', serif; }
-    .countdown-box {
-      background: rgba(255,255,255,0.18);
-      border-radius: 12px;
-      padding: 10px 16px;
-      min-width: 64px;
-      text-align: center;
-      backdrop-filter: blur(4px);
-    }
-    .countdown-box .num { font-size: 1.6rem; font-weight: 700; color: white; line-height: 1; }
-    .countdown-box .lbl { font-size: 0.62rem; color: rgba(255,255,255,0.8); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.5px; }
-    .hero-date { margin-top: 1rem; font-size: 0.82rem; color: rgba(255,255,255,0.85); }
-
-    .urgent-banner {
-      background: linear-gradient(135deg, #fff3cd, #ffeaa7);
-      border: 1.5px solid #e0b870;
-      border-radius: var(--radius-sm);
-      padding: 0.9rem 1.2rem;
-      margin-bottom: 1.5rem;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .urgent-banner .urgent-icon { font-size: 1.3rem; flex-shrink: 0; }
-    .urgent-banner p { font-size: 0.83rem; color: #856404; flex: 1; }
-    .urgent-banner a { color: #856404; font-weight: 600; text-decoration: underline; }
-
-    .section-title {
-      font-size: 1rem;
-      color: var(--primary-dark);
-      font-family: 'Playfair Display', serif;
-      margin-bottom: 1rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .overview-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--nude-dark); }
-    .overview-row:last-child { border-bottom: none; }
-    .overview-row .dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-
-    footer {
-      background: var(--white);
-      border-top: 1px solid var(--nude-dark);
-      padding: 1.5rem 2rem;
-      text-align: center;
-      margin-top: 3rem;
-    }
-    footer p { font-size: 0.8rem; color: var(--text-light); }
-    footer strong { color: var(--primary-dark); }
-  </style>
+  <script defer src="js/nav-fix.js"></script>
 </head>
 <body>
 <nav>
@@ -88,7 +18,7 @@
     <a href="recommendations.html">⭐ <span>Rekomendasi</span></a>
     <a href="checklist.html">✅ <span>Checklist</span></a>
     <a href="seserahan.html">🎁 <span>Seserahan</span></a>
-    <a href="guestlist.html">👥 <span>Tamu</span></a>`n    <a href="panitia.html>?? <span>Panitia</span></a>
+    <a href="guestlist.html">👥 <span>Tamu</span></a>
     <a href="timeline.html">🕐 <span>Timeline</span></a>
     <a href="profile.html">👤 <span>Profil</span></a>
   </div>
@@ -98,48 +28,50 @@
   </div>
 </nav>
 
-<div class="container">
+<div class="container dashboard-wrap">
 
-  <!-- HERO -->
-  <div class="hero-card">
-    <p class="welcome">Selamat datang kembali,</p>
-    <div style="display:flex;justify-content:center;align-items:center;gap:1rem;margin-bottom:0.8rem;flex-wrap:wrap">
-      <div id="hero-photo1" style="width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,0.3);display:flex;align-items:center;justify-content:center;font-size:1.8rem;border:3px solid rgba(255,255,255,0.6);overflow:hidden;flex-shrink:0">👤</div>
-      <h2 class="names" id="hero-names">...</h2>
-      <div id="hero-photo2" style="width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,0.3);display:flex;align-items:center;justify-content:center;font-size:1.8rem;border:3px solid rgba(255,255,255,0.6);overflow:hidden;flex-shrink:0">👤</div>
+  <section class="dash-hero" aria-label="Ringkasan pasangan">
+    <div class="dash-hero-main">
+      <p class="dash-kicker">Selamat datang kembali</p>
+      <div class="dash-couple">
+        <div id="hero-photo1" class="dash-avatar">👤</div>
+        <h2 class="dash-names" id="hero-names">...</h2>
+        <div id="hero-photo2" class="dash-avatar">👤</div>
+      </div>
+      <p class="dash-date" id="wedding-date-label"></p>
     </div>
-    <div id="countdown" style="display:flex;justify-content:center;gap:1rem;flex-wrap:wrap"></div>
-    <p class="hero-date" id="wedding-date-label"></p>
-  </div>
+    <div class="dash-count-panel">
+      <div id="countdown" class="dash-count-row"></div>
+    </div>
+  </section>
 
-  <!-- URGENT ALERT -->
-  <div id="urgent-banner" style="display:none" class="urgent-banner">
+  <div id="urgent-banner" style="display:none" class="urgent-banner dash-alert">
     <span class="urgent-icon">⚠️</span>
     <p id="urgent-text"></p>
   </div>
 
-  <!-- STAT BUDGET -->
-  <div class="grid-4" style="margin-bottom:1.5rem">
+  <p class="dash-section-label">Ringkasan keuangan</p>
+  <div class="grid-4 dash-kpi" style="margin-bottom:1.25rem">
     <div class="stat-card">
       <div class="stat-icon" style="background:#fef3cd">💰</div>
       <div class="stat-info"><p>Total Budget</p><h3 id="stat-total">Rp 0</h3></div>
     </div>
     <div class="stat-card">
-      <div class="stat-icon" style="background:#d4edda">✅</div>
+      <div class="stat-icon" style="background:#d1fae5">✅</div>
       <div class="stat-info"><p>Sudah Dipakai</p><h3 id="stat-spent">Rp 0</h3></div>
     </div>
     <div class="stat-card">
-      <div class="stat-icon" style="background:#d0e8f5">📋</div>
+      <div class="stat-icon" style="background:#dbeafe">📋</div>
       <div class="stat-info"><p>Direncanakan</p><h3 id="stat-planned">Rp 0</h3></div>
     </div>
     <div class="stat-card">
-      <div class="stat-icon" style="background:#e8c9c9">💸</div>
+      <div class="stat-icon" style="background:#e0e7ff">💸</div>
       <div class="stat-info"><p>Sisa Budget</p><h3 id="stat-remaining">Rp 0</h3></div>
     </div>
   </div>
 
-  <!-- STAT FITUR -->
-  <div class="grid-5" style="margin-bottom:1.5rem">
+  <p class="dash-section-label">Aktivitas perencanaan</p>
+  <div class="grid-5 dash-quick" style="margin-bottom:1.25rem">
     <a href="checklist.html" style="text-decoration:none">
       <div class="stat-card" style="cursor:pointer">
         <div class="stat-icon">✅</div>
@@ -172,47 +104,41 @@
     </a>
   </div>
 
-  <!-- ROW 1: Budget + Vendor -->
-  <div class="grid-2" style="margin-bottom:1.2rem">
+  <div class="dash-main-grid">
     <div class="card">
-      <div class="section-title">
-        💰 Ringkasan Budget
-        <a href="budget.html" class="btn btn-outline btn-sm">Lihat Semua</a>
+      <div class="dash-section-title">
+        💰 Ringkasan budget
+        <a href="budget.html" class="btn btn-outline btn-sm">Lihat semua</a>
       </div>
       <div id="budget-overview"></div>
     </div>
     <div class="card">
-      <div class="section-title">
-        🤝 Vendor Saya
-        <a href="vendors.html" class="btn btn-outline btn-sm">Lihat Semua</a>
+      <div class="dash-section-title">
+        🤝 Vendor saya
+        <a href="vendors.html" class="btn btn-outline btn-sm">Lihat semua</a>
       </div>
       <div id="vendor-overview"></div>
     </div>
-  </div>
-
-  <!-- ROW 2: Checklist + Tamu -->
-  <div class="grid-2" style="margin-bottom:1.2rem">
     <div class="card">
-      <div class="section-title">
-        ✅ Tugas Belum Selesai
-        <a href="checklist.html" class="btn btn-outline btn-sm">Lihat Semua</a>
+      <div class="dash-section-title">
+        ✅ Tugas berikutnya
+        <a href="checklist.html" class="btn btn-outline btn-sm">Lihat semua</a>
       </div>
       <div id="checklist-overview"></div>
     </div>
     <div class="card">
-      <div class="section-title">
-        👥 Status Tamu
-        <a href="guestlist.html" class="btn btn-outline btn-sm">Lihat Semua</a>
+      <div class="dash-section-title">
+        👥 Status tamu
+        <a href="guestlist.html" class="btn btn-outline btn-sm">Lihat semua</a>
       </div>
       <div id="guest-overview"></div>
     </div>
   </div>
 
-  <!-- ROW 3: Seserahan full width -->
-  <div class="card">
-    <div class="section-title">
+  <div class="card" style="margin-bottom:0">
+    <div class="dash-section-title">
       🎁 Seserahan
-      <a href="seserahan.html" class="btn btn-outline btn-sm">Lihat Semua</a>
+      <a href="seserahan.html" class="btn btn-outline btn-sm">Lihat semua</a>
     </div>
     <div id="seserahan-overview"></div>
   </div>
@@ -250,20 +176,20 @@
     // Countdown
     function updateCountdown() {
       if (!profile.weddingDate) {
-        document.getElementById('countdown').innerHTML = '<p style="color:rgba(255,255,255,0.8);font-size:0.85rem">Belum ada tanggal pernikahan. <a href="profile.html" style="color:white;font-weight:600;text-decoration:underline">Atur sekarang</a></p>';
+        document.getElementById('countdown').innerHTML = '<p class="dash-count-msg">Belum ada tanggal pernikahan. <a href="profile.html">Atur sekarang</a></p>';
         return;
       }
       const wedding = new Date(profile.weddingDate);
       const diff = wedding - new Date();
       if (diff <= 0) {
-        document.getElementById('countdown').innerHTML = '<p style="font-size:1.3rem;color:white">🎉 Selamat atas pernikahan Anda!</p>';
+        document.getElementById('countdown').innerHTML = '<p class="dash-count-msg" style="font-size:1.15rem">🎉 Selamat atas pernikahan Anda!</p>';
         return;
       }
       const days  = Math.floor(diff / 86400000);
       const hours = Math.floor((diff % 86400000) / 3600000);
       const mins  = Math.floor((diff % 3600000) / 60000);
       const secs  = Math.floor((diff % 60000) / 1000);
-      const box   = (n, l) => `<div class="countdown-box"><div class="num">${n}</div><div class="lbl">${l}</div></div>`;
+      const box   = (n, l) => `<div class="dash-chip"><span class="dash-chip-num">${n}</span><span class="dash-chip-lbl">${l}</span></div>`;
       document.getElementById('countdown').innerHTML = box(days,'Hari') + box(hours,'Jam') + box(mins,'Menit') + box(secs,'Detik');
       document.getElementById('wedding-date-label').textContent = '📅 ' + wedding.toLocaleDateString('id-ID', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
     }
@@ -390,12 +316,11 @@
     }
 
     // ===== GUEST OVERVIEW =====
-    document.getElementById('stat-guests').textContent = gs.total + ' orang';
     const goEl = document.getElementById('guest-overview');
     if (!gs.total) {
       goEl.innerHTML = `<div class="empty-state"><div class="empty-icon">👥</div><p>Belum ada tamu.<br><a href="guestlist.html" style="color:var(--primary-dark)">Tambah sekarang →</a></p></div>`;
     } else {
-      const pctHadir = Math.round(gs.confirmed / gs.total * 100);
+      const pctHadir = gs.total ? Math.round(gs.confirmed / gs.total * 100) : 0;
       goEl.innerHTML = `
         <div style="display:flex;justify-content:space-around;text-align:center;margin-bottom:1rem">
           <div><div style="font-size:1.6rem;font-weight:700;color:var(--success)">${gs.confirmed}</div><div style="font-size:0.72rem;color:var(--text-light)">✅ Hadir</div></div>

@@ -1,4 +1,19 @@
-// ===== STORAGE HELPERS =====
+/**
+ * DEPRECATED & UNUSED
+ * 
+ * This file is legacy and is NO LONGER USED in the project.
+ * All functionality has been migrated to firebase.js which uses:
+ * - Firebase Firestore (Cloud Database)
+ * - Firebase Authentication
+ * 
+ * The original app.js used localStorage which was replaced with Firestore.
+ * This file is kept for historical reference only.
+ * 
+ * DO NOT import or use this file. Use firebase.js instead.
+ */
+
+// ===== STORAGE HELPERS ===== (DEPRECATED - USE FIREBASE.JS INSTEAD)
+
 const store = {
   get: (key) => JSON.parse(localStorage.getItem(key) || 'null'),
   set: (key, val) => localStorage.setItem(key, JSON.stringify(val)),
