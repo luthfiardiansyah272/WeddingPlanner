@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Timeline – Wedding Planner</title>
+  <title>Timeline – Sakinah</title>
   <link rel="stylesheet" href="css/style.css" />
   <script defer src="js/nav-fix.js"></script>
   <style>
@@ -86,7 +86,7 @@
 </head>
 <body>
 <nav>
-  <a href="index.html" class="nav-brand">💍 Wedding Planner</a>
+  <a href="index.html" class="nav-brand">✨ Sakinah</a>
   <button class="nav-toggle" id="nav-toggle" onclick="document.getElementById('nav-links').classList.toggle('open')"><span></span><span></span><span></span></button>
   <div class="nav-links" id="nav-links">
     <a href="index.html">🏠 <span>Dashboard</span></a>
@@ -112,7 +112,7 @@
   </div>
 
   <!-- INFO CARD -->
-  <div class="card" style="margin-bottom:1.5rem;background:linear-gradient(135deg,var(--primary-light),var(--nude-dark))">
+  <div class="card" style="margin-bottom:1.5rem;background:linear-gradient(135deg,var(--primary-light),var(--accent-light))">
     <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap">
       <div style="font-size:2rem">💍</div>
       <div style="flex:1;min-width:0">
@@ -387,7 +387,7 @@
       ? new Date(profile.weddingDate).toLocaleDateString('id-ID',{weekday:'long',year:'numeric',month:'long',day:'numeric'}) : '';
     const win = window.open('', '_blank');
     win.document.write(`<html><head><title>${sess?.label||'Timeline'}</title>
-    <style>body{font-family:Arial,sans-serif;padding:30px;color:#333}h1{color:#0369a1;text-align:center}p.sub{text-align:center;color:#888;margin-bottom:30px;font-size:13px}table{width:100%;border-collapse:collapse}th{background:#e2e8f0;padding:10px;text-align:left;font-size:12px}td{padding:10px;border-bottom:1px solid #eee;font-size:12px}.cat{background:#bae6fd;padding:2px 8px;border-radius:10px;font-size:11px}</style>
+    <style>body{font-family:Arial,sans-serif;padding:30px;color:#4a4543}h1{color:#a68566;text-align:center}p.sub{text-align:center;color:#8b8580;margin-bottom:30px;font-size:13px}table{width:100%;border-collapse:collapse}th{background:#e8d5c4;padding:10px;text-align:left;font-size:12px}td{padding:10px;border-bottom:1px solid #eee;font-size:12px}.cat{background:#e8d5c4;padding:2px 8px;border-radius:10px;font-size:11px}</style>
     </head><body>
     <h1>${sess?.emoji||'🕐'} ${sess?.label||'Timeline'}</h1>
     <p class="sub">${profile?.name} & ${profile?.partnerName} — ${dateStr}</p>

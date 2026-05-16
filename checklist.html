@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Checklist – Wedding Planner</title>
+  <title>Checklist – Sakinah</title>
   <link rel="stylesheet" href="css/style.css" />
   <script defer src="js/nav-fix.js"></script>
   <style>
-    .checklist-item { display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:var(--radius-sm);transition:background 0.2s;border-bottom:1px solid var(--nude-dark); }
+    .checklist-item { display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:var(--radius-sm);transition:background 0.2s;border-bottom:1px solid var(--primary-light); }
     .checklist-item:last-child { border-bottom:none; }
-    .checklist-item:hover { background:var(--nude); }
+    .checklist-item:hover { background:var(--primary-light); }
     .checklist-item.done .task-text { text-decoration:line-through;color:var(--text-light); }
     .check-box { width:22px;height:22px;border-radius:6px;border:2px solid var(--primary);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s;background:white; }
     .check-box.checked { background:var(--primary);border-color:var(--primary); }
@@ -23,7 +23,7 @@
 </head>
 <body>
 <nav>
-  <a href="index.html" class="nav-brand">💍 Wedding Planner</a>
+  <a href="index.html" class="nav-brand">✨ Sakinah</a>
   <button class="nav-toggle" id="nav-toggle" onclick="document.getElementById('nav-links').classList.toggle('open')"><span></span><span></span><span></span></button>
   <div class="nav-links" id="nav-links">
     <a href="index.html">🏠 <span>Dashboard</span></a>
@@ -49,7 +49,7 @@
     <div style="display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap">
       <div class="progress-ring" style="flex-shrink:0">
         <svg width="90" height="90" viewBox="0 0 110 110">
-          <circle cx="55" cy="55" r="46" fill="none" stroke="var(--nude-dark)" stroke-width="10"/>
+          <circle cx="55" cy="55" r="46" fill="none" stroke="var(--primary-light)" stroke-width="10"/>
           <circle id="ring-fill" cx="55" cy="55" r="46" fill="none" stroke="var(--primary)" stroke-width="10" stroke-dasharray="289" stroke-dashoffset="289" stroke-linecap="round"/>
         </svg>
         <span class="pct-text" id="pct-text" style="font-size:1.1rem">0%</span>
@@ -139,7 +139,7 @@
 
     el.innerHTML = Object.entries(grouped).map(([cat, tasks]) => `
       <div style="margin-bottom:1rem">
-        <div style="font-size:0.8rem;font-weight:600;color:var(--text-light);text-transform:uppercase;letter-spacing:1px;padding:8px 16px;background:var(--nude);border-radius:var(--radius-sm);margin-bottom:4px">${cat}</div>
+        <div style="font-size:0.8rem;font-weight:600;color:var(--text-light);text-transform:uppercase;letter-spacing:1px;padding:8px 16px;background:var(--primary-light);border-radius:var(--radius-sm);margin-bottom:4px">${cat}</div>
         ${tasks.map(t => `
           <div class="checklist-item ${t.done?'done':''}">
             <div class="check-box ${t.done?'checked':''}" onclick="toggleTask('${t.id}',${t.done})"></div>

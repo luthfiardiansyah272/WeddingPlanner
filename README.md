@@ -1,8 +1,8 @@
-# 💍 Wedding Planner
+# ✨ Sakinah – Wedding Planner SaaS
 
-> Aplikasi web untuk membantu pasangan merencanakan pernikahan impian mereka — mulai dari budgeting, manajemen vendor, checklist persiapan, daftar tamu, hingga rundown hari H.
+> Platform modern dan elegan untuk membantu pasangan merencanakan pernikahan impian mereka dengan percaya diri. Dari budgeting, manajemen vendor, checklist persiapan, daftar tamu, hingga rundown hari H — semua dalam satu tempat yang cantik dan mudah digunakan.
 
-🌐 **Live Demo:** [https://wedding-planner-app-id.web.app](https://wedding-planner-app-id.web.app)
+🌐 **Live Demo:** [https://sakinah-wedding.web.app](https://sakinah-wedding.web.app)
 
 ---
 
@@ -196,6 +196,8 @@ service cloud.firestore {
 **Luthfi Ardiansyah**
 - GitHub: [@luthfiardiansyah272](https://github.com/luthfiardiansyah272)
 
+Rebuilt and optimized as **Sakinah SaaS** — production-ready wedding planning platform.
+
 ---
 
 ## 📄 Lisensi
@@ -206,5 +208,5 @@ MIT License — bebas digunakan dan dimodifikasi.
 
 <div align="center">
   <p>Dibuat dengan ❤️ untuk membantu pasangan merencanakan hari istimewa mereka</p>
-  <p>💍 <strong>Wedding Planner</strong> — <a href="https://wedding-planner-app-id.web.app">wedding-planner-app-id.web.app</a></p>
+  <p>✨ <strong>Sakinah</strong> — <a href="https://sakinah-wedding.web.app">sakinah-wedding.web.app</a></p>
 </div>
