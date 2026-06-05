@@ -2,7 +2,7 @@
 
 > Platform modern dan elegan untuk membantu pasangan merencanakan pernikahan impian mereka dengan percaya diri. Dari budgeting, manajemen vendor, checklist persiapan, daftar tamu, hingga rundown hari H — semua dalam satu tempat yang cantik dan mudah digunakan.
 
-🌐 **Live Demo:** [https://sakinah-wedding.web.app](https://sakinah-wedding.web.app)
+🌐 **Live Demo:** [https://wedding-planner-app-id.web.app](https://wedding-planner-app-id.web.app)
 
 ---
 
@@ -16,8 +16,10 @@
 | 🤝 **Vendor** | Tambah & kelola vendor pilihan dengan status negosiasi |
 | ⭐ **Rekomendasi** | 25+ vendor rekomendasi tersebar di 10 region Indonesia |
 | ✅ **Checklist** | 20 tugas default persiapan pernikahan dengan prioritas |
+| 🎁 **Seserahan** | Kelola seserahan pernikahan dengan kategori lengkap |
 | 👥 **Daftar Tamu** | Kelola tamu & RSVP tracker dengan status undangan |
 | 🕐 **Timeline** | Rundown acara hari H yang bisa di-print ke PDF |
+| 👔 **Panitia** | Kelola tim panitia dan pembagian tugas acara |
 | 👤 **Profil** | Edit data pasangan & export laporan budget/tamu ke PDF |
 
 ---
@@ -60,17 +62,22 @@ wedding-planner/
 ├── vendors.html            # Vendor saya
 ├── recommendations.html    # Rekomendasi vendor per region
 ├── checklist.html          # Checklist persiapan
+├── seserahan.html          # Daftar seserahan pernikahan
 ├── guestlist.html          # Daftar tamu & RSVP
 ├── timeline.html           # Timeline / rundown hari H
+├── panitia.html            # Kelola panitia acara
 ├── profile.html            # Profil & export PDF
 ├── css/
 │   └── style.css           # Global styles (tema pink nude)
 ├── js/
-│   ├── app.js              # Legacy (localStorage) — tidak digunakan
-│   └── firebase.js         # Firebase SDK + semua logic utama
+│   ├── firebase.js         # Firebase SDK + semua logic utama
+│   ├── nav-fix.js          # Navigation helper
+│   └── utils.js            # Utility functions
 ├── firebase.json           # Firebase hosting & firestore config
 ├── firestore.rules         # Security rules Firestore
-└── .firebaserc             # Firebase project config
+├── .firebaserc             # Firebase project config
+├── BUG_FIXES.md            # Dokumentasi bug fixes
+└── README.md               # Dokumentasi ini
 ```
 
 ---
@@ -158,7 +165,7 @@ firebase deploy
 
 Data setiap user terlindungi — hanya bisa diakses oleh pemiliknya:
 
-```
+```javascript
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
@@ -168,7 +175,33 @@ service cloud.firestore {
     match /budgets/{userId} {
       allow read, write: if request.auth != null && request.auth.uid == userId;
     }
-    // ... dan seterusnya untuk vendors, checklist, guests, timeline
+    match /vendors/{userId}/items/{itemId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    match /recommendations/{userId}/items/{itemId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    match /checklists/{userId}/items/{itemId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    match /seserahan/{userId}/items/{itemId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    match /guests/{userId}/items/{itemId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    match /timelines/{userId}/{jenis}/{itemId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    match /timeline_sessions/{userId}/list/{sessId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    match /panitia/{userId}/divisi/{divisiId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    match /panitia/{userId}/anggota/{anggotaId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
   }
 }
 ```
@@ -197,6 +230,20 @@ service cloud.firestore {
 - GitHub: [@luthfiardiansyah272](https://github.com/luthfiardiansyah272)
 
 Rebuilt and optimized as **Sakinah SaaS** — production-ready wedding planning platform.
+
+---
+
+## 🐛 Bug Fixes & Changelog
+
+### v1.1.0 (Latest)
+- ✅ Fixed index.html terpotong - Dashboard sekarang load sempurna
+- ✅ Fixed race condition di Auth.requireAuth - Data tidak "hilang" lagi
+- ✅ Fixed Panitia module tidak di-export - Halaman panitia berfungsi
+- ✅ Added menu Panitia ke navigation bar
+- ✅ Fixed branding consistency - Semua halaman pakai "💍 Wedding Planner"
+- ✅ Updated README dengan dokumentasi lengkap
+
+Lihat detail di [BUG_FIXES.md](./BUG_FIXES.md) dan [MENU_FIX.md](./MENU_FIX.md)
 
 ---
 
