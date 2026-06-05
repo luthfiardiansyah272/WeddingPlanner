@@ -89,10 +89,7 @@ const Auth = {
   requireAuth(callback) {
     onAuthStateChanged(auth, async (user) => {
       if (!user) {
-        // Tunggu sebentar untuk antisipasi race condition saat register
-        setTimeout(() => {
-          if (!auth.currentUser) window.location.replace('login.html');
-        }, 1000);
+        window.location.replace('login.html');
         return;
       }
       showLoading(true);
@@ -771,4 +768,4 @@ document.addEventListener('click', (e) => {
   if (e.target.classList.contains('modal-overlay')) e.target.classList.remove('active');
 });
 
-export { auth, db, Auth, Budget, Vendor, Recommendation, Checklist, GuestList, TimelineSession, Timeline, Seserahan, Profile, fmt, stars, toast, openModal, closeModal, setupNav, showLoading };
+export { auth, db, Auth, Budget, Vendor, Recommendation, Checklist, GuestList, TimelineSession, Timeline, Seserahan, Panitia, Profile, fmt, stars, toast, openModal, closeModal, setupNav, showLoading };
