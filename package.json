@@ -1,0 +1,11 @@
+{
+  "name": "wedding-planner",
+  "version": "1.1.0",
+  "description": "Sakinah – Wedding Planner SaaS",
+  "scripts": {
+    "dev": "npx firebase serve",
+    "build": "echo No build step required for static site",
+    "deploy": "npx firebase deploy --only hosting --project wedding-planner-app-id",
+    "deploy:full": "npx firebase deploy --project wedding-planner-app-id"
+  }
+}
