@@ -6,6 +6,19 @@
   <title>Dashboard – Sakinah</title>
   <link rel="stylesheet" href="css/style.css" />
   <script defer src="js/nav-fix.js"></script>
+  <style>
+    .dash-welcome-chip {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: linear-gradient(135deg, rgba(232,101,122,0.12), rgba(124,45,82,0.08));
+      border: 1px solid rgba(232,101,122,0.18);
+      border-radius: var(--r-full);
+      padding: 3px 12px; font-size: 0.64rem; font-weight: 700;
+      color: var(--wine); text-transform: uppercase; letter-spacing: 0.12em;
+      margin-bottom: 0.75rem;
+    }
+    .dash-welcome-chip::before { content: '✦'; font-size: 0.6rem; color: var(--rose); }
+    .dash-welcome-chip::after  { content: '✦'; font-size: 0.6rem; color: var(--rose); }
+  </style>
 </head>
 <body>
 <nav>
@@ -33,7 +46,7 @@
 
   <section class="dash-hero" aria-label="Ringkasan pasangan">
     <div class="dash-hero-main">
-      <p class="dash-kicker">Selamat datang kembali</p>
+      <span class="dash-welcome-chip">Selamat datang kembali</span>
       <div class="dash-couple">
         <div id="hero-photo1" class="dash-avatar">👤</div>
         <h2 class="dash-names" id="hero-names">...</h2>
@@ -52,28 +65,28 @@
     <p id="urgent-text"></p>
   </div>
 
-  <p class="dash-section-label">Ringkasan keuangan</p>
-  <div class="grid-4 dash-kpi" style="margin-bottom:1.25rem">
+  <p class="dash-section-label" style="margin-top:1.75rem;margin-bottom:1rem">Ringkasan keuangan</p>
+  <div class="grid-4 dash-kpi" style="margin-bottom:2rem">
     <div class="stat-card">
-      <div class="stat-icon" style="background:#ead5bf">💰</div>
+      <div class="stat-icon" style="background:rgba(232,101,122,0.12)">💰</div>
       <div class="stat-info"><p>Total Budget</p><h3 id="stat-total">Rp 0</h3></div>
     </div>
     <div class="stat-card">
-      <div class="stat-icon" style="background:#d4e4d1">✅</div>
+      <div class="stat-icon" style="background:rgba(90,138,110,0.12)">✅</div>
       <div class="stat-info"><p>Sudah Dipakai</p><h3 id="stat-spent">Rp 0</h3></div>
     </div>
     <div class="stat-card">
-      <div class="stat-icon" style="background:#e8dfd5">📋</div>
+      <div class="stat-icon" style="background:rgba(212,169,74,0.12)">📋</div>
       <div class="stat-info"><p>Direncanakan</p><h3 id="stat-planned">Rp 0</h3></div>
     </div>
     <div class="stat-card">
-      <div class="stat-icon" style="background:#e8d5c4">💸</div>
+      <div class="stat-icon" style="background:rgba(214,48,80,0.10)">💸</div>
       <div class="stat-info"><p>Sisa Budget</p><h3 id="stat-remaining">Rp 0</h3></div>
     </div>
   </div>
 
-  <p class="dash-section-label" style="margin-top:1.1rem">Aktivitas perencanaan</p>
-  <div class="grid-5 dash-quick" style="margin-bottom:1.25rem">
+  <p class="dash-section-label" style="margin-top:2rem;margin-bottom:1rem">Aktivitas perencanaan</p>
+  <div class="grid-5 dash-quick" style="margin-bottom:2.5rem">
     <a href="checklist.html" style="text-decoration:none">
       <div class="stat-card" style="cursor:pointer">
         <div class="stat-icon">✅</div>
@@ -251,24 +264,24 @@
     // ===== BUDGET OVERVIEW =====
     const boEl = document.getElementById('budget-overview');
     if (!bData.items.length) {
-      boEl.innerHTML = `<div class="empty-state"><div class="empty-icon">💰</div><p>Belum ada item budget.<br><a href="budget.html" style="color:var(--primary-dark)">Tambah sekarang →</a></p></div>`;
+      boEl.innerHTML = `<div class="empty-state"><div class="empty-icon">💰</div><p>Belum ada item budget.<br><a href="budget.html" style="color:var(--wine)">Tambah sekarang →</a></p></div>`;
     } else {
       const pctTotal = s.total ? Math.min(Math.round(s.spent / s.total * 100), 100) : 0;
       boEl.innerHTML = `
-        <div style="display:flex;justify-content:space-between;font-size:0.8rem;margin-bottom:4px">
-          <span style="color:var(--text-light)">Total terpakai</span>
-          <span style="font-weight:600;color:${s.remaining<0?'var(--danger)':'var(--primary-dark)'}}">${pctTotal}%</span>
+        <div style="display:flex;justify-content:space-between;font-size:0.78rem;margin-bottom:4px">
+          <span style="color:var(--ink-muted)">Total terpakai</span>
+          <span style="font-weight:700;color:${s.remaining<0?'var(--danger)':'var(--wine)'}">${pctTotal}%</span>
         </div>
-        <div class="progress-bar" style="margin-bottom:1rem"><div class="progress-fill ${s.remaining<0?'over':''}" style="width:${pctTotal}%"></div></div>
+        <div class="progress-bar" style="margin-bottom:0.9rem"><div class="progress-fill ${s.remaining<0?'over':''}" style="width:${pctTotal}%"></div></div>
         ${bData.items.slice(0,4).map(item => {
           const pct  = bData.total ? Math.min((item.actual||0) / bData.total * 100, 100) : 0;
           const over = (item.actual||0) > (item.planned||0);
-          return `<div style="margin-bottom:0.8rem">
-            <div style="display:flex;justify-content:space-between;font-size:0.82rem;margin-bottom:3px">
+          return `<div style="margin-bottom:0.75rem">
+            <div style="display:flex;justify-content:space-between;font-size:0.8rem;margin-bottom:3px">
               <span>${item.category}</span>
-              <span style="color:${over?'var(--danger)':'var(--text-light)'}}">${fmt(item.actual||0)}</span>
+              <span style="color:${over?'var(--danger)':'var(--ink-muted)'}">${fmt(item.actual||0)}</span>
             </div>
-            <div class="progress-bar" style="height:6px;margin-top:0"><div class="progress-fill ${over?'over':''}" style="width:${pct}%"></div></div>
+            <div class="progress-bar" style="height:5px;margin-top:0"><div class="progress-fill ${over?'over':''}" style="width:${pct}%"></div></div>
           </div>`;
         }).join('')}`;
     }
@@ -276,15 +289,15 @@
     // ===== VENDOR OVERVIEW =====
     const voEl = document.getElementById('vendor-overview');
     if (!vendors.length) {
-      voEl.innerHTML = `<div class="empty-state"><div class="empty-icon">🤝</div><p>Belum ada vendor.<br><a href="vendors.html" style="color:var(--primary-dark)">Tambah sekarang →</a></p></div>`;
+      voEl.innerHTML = `<div class="empty-state"><div class="empty-icon">🤝</div><p>Belum ada vendor.<br><a href="vendors.html" style="color:var(--wine)">Tambah sekarang →</a></p></div>`;
     } else {
       const sc = { 'Terkonfirmasi':'badge-green', 'Negosiasi':'badge-yellow', 'Kandidat':'badge-blue' };
       const confirmed = vendors.filter(v => v.status === 'Terkonfirmasi').length;
       voEl.innerHTML = `
-        <div style="display:flex;gap:1rem;margin-bottom:1rem;flex-wrap:wrap">
-          <div style="text-align:center"><div style="font-size:1.3rem;font-weight:700;color:var(--success)">${confirmed}</div><div style="font-size:0.72rem;color:var(--text-light)">Terkonfirmasi</div></div>
-          <div style="text-align:center"><div style="font-size:1.3rem;font-weight:700;color:var(--warning)">${vendors.filter(v=>v.status==='Negosiasi').length}</div><div style="font-size:0.72rem;color:var(--text-light)">Negosiasi</div></div>
-          <div style="text-align:center"><div style="font-size:1.3rem;font-weight:700;color:var(--text-light)">${vendors.filter(v=>v.status==='Kandidat').length}</div><div style="font-size:0.72rem;color:var(--text-light)">Kandidat</div></div>
+        <div style="display:flex;gap:0.9rem;margin-bottom:0.9rem;flex-wrap:wrap">
+          <div style="text-align:center"><div style="font-size:1.2rem;font-weight:700;color:var(--success)">${confirmed}</div><div style="font-size:0.68rem;color:var(--ink-muted)">Terkonfirmasi</div></div>
+          <div style="text-align:center"><div style="font-size:1.2rem;font-weight:700;color:var(--warning)">${vendors.filter(v=>v.status==='Negosiasi').length}</div><div style="font-size:0.68rem;color:var(--ink-muted)">Negosiasi</div></div>
+          <div style="text-align:center"><div style="font-size:1.2rem;font-weight:700;color:var(--ink-muted)">${vendors.filter(v=>v.status==='Kandidat').length}</div><div style="font-size:0.68rem;color:var(--ink-muted)">Kandidat</div></div>
         </div>
         ${vendors.slice(0,4).map(v => `
           <div class="overview-row">
@@ -306,7 +319,7 @@
       coEl.innerHTML = `
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:0.8rem">
           <div class="progress-bar" style="flex:1;margin-top:0"><div class="progress-fill" style="width:${prog.pct}%"></div></div>
-          <span style="font-size:0.8rem;font-weight:600;color:var(--primary-dark);flex-shrink:0">${prog.pct}%</span>
+          <span style="font-size:0.78rem;font-weight:700;color:var(--wine);flex-shrink:0">${prog.pct}%</span>
         </div>
         ${showItems.map(t => `
           <div class="overview-row">
@@ -314,30 +327,30 @@
             <span style="font-size:0.83rem;flex:1">${t.task}</span>
             <span class="badge ${t.priority==='Tinggi'?'badge-pink':t.priority==='Sedang'?'badge-yellow':'badge-green'}" style="font-size:0.65rem">${t.priority}</span>
           </div>`).join('')}
-        ${pending.length > 5 ? `<p style="font-size:0.78rem;color:var(--text-light);margin-top:8px;text-align:center">+${pending.length - 5} tugas lainnya</p>` : ''}`;
+        ${pending.length > 5 ? `<p style="font-size:0.75rem;color:var(--ink-muted);margin-top:7px;text-align:center">+${pending.length - 5} tugas lainnya</p>` : ''}` ;
     }
 
     // ===== GUEST OVERVIEW =====
     const goEl = document.getElementById('guest-overview');
     if (!gs.total) {
-      goEl.innerHTML = `<div class="empty-state"><div class="empty-icon">👥</div><p>Belum ada tamu.<br><a href="guestlist.html" style="color:var(--primary-dark)">Tambah sekarang →</a></p></div>`;
+      goEl.innerHTML = `<div class="empty-state"><div class="empty-icon">👥</div><p>Belum ada tamu.<br><a href="guestlist.html" style="color:var(--wine)">Tambah sekarang →</a></p></div>`;
     } else {
       const pctHadir = gs.total ? Math.round(gs.confirmed / gs.total * 100) : 0;
       goEl.innerHTML = `
-        <div style="display:flex;justify-content:space-around;text-align:center;margin-bottom:1rem">
-          <div><div style="font-size:1.6rem;font-weight:700;color:var(--success)">${gs.confirmed}</div><div style="font-size:0.72rem;color:var(--text-light)">✅ Hadir</div></div>
-          <div><div style="font-size:1.6rem;font-weight:700;color:var(--warning)">${gs.pending}</div><div style="font-size:0.72rem;color:var(--text-light)">⏳ Pending</div></div>
-          <div><div style="font-size:1.6rem;font-weight:700;color:var(--danger)">${gs.declined}</div><div style="font-size:0.72rem;color:var(--text-light)">❌ Tidak Hadir</div></div>
-          <div><div style="font-size:1.6rem;font-weight:700;color:var(--primary-dark)">${gs.totalPax}</div><div style="font-size:0.72rem;color:var(--text-light)">🪑 Kursi</div></div>
+        <div style="display:flex;justify-content:space-around;text-align:center;margin-bottom:0.9rem">
+          <div><div style="font-size:1.4rem;font-weight:700;color:var(--success)">${gs.confirmed}</div><div style="font-size:0.68rem;color:var(--ink-muted)">✅ Hadir</div></div>
+          <div><div style="font-size:1.4rem;font-weight:700;color:var(--warning)">${gs.pending}</div><div style="font-size:0.68rem;color:var(--ink-muted)">⏳ Pending</div></div>
+          <div><div style="font-size:1.4rem;font-weight:700;color:var(--danger)">${gs.declined}</div><div style="font-size:0.68rem;color:var(--ink-muted)">❌ Tidak Hadir</div></div>
+          <div><div style="font-size:1.4rem;font-weight:700;color:var(--wine)">${gs.totalPax}</div><div style="font-size:0.68rem;color:var(--ink-muted)">🪑 Kursi</div></div>
         </div>
         <div class="progress-bar"><div class="progress-fill" style="width:${pctHadir}%"></div></div>
-        <p style="font-size:0.75rem;color:var(--text-light);margin-top:6px;text-align:center">${pctHadir}% tamu sudah konfirmasi kehadiran</p>`;
+        <p style="font-size:0.72rem;color:var(--ink-muted);margin-top:5px;text-align:center">${pctHadir}% tamu sudah konfirmasi kehadiran</p>`;
     }
 
     // ===== SESERAHAN OVERVIEW =====
     const soEl = document.getElementById('seserahan-overview');
     if (!sesItems.length) {
-      soEl.innerHTML = `<div class="empty-state"><div class="empty-icon">🎁</div><p>Belum ada seserahan.<br><a href="seserahan.html" style="color:var(--primary-dark)">Tambah sekarang →</a></p></div>`;
+      soEl.innerHTML = `<div class="empty-state"><div class="empty-icon">🎁</div><p>Belum ada seserahan.<br><a href="seserahan.html" style="color:var(--wine)">Tambah sekarang →</a></p></div>`;
     } else {
       const sesTotalHarga = sesItems.reduce((sum, i) => sum + (i.price || 0), 0);
       const sesPct = Math.round(sesDone / sesItems.length * 100);
@@ -348,21 +361,21 @@
         if (i.done) grouped[i.category].done++;
       });
       soEl.innerHTML = `
-        <div style="display:flex;gap:1.5rem;flex-wrap:wrap;margin-bottom:1rem;align-items:center">
-          <div style="text-align:center"><div style="font-size:1.4rem;font-weight:700;color:var(--success)">${sesDone}</div><div style="font-size:0.72rem;color:var(--text-light)">Sudah Siap</div></div>
-          <div style="text-align:center"><div style="font-size:1.4rem;font-weight:700;color:var(--warning)">${sesItems.length - sesDone}</div><div style="font-size:0.72rem;color:var(--text-light)">Belum Siap</div></div>
-          <div style="text-align:center"><div style="font-size:1.4rem;font-weight:700;color:var(--text)">${sesItems.length}</div><div style="font-size:0.72rem;color:var(--text-light)">Total Item</div></div>
-          <div style="text-align:center"><div style="font-size:1rem;font-weight:700;color:var(--primary-dark)">${fmt(sesTotalHarga)}</div><div style="font-size:0.72rem;color:var(--text-light)">Est. Total</div></div>
-          <div style="flex:1;min-width:120px">
-            <div style="display:flex;justify-content:space-between;font-size:0.78rem;margin-bottom:3px"><span style="color:var(--text-light)">Progress</span><span style="font-weight:600;color:var(--primary-dark)">${sesPct}%</span></div>
+        <div style="display:flex;gap:1.25rem;flex-wrap:wrap;margin-bottom:0.9rem;align-items:center">
+          <div style="text-align:center"><div style="font-size:1.3rem;font-weight:700;color:var(--success)">${sesDone}</div><div style="font-size:0.68rem;color:var(--ink-muted)">Sudah Siap</div></div>
+          <div style="text-align:center"><div style="font-size:1.3rem;font-weight:700;color:var(--warning)">${sesItems.length - sesDone}</div><div style="font-size:0.68rem;color:var(--ink-muted)">Belum Siap</div></div>
+          <div style="text-align:center"><div style="font-size:1.3rem;font-weight:700;color:var(--ink)">${sesItems.length}</div><div style="font-size:0.68rem;color:var(--ink-muted)">Total Item</div></div>
+          <div style="text-align:center"><div style="font-size:0.92rem;font-weight:700;color:var(--wine)">${fmt(sesTotalHarga)}</div><div style="font-size:0.68rem;color:var(--ink-muted)">Est. Total</div></div>
+          <div style="flex:1;min-width:110px">
+            <div style="display:flex;justify-content:space-between;font-size:0.75rem;margin-bottom:3px"><span style="color:var(--ink-muted)">Progress</span><span style="font-weight:700;color:var(--wine)">${sesPct}%</span></div>
             <div class="progress-bar" style="margin-top:0"><div class="progress-fill" style="width:${sesPct}%"></div></div>
           </div>
         </div>
-        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:0.5rem">
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:0.4rem">
           ${Object.entries(grouped).map(([cat, v]) => `
-            <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;background:var(--primary-light);border-radius:8px">
-              <span style="font-size:0.8rem">${cat}</span>
-              <span class="badge ${v.done===v.total?'badge-green':'badge-yellow'}" style="font-size:0.65rem">${v.done}/${v.total}</span>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:5px 9px;background:var(--rose-bg);border-radius:7px">
+              <span style="font-size:0.78rem">${cat}</span>
+              <span class="badge ${v.done===v.total?'badge-green':'badge-yellow'}" style="font-size:0.62rem">${v.done}/${v.total}</span>
             </div>`).join('')}
         </div>`;
     }

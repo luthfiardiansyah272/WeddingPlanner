@@ -7,34 +7,36 @@
   <link rel="stylesheet" href="css/style.css" />
   <style>
     .input-wrap { position: relative; }
-    .input-wrap input { padding-right: 44px; }
+    .input-wrap input { padding-right: 42px; }
     .toggle-eye {
-      position: absolute; right: 12px; top: 50%;
+      position: absolute; right: 11px; top: 50%;
       transform: translateY(-50%);
       background: none; border: none; cursor: pointer;
-      font-size: 1.1rem; color: var(--text-light); padding: 0; line-height: 1;
+      font-size: 1rem; color: var(--ink-muted); padding: 0; line-height: 1;
     }
-    .toggle-eye:hover { color: var(--primary-dark); }
+    .toggle-eye:hover { color: var(--wine); }
     .forgot-link {
-      display: block; text-align: right; font-size: 0.8rem;
-      color: var(--primary-dark); margin-top: -8px; margin-bottom: 1rem; cursor: pointer;
+      display: block; text-align: right; font-size: 0.76rem;
+      color: var(--rose-dark); margin-top: -6px; margin-bottom: 0.9rem; cursor: pointer;
+      font-weight: 600;
     }
     .forgot-link:hover { text-decoration: underline; }
     .reset-overlay {
       display: none; position: fixed; inset: 0;
-      background: rgba(15, 23, 42, 0.45); z-index: 200;
+      background: rgba(20,10,25,0.52); z-index: 200;
       align-items: center; justify-content: center;
+      backdrop-filter: blur(10px);
     }
     .reset-overlay.active { display: flex; }
     .reset-modal {
-      background: var(--white); border-radius: var(--radius); padding: 2rem;
-      width: 90%; max-width: 400px;
-      box-shadow: 0 8px 30px rgba(15, 23, 42, 0.12);
-      animation: slideUp 0.25s ease; text-align: center;
+      background: var(--white); border-radius: var(--r-xl); padding: 1.75rem;
+      width: 90%; max-width: 380px;
+      box-shadow: var(--shadow-lg);
+      animation: modalIn 0.22s var(--ease-spring); text-align: center;
+      border: 1px solid rgba(232,101,122,0.15);
     }
-    @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-    .reset-modal h3 { color: var(--primary-dark); margin-bottom: 0.5rem; }
-    .reset-modal p { font-size: 0.85rem; color: var(--text-light); margin-bottom: 1.5rem; }
+    .reset-modal h3 { color: var(--wine); margin-bottom: 0.45rem; font-family: var(--font-serif); }
+    .reset-modal p { font-size: 0.82rem; color: var(--ink-light); margin-bottom: 1.35rem; }
     #reset-success { display: none; }
   </style>
 </head>
