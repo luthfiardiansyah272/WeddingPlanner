@@ -3,20 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Seserahan – Wedding Planner</title>
+  <title>Seserahan – Sakinah</title>
   <link rel="stylesheet" href="css/style.css" />
   <script defer src="js/nav-fix.js"></script>
   <style>
     .ses-card { background:var(--white); border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow); transition:box-shadow 0.2s; margin-bottom:1rem; }
     .ses-card:hover { box-shadow:var(--shadow-hover); }
-    .ses-cat-header { display:flex; align-items:center; gap:10px; padding:0.9rem 1.2rem; background:linear-gradient(135deg,var(--primary-light),var(--nude-dark)); cursor:pointer; user-select:none; }
+    .ses-cat-header { display:flex; align-items:center; gap:10px; padding:0.9rem 1.2rem; background:linear-gradient(135deg,var(--primary-light),var(--primary)); cursor:pointer; user-select:none; }
     .ses-cat-header h4 { font-size:1rem; color:var(--primary-dark); flex:1; }
     .ses-cat-header .cat-toggle { font-size:0.8rem; color:var(--text-light); transition:transform 0.2s; }
     .ses-cat-header.collapsed .cat-toggle { transform:rotate(-90deg); }
     .ses-items { padding:0.5rem 0; }
-    .ses-item { display:flex; align-items:flex-start; gap:10px; padding:10px 1.2rem; border-bottom:1px solid var(--nude-dark); transition:background 0.15s; }
+    .ses-item { display:flex; align-items:flex-start; gap:10px; padding:10px 1.2rem; border-bottom:1px solid var(--border); transition:background 0.15s; }
     .ses-item:last-child { border-bottom:none; }
-    .ses-item:hover { background:var(--nude); }
+    .ses-item:hover { background:var(--primary-light); }
     .ses-item.checked .item-name { text-decoration:line-through; color:var(--text-light); }
     .ses-check { width:20px; height:20px; border-radius:6px; border:2px solid var(--primary); cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; background:white; transition:all 0.2s; margin-top:2px; }
     .ses-check.checked { background:var(--primary); border-color:var(--primary); }
@@ -37,7 +37,7 @@
 </head>
 <body>
 <nav>
-  <a href="index.html" class="nav-brand">💍 Wedding Planner</a>
+  <a href="index.html" class="nav-brand">✨ Sakinah</a>
   <button class="nav-toggle" id="nav-toggle" onclick="document.getElementById('nav-links').classList.toggle('open')"><span></span><span></span><span></span></button>
   <div class="nav-links" id="nav-links">
     <a href="index.html">🏠 <span>Dashboard</span></a>
@@ -70,7 +70,7 @@
     <div style="display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap">
       <div class="summary-ring" style="flex-shrink:0">
         <svg width="90" height="90" viewBox="0 0 110 110">
-          <circle cx="55" cy="55" r="46" fill="none" stroke="var(--nude-dark)" stroke-width="10"/>
+          <circle cx="55" cy="55" r="46" fill="none" stroke="var(--border)" stroke-width="10"/>
           <circle id="ring-fill" cx="55" cy="55" r="46" fill="none" stroke="var(--primary)" stroke-width="10" stroke-dasharray="289" stroke-dashoffset="289" stroke-linecap="round"/>
         </svg>
         <span class="ring-text" id="pct-text">0%</span>
@@ -355,7 +355,7 @@
     const done = allItems.filter(i => i.done).length;
     const win  = window.open('', '_blank');
     win.document.write(`<html><head><title>Daftar Seserahan</title>
-    <style>body{font-family:Arial,sans-serif;padding:30px;color:#333}h1{color:#0369a1;text-align:center;margin-bottom:4px}.sub{text-align:center;color:#888;margin-bottom:24px;font-size:13px}.summary{display:flex;gap:16px;margin-bottom:24px;flex-wrap:wrap}.sum-box{background:#e2e8f0;padding:10px 18px;border-radius:8px}.sum-box p{margin:0;font-size:11px;color:#888}.sum-box h3{margin:4px 0 0;color:#0369a1;font-size:15px}h2{color:#0ea5e9;font-size:14px;margin:20px 0 8px;border-bottom:1px solid #cbd5e1;padding-bottom:4px}table{width:100%;border-collapse:collapse;margin-bottom:16px}th{background:#e2e8f0;padding:8px 10px;text-align:left;font-size:12px}td{padding:8px 10px;border-bottom:1px solid #eee;font-size:12px}.done{color:#059669;font-weight:600}.pending{color:#d97706}a{color:#0284c7;font-size:11px}</style>
+    <style>body{font-family:Arial,sans-serif;padding:30px;color:#4a4543}h1{color:#a68566;text-align:center;margin-bottom:4px}.sub{text-align:center;color:#8b8580;margin-bottom:24px;font-size:13px}.summary{display:flex;gap:16px;margin-bottom:24px;flex-wrap:wrap}.sum-box{background:#e8d5c4;padding:10px 18px;border-radius:8px}.sum-box p{margin:0;font-size:11px;color:#8b8580}.sum-box h3{margin:4px 0 0;color:#a68566;font-size:15px}h2{color:#d4af85;font-size:14px;margin:20px 0 8px;border-bottom:1px solid #d4c4b0;padding-bottom:4px}table{width:100%;border-collapse:collapse;margin-bottom:16px}th{background:#e8d5c4;padding:8px 10px;text-align:left;font-size:12px}td{padding:8px 10px;border-bottom:1px solid #eee;font-size:12px}.done{color:#609856;font-weight:600}.pending{color:#b08f3a}a{color:#a68566;font-size:11px}</style>
     </head><body>
     <h1>🎁 Daftar Seserahan Pernikahan</h1>
     <p class="sub">Dicetak: ${new Date().toLocaleString('id-ID')}</p>

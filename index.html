@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dashboard – Wedding Planner</title>
+  <title>Dashboard – Sakinah</title>
   <link rel="stylesheet" href="css/style.css" />
   <script defer src="js/nav-fix.js"></script>
 </head>
 <body>
 <nav>
-  <a href="index.html" class="nav-brand">💍 Wedding Planner</a>
+  <a href="index.html" class="nav-brand">✨ Sakinah</a>
   <button class="nav-toggle" id="nav-toggle" onclick="document.getElementById('nav-links').classList.toggle('open')"><span></span><span></span><span></span></button>
   <div class="nav-links" id="nav-links">
     <a href="index.html">🏠 <span>Dashboard</span></a>
@@ -53,19 +53,19 @@
   <p class="dash-section-label">Ringkasan keuangan</p>
   <div class="grid-4 dash-kpi" style="margin-bottom:1.25rem">
     <div class="stat-card">
-      <div class="stat-icon" style="background:#fef3cd">💰</div>
+      <div class="stat-icon" style="background:#ead5bf">💰</div>
       <div class="stat-info"><p>Total Budget</p><h3 id="stat-total">Rp 0</h3></div>
     </div>
     <div class="stat-card">
-      <div class="stat-icon" style="background:#d1fae5">✅</div>
+      <div class="stat-icon" style="background:#d4e4d1">✅</div>
       <div class="stat-info"><p>Sudah Dipakai</p><h3 id="stat-spent">Rp 0</h3></div>
     </div>
     <div class="stat-card">
-      <div class="stat-icon" style="background:#dbeafe">📋</div>
+      <div class="stat-icon" style="background:#e8dfd5">📋</div>
       <div class="stat-info"><p>Direncanakan</p><h3 id="stat-planned">Rp 0</h3></div>
     </div>
     <div class="stat-card">
-      <div class="stat-icon" style="background:#e0e7ff">💸</div>
+      <div class="stat-icon" style="background:#e8d5c4">💸</div>
       <div class="stat-info"><p>Sisa Budget</p><h3 id="stat-remaining">Rp 0</h3></div>
     </div>
   </div>
@@ -147,7 +147,7 @@
 
 <footer>
   <p>Dibuat dengan ❤️ untuk membantu pasangan merencanakan hari istimewa mereka</p>
-  <p style="margin-top:4px"><strong>💍 Wedding Planner</strong> &nbsp;·&nbsp; <span id="footer-names"></span></p>
+  <p style="margin-top:4px"><strong>✨ Sakinah</strong> &nbsp;·&nbsp; <span id="footer-names"></span></p>
 </footer>
 
 <script type="module">
@@ -358,7 +358,7 @@
         </div>
         <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:0.5rem">
           ${Object.entries(grouped).map(([cat, v]) => `
-            <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;background:var(--nude);border-radius:8px">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;background:var(--primary-light);border-radius:8px">
               <span style="font-size:0.8rem">${cat}</span>
               <span class="badge ${v.done===v.total?'badge-green':'badge-yellow'}" style="font-size:0.65rem">${v.done}/${v.total}</span>
             </div>`).join('')}
