@@ -6,6 +6,278 @@
   <title>Panitia – Sakinah</title>
   <link rel="stylesheet" href="css/style.css">
   <script defer src="js/nav-fix.js"></script>
+  <style>
+    .roles-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .role-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      transition: all 0.3s ease;
+    }
+
+    .role-card:hover {
+      box-shadow: var(--shadow-hover);
+      border-color: var(--primary);
+    }
+
+    .role-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+
+    .role-title {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .role-icon {
+      font-size: 1.8rem;
+    }
+
+    .role-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .btn-sm {
+      padding: 0.4rem 0.8rem;
+      font-size: 0.8rem;
+      border: none;
+      border-radius: var(--radius-xs);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background: var(--primary);
+      color: white;
+      font-weight: 500;
+    }
+
+    .btn-sm:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+    }
+
+    .btn-sm.danger {
+      background: var(--danger);
+    }
+
+    .btn-sm.danger:hover {
+      background: #a03020;
+    }
+
+    .btn-sm.secondary {
+      background: var(--text-light);
+    }
+
+    .btn-sm.secondary:hover {
+      background: var(--text);
+    }
+
+    .members-list {
+      margin-top: 1rem;
+      border-top: 1px solid var(--border-subtle);
+      padding-top: 1rem;
+    }
+
+    .member-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem;
+      background: var(--surface-tint);
+      border-radius: var(--radius-xs);
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    .member-info {
+      flex: 1;
+    }
+
+    .member-name {
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .member-phone {
+      font-size: 0.8rem;
+      color: var(--text-light);
+    }
+
+    .member-actions {
+      display: flex;
+      gap: 0.3rem;
+    }
+
+    .btn-icon {
+      padding: 0.3rem 0.6rem;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xs);
+      cursor: pointer;
+      color: var(--text);
+      font-size: 0.75rem;
+      transition: all 0.2s ease;
+    }
+
+    .btn-icon:hover {
+      background: var(--primary-light);
+      border-color: var(--primary);
+      color: var(--primary-dark);
+    }
+
+    .btn-icon.danger:hover {
+      background: var(--danger-light);
+      border-color: var(--danger);
+      color: var(--danger);
+    }
+
+    .add-member-form {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border-subtle);
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+
+    .form-group label {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .form-group input {
+      padding: 0.6rem 0.8rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xs);
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      background: var(--surface);
+      color: var(--text);
+      transition: border-color 0.2s ease;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(201, 160, 112, 0.1);
+    }
+
+    .add-role-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      box-shadow: var(--shadow);
+    }
+
+    .add-role-form {
+      display: grid;
+      grid-template-columns: 1fr 1fr auto;
+      gap: 1rem;
+      align-items: flex-end;
+    }
+
+    .add-role-form .form-group {
+      margin-bottom: 0;
+    }
+
+    .add-role-form .btn-sm {
+      height: 2.4rem;
+      margin-top: 0;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: linear-gradient(135deg, var(--primary-light) 0%, var(--accent-light) 100%);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      text-align: center;
+      box-shadow: var(--shadow);
+    }
+
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+    }
+
+    .stat-label {
+      font-size: 0.85rem;
+      color: var(--text);
+      margin-top: 0.3rem;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 2rem;
+      color: var(--text-light);
+    }
+
+    .empty-state p {
+      margin: 0.5rem 0;
+    }
+
+    .no-members {
+      text-align: center;
+      padding: 1rem;
+      color: var(--text-light);
+      font-size: 0.9rem;
+      font-style: italic;
+    }
+
+    @media (max-width: 768px) {
+      .roles-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .add-role-form {
+        grid-template-columns: 1fr;
+      }
+
+      .role-actions {
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      .member-item {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .member-actions {
+        width: 100%;
+        margin-top: 0.5rem;
+      }
+    }
+  </style>
 </head>
 <body>
 <nav>
@@ -13,27 +285,251 @@
   <button class="nav-toggle" id="nav-toggle" onclick="document.getElementById('nav-links').classList.toggle('open')"><span></span><span></span><span></span></button>
   <div class="nav-links" id="nav-links"><a href="index.html">🏠 <span>Dashboard</span></a><a href="budget.html">💰 <span>Budget</span></a><a href="vendors.html">🤝 <span>Vendor</span></a><a href="recommendations.html">⭐ <span>Rekomendasi</span></a><a href="checklist.html">✅ <span>Checklist</span></a><a href="seserahan.html">🎁 <span>Seserahan</span></a><a href="guestlist.html">👥 <span>Tamu</span></a><a href="timeline.html">🕐 <span>Timeline</span></a><a href="panitia.html">👔 <span>Panitia</span></a><a href="profile.html">👤 <span>Profil</span></a></div>
   <div class="nav-user">
-    <button class="btn-logout" onclick="window.location.href='login.html'">Keluar</button>
+    <button class="btn-logout" onclick="Auth.logout()">Keluar</button>
   </div>
 </nav>
 <main class="container">
   <section class="page-hero">
     <div>
-      <h1>Panitia</h1>
-      <p>Kelola tim panitia dan pembagian tugas acara pernikahan Anda.</p>
+      <h1>👔 Panitia</h1>
+      <p>Kelola tim panitia dan pembagian tugas acara pernikahan Anda dengan mudah.</p>
     </div>
   </section>
-  <section style="margin-top:2rem;">
-    <div class="card">
-      <h2>Halaman Panitia</h2>
-      <p>Halaman ini masih dalam pengembangan. Kembali ke menu lain atau tambahkan anggota panitia di data Anda.</p>
+
+  <!-- Stats Section -->
+  <section class="stats" id="statsSection" style="margin-top: 2rem;">
+    <div class="stat-card">
+      <div class="stat-value" id="totalRoles">0</div>
+      <div class="stat-label">Divisi</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" id="totalMembers">0</div>
+      <div class="stat-label">Anggota</div>
     </div>
   </section>
+
+  <!-- Add Role Section -->
+  <section class="add-role-section">
+    <h3 style="margin-bottom: 1rem; color: var(--text);">Tambah Divisi Baru</h3>
+    <div class="add-role-form">
+      <div class="form-group">
+        <label for="roleNameInput">Nama Divisi</label>
+        <input type="text" id="roleNameInput" placeholder="Contoh: Dokumentasi">
+      </div>
+      <div class="form-group">
+        <label for="roleIconInput">Icon/Emoji</label>
+        <input type="text" id="roleIconInput" placeholder="📸" value="👥">
+      </div>
+      <button class="btn-sm" onclick="addNewRole()">Tambah</button>
+    </div>
+  </section>
+
+  <!-- Roles Section -->
+  <section>
+    <div class="roles-grid" id="rolesContainer">
+      <!-- Roles will be loaded here -->
+    </div>
+  </section>
+
+  <div id="emptyState" class="empty-state" style="display: none;">
+    <p>📋 Belum ada divisi panitia</p>
+    <p>Silakan tambahkan divisi baru di atas untuk memulai</p>
+  </div>
 </main>
-<script>
+
+<script type="module">
+  import { Auth } from './js/firebase.js';
+  import { Panitia, DEFAULT_ROLES } from './js/panitia.js';
+
+  let currentUser = null;
+
+  // Initialize page
+  Auth.requireAuth(async (user) => {
+    currentUser = user;
+    await loadPanitia();
+  });
+
+  // Load and display panitia data
+  async function loadPanitia() {
+    try {
+      const data = await Panitia.get(currentUser.uid);
+      const roles = data.roles || [];
+      
+      updateStats(roles);
+      renderRoles(roles);
+    } catch (e) {
+      console.error('Error loading panitia:', e);
+      showMessage('Gagal memuat data panitia', 'error');
+    }
+  }
+
+  // Update statistics
+  function updateStats(roles) {
+    document.getElementById('totalRoles').textContent = roles.length;
+    document.getElementById('totalMembers').textContent = Panitia.getTotalMembers(roles);
+  }
+
+  // Render roles and members
+  function renderRoles(roles) {
+    const container = document.getElementById('rolesContainer');
+    const emptyState = document.getElementById('emptyState');
+
+    if (!roles || roles.length === 0) {
+      container.innerHTML = '';
+      emptyState.style.display = 'block';
+      return;
+    }
+
+    emptyState.style.display = 'none';
+    container.innerHTML = roles.map(role => `
+      <div class="role-card">
+        <div class="role-header">
+          <div class="role-title">
+            <span class="role-icon">${role.icon || '👥'}</span>
+            <span>${role.name}</span>
+          </div>
+          <div class="role-actions">
+            <button class="btn-sm secondary" onclick="editRole('${role.id}')">Edit</button>
+            <button class="btn-sm danger" onclick="deleteRole('${role.id}')">Hapus</button>
+          </div>
+        </div>
+
+        <div class="members-list">
+          <div style="font-weight: 600; color: var(--text); margin-bottom: 0.5rem;">
+            Anggota (${(role.members || []).length})
+          </div>
+          
+          ${(role.members || []).length === 0 ? 
+            '<div class="no-members">Belum ada anggota</div>' :
+            role.members.map(member => `
+              <div class="member-item">
+                <div class="member-info">
+                  <div class="member-name">${member.name}</div>
+                  ${member.phone ? `<div class="member-phone">📞 ${member.phone}</div>` : ''}
+                </div>
+                <div class="member-actions">
+                  <button class="btn-icon" onclick="editMember('${role.id}', '${member.id}')">✏️</button>
+                  <button class="btn-icon danger" onclick="deleteMember('${role.id}', '${member.id}')">✕</button>
+                </div>
+              </div>
+            `).join('')
+          }
+
+          <div class="add-member-form">
+            <div style="font-weight: 600; color: var(--text); font-size: 0.9rem;">Tambah Anggota</div>
+            <div class="form-group">
+              <input type="text" class="memberNameInput" data-role="${role.id}" placeholder="Nama anggota">
+            </div>
+            <div class="form-group">
+              <input type="tel" class="memberPhoneInput" data-role="${role.id}" placeholder="Nomor HP (opsional)">
+            </div>
+            <button class="btn-sm" onclick="addMember('${role.id}')">Tambah Anggota</button>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // Add new role
+  window.addNewRole = async function() {
+    const nameInput = document.getElementById('roleNameInput');
+    const iconInput = document.getElementById('roleIconInput');
+    const name = nameInput.value.trim();
+    const icon = iconInput.value.trim() || '👥';
+
+    if (!name) {
+      showMessage('Nama divisi tidak boleh kosong', 'error');
+      return;
+    }
+
+    try {
+      await Panitia.addRole(currentUser.uid, name, icon);
+      nameInput.value = '';
+      iconInput.value = '👥';
+      await loadPanitia();
+      showMessage('Divisi berhasil ditambahkan', 'success');
+    } catch (e) {
+      console.error('Error adding role:', e);
+      showMessage('Gagal menambahkan divisi', 'error');
+    }
+  };
+
+  // Edit role (simplified for now)
+  window.editRole = function(roleId) {
+    showMessage('Fitur edit divisi akan hadir segera', 'info');
+  };
+
+  // Delete role
+  window.deleteRole = async function(roleId) {
+    if (!confirm('Apakah Anda yakin ingin menghapus divisi ini?')) return;
+
+    try {
+      await Panitia.deleteRole(currentUser.uid, roleId);
+      await loadPanitia();
+      showMessage('Divisi berhasil dihapus', 'success');
+    } catch (e) {
+      console.error('Error deleting role:', e);
+      showMessage('Gagal menghapus divisi', 'error');
+    }
+  };
+
+  // Add member to role
+  window.addMember = async function(roleId) {
+    const nameInput = document.querySelector(`.memberNameInput[data-role="${roleId}"]`);
+    const phoneInput = document.querySelector(`.memberPhoneInput[data-role="${roleId}"]`);
+    const name = nameInput.value.trim();
+    const phone = phoneInput.value.trim();
+
+    if (!name) {
+      showMessage('Nama anggota tidak boleh kosong', 'error');
+      return;
+    }
+
+    try {
+      await Panitia.addMember(currentUser.uid, roleId, { name, phone });
+      nameInput.value = '';
+      phoneInput.value = '';
+      await loadPanitia();
+      showMessage('Anggota berhasil ditambahkan', 'success');
+    } catch (e) {
+      console.error('Error adding member:', e);
+      showMessage('Gagal menambahkan anggota', 'error');
+    }
+  };
+
+  // Edit member (simplified for now)
+  window.editMember = function(roleId, memberId) {
+    showMessage('Fitur edit anggota akan hadir segera', 'info');
+  };
+
+  // Delete member
+  window.deleteMember = async function(roleId, memberId) {
+    if (!confirm('Apakah Anda yakin ingin menghapus anggota ini?')) return;
+
+    try {
+      await Panitia.removeMember(currentUser.uid, roleId, memberId);
+      await loadPanitia();
+      showMessage('Anggota berhasil dihapus', 'success');
+    } catch (e) {
+      console.error('Error deleting member:', e);
+      showMessage('Gagal menghapus anggota', 'error');
+    }
+  };
+
+  // Utility function to show messages
+  function showMessage(msg, type = 'info') {
+    // Simple alert for now - in production you might use a toast notification
+    const icon = type === 'error' ? '❌' : type === 'success' ? '✅' : 'ℹ️';
+    console.log(`${icon} ${msg}`);
+  }
+
+  // Mark panitia as active page
   document.querySelectorAll('.nav-links a').forEach(a => {
     if (a.getAttribute('href') === 'panitia.html') a.classList.add('active');
   });
+
+  // Expose functions to window for onclick handlers
+  window.loadPanitia = loadPanitia;
 </script>
 </body>
 </html>
