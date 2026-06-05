@@ -43,6 +43,19 @@
   ```
 - **Status**: ✅ FIXED
 
+### 4. **Karakter `n Muncul di Navigation Menu (UI BUG)**
+- **Masalah**: Kode di `js/nav-fix.js` mencoba menghapus text node dengan karakter `` `n `` tapi malah menyebabkan masalah rendering
+- **Dampak**: Muncul karakter aneh di atas navigation menu
+- **Lokasi**: `js/nav-fix.js` baris 13
+- **Kode Bermasalah**:
+  ```javascript
+  Array.prototype.slice.call(a.childNodes).forEach(function (n) {
+    if (n.nodeType === Node.TEXT_NODE && n.textContent.indexOf('`n') !== -1) n.remove();
+  });
+  ```
+- **Solusi**: Hapus kode yang tidak perlu tersebut, hanya keep cleaning untuk invalid links
+- **Status**: ✅ FIXED
+
 ---
 
 ## 🔍 Analisis Penyebab "Data Hilang"
