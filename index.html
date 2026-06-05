@@ -9,22 +9,22 @@
 </head>
 <body>
 <nav>
-  <a href="index.html" class="nav-brand">✨ Sakinah</a>
+  <a href="index.html" class="nav-brand"><span class="brand-icon">💍</span> Sakinah</a>
   <button class="nav-toggle" id="nav-toggle" onclick="document.getElementById('nav-links').classList.toggle('open')"><span></span><span></span><span></span></button>
   <div class="nav-links" id="nav-links">
-    <a href="index.html">🏠 <span>Dashboard</span></a>
-    <a href="budget.html">💰 <span>Budget</span></a>
-    <a href="vendors.html">🤝 <span>Vendor</span></a>
-    <a href="recommendations.html">⭐ <span>Rekomendasi</span></a>
-    <a href="checklist.html">✅ <span>Checklist</span></a>
-    <a href="seserahan.html">🎁 <span>Seserahan</span></a>
-    <a href="guestlist.html">👥 <span>Tamu</span></a>
-    <a href="timeline.html">🕐 <span>Timeline</span></a>
-    <a href="panitia.html">👔 <span>Panitia</span></a>
-    <a href="profile.html">👤 <span>Profil</span></a>
+    <a href="index.html"><span class="nav-emoji">🏠</span><span>Dashboard</span></a>
+    <a href="budget.html"><span class="nav-emoji">💰</span><span>Budget</span></a>
+    <a href="vendors.html"><span class="nav-emoji">🤝</span><span>Vendor</span></a>
+    <a href="recommendations.html"><span class="nav-emoji">⭐</span><span>Rekomendasi</span></a>
+    <a href="checklist.html"><span class="nav-emoji">✅</span><span>Checklist</span></a>
+    <a href="seserahan.html"><span class="nav-emoji">🎁</span><span>Seserahan</span></a>
+    <a href="guestlist.html"><span class="nav-emoji">👥</span><span>Tamu</span></a>
+    <a href="timeline.html"><span class="nav-emoji">🕐</span><span>Timeline</span></a>
+    <a href="panitia.html"><span class="nav-emoji">👔</span><span>Panitia</span></a>
+    <a href="profile.html"><span class="nav-emoji">👤</span><span>Profil</span></a>
   </div>
   <div class="nav-user">
-    <span id="nav-user-name"></span>
+    <span class="nav-user-name" id="nav-user-name"></span>
     <button class="btn-logout" onclick="doLogout()">Keluar</button>
   </div>
 </nav>
@@ -149,7 +149,7 @@
 
 <footer>
   <p>Dibuat dengan ❤️ untuk membantu pasangan merencanakan hari istimewa mereka</p>
-  <p style="margin-top:4px"><strong>✨ Sakinah</strong> &nbsp;·&nbsp; <span id="footer-names"></span></p>
+  <p style="margin-top:5px"><span class="footer-brand">✨ Sakinah</span> &nbsp;·&nbsp; <span id="footer-names" style="color:var(--ink-light)"></span></p>
 </footer>
 
 <script type="module">

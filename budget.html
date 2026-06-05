@@ -9,36 +9,36 @@
 </head>
 <body>
 <nav>
-  <a href="index.html" class="nav-brand">✨ Sakinah</a>
+  <a href="index.html" class="nav-brand"><span class="brand-icon">💍</span> Sakinah</a>
   <button class="nav-toggle" id="nav-toggle" onclick="document.getElementById('nav-links').classList.toggle('open')"><span></span><span></span><span></span></button>
-  <div class="nav-links" id="nav-links"><a href="index.html">🏠 <span>Dashboard</span></a><a href="budget.html">💰 <span>Budget</span></a><a href="vendors.html">🤝 <span>Vendor</span></a><a href="recommendations.html">⭐ <span>Rekomendasi</span></a><a href="checklist.html">✅ <span>Checklist</span></a><a href="seserahan.html">🎁 <span>Seserahan</span></a><a href="guestlist.html">👥 <span>Tamu</span></a><a href="timeline.html">🕐 <span>Timeline</span></a><a href="panitia.html">👔 <span>Panitia</span></a><a href="profile.html">👤 <span>Profil</span></a></div>
+  <div class="nav-links" id="nav-links"><a href="index.html"><span class="nav-emoji">🏠</span><span>Dashboard</span></a><a href="budget.html"><span class="nav-emoji">💰</span><span>Budget</span></a><a href="vendors.html"><span class="nav-emoji">🤝</span><span>Vendor</span></a><a href="recommendations.html"><span class="nav-emoji">⭐</span><span>Rekomendasi</span></a><a href="checklist.html"><span class="nav-emoji">✅</span><span>Checklist</span></a><a href="seserahan.html"><span class="nav-emoji">🎁</span><span>Seserahan</span></a><a href="guestlist.html"><span class="nav-emoji">👥</span><span>Tamu</span></a><a href="timeline.html"><span class="nav-emoji">🕐</span><span>Timeline</span></a><a href="panitia.html"><span class="nav-emoji">👔</span><span>Panitia</span></a><a href="profile.html"><span class="nav-emoji">👤</span><span>Profil</span></a></div>
   <div class="nav-user">
-    <span id="nav-user-name"></span>
+    <span class="nav-user-name" id="nav-user-name"></span>
     <button class="btn-logout" onclick="doLogout()">Keluar</button>
   </div>
 </nav>
 
 <div class="container">
   <div class="page-header">
-    <div><h2>💰 Manajemen Budget</h2><p>Kelola anggaran pernikahan Anda</p></div>
+    <div><h2>💰 Manajemen Budget</h2><p>Kelola anggaran pernikahan dengan presisi</p></div>
     <button class="btn btn-primary" onclick="openAddModal()">+ Tambah Item</button>
   </div>
 
-  <div class="card" style="margin-bottom:1.1rem">
+  <div class="card card-gold" style="margin-bottom:1.1rem">
     <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
       <div>
-        <p style="font-size:0.85rem;color:var(--text-light);margin-bottom:4px">Total Budget Pernikahan</p>
-        <h2 id="total-display" style="font-size:1.6rem;color:var(--primary-dark)">Rp 0</h2>
+        <p style="font-size:0.8rem;color:var(--ink-muted);margin-bottom:4px">Total Budget Pernikahan</p>
+        <h2 id="total-display" style="font-size:1.65rem;color:var(--gold-dark);font-family:var(--font-serif)">Rp 0</h2>
       </div>
       <div style="display:flex;gap:0.8rem;align-items:center;flex-wrap:wrap;width:100%">
-        <div style="flex:1;min-width:80px;text-align:center"><p style="font-size:0.75rem;color:var(--text-light)">Direncanakan</p><p id="planned-display" style="font-weight:600;font-size:0.9rem">Rp 0</p></div>
-        <div style="flex:1;min-width:80px;text-align:center"><p style="font-size:0.75rem;color:var(--text-light)">Terpakai</p><p id="spent-display" style="font-weight:600;font-size:0.9rem">Rp 0</p></div>
-        <div style="flex:1;min-width:80px;text-align:center"><p style="font-size:0.75rem;color:var(--text-light)">Sisa</p><p id="remaining-display" style="font-weight:600;font-size:0.9rem">Rp 0</p></div>
+        <div style="flex:1;min-width:80px;text-align:center"><p style="font-size:0.72rem;color:var(--ink-muted);text-transform:uppercase;letter-spacing:0.05em">Direncanakan</p><p id="planned-display" style="font-weight:700;font-size:0.92rem;color:var(--ink)">Rp 0</p></div>
+        <div style="flex:1;min-width:80px;text-align:center"><p style="font-size:0.72rem;color:var(--ink-muted);text-transform:uppercase;letter-spacing:0.05em">Terpakai</p><p id="spent-display" style="font-weight:700;font-size:0.92rem;color:var(--ink)">Rp 0</p></div>
+        <div style="flex:1;min-width:80px;text-align:center"><p style="font-size:0.72rem;color:var(--ink-muted);text-transform:uppercase;letter-spacing:0.05em">Sisa</p><p id="remaining-display" style="font-weight:700;font-size:0.92rem">Rp 0</p></div>
         <button class="btn btn-outline btn-sm" style="width:100%" onclick="openModal('modal-total')">✏️ Ubah Total</button>
       </div>
     </div>
-    <div class="progress-bar" style="margin-top:1.2rem;height:14px"><div id="main-progress" class="progress-fill" style="width:0%"></div></div>
-    <p id="progress-label" style="font-size:0.75rem;color:var(--text-light);margin-top:6px"></p>
+    <div class="progress-bar" style="margin-top:1.1rem;height:10px"><div id="main-progress" class="progress-fill" style="width:0%"></div></div>
+    <p id="progress-label" style="font-size:0.73rem;color:var(--ink-muted);margin-top:6px"></p>
   </div>
 
   <div class="card" style="overflow:hidden"><div id="budget-table"></div></div>

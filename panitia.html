@@ -9,24 +9,26 @@
 </head>
 <body>
 <nav>
-  <a href="index.html" class="nav-brand">✨ Sakinah</a>
+  <a href="index.html" class="nav-brand"><span class="brand-icon">💍</span> Sakinah</a>
   <button class="nav-toggle" id="nav-toggle" onclick="document.getElementById('nav-links').classList.toggle('open')"><span></span><span></span><span></span></button>
-  <div class="nav-links" id="nav-links"><a href="index.html">🏠 <span>Dashboard</span></a><a href="budget.html">💰 <span>Budget</span></a><a href="vendors.html">🤝 <span>Vendor</span></a><a href="recommendations.html">⭐ <span>Rekomendasi</span></a><a href="checklist.html">✅ <span>Checklist</span></a><a href="seserahan.html">🎁 <span>Seserahan</span></a><a href="guestlist.html">👥 <span>Tamu</span></a><a href="timeline.html">🕐 <span>Timeline</span></a><a href="panitia.html">👔 <span>Panitia</span></a><a href="profile.html">👤 <span>Profil</span></a></div>
+  <div class="nav-links" id="nav-links"><a href="index.html"><span class="nav-emoji">🏠</span><span>Dashboard</span></a><a href="budget.html"><span class="nav-emoji">💰</span><span>Budget</span></a><a href="vendors.html"><span class="nav-emoji">🤝</span><span>Vendor</span></a><a href="recommendations.html"><span class="nav-emoji">⭐</span><span>Rekomendasi</span></a><a href="checklist.html"><span class="nav-emoji">✅</span><span>Checklist</span></a><a href="seserahan.html"><span class="nav-emoji">🎁</span><span>Seserahan</span></a><a href="guestlist.html"><span class="nav-emoji">👥</span><span>Tamu</span></a><a href="timeline.html"><span class="nav-emoji">🕐</span><span>Timeline</span></a><a href="panitia.html"><span class="nav-emoji">👔</span><span>Panitia</span></a><a href="profile.html"><span class="nav-emoji">👤</span><span>Profil</span></a></div>
   <div class="nav-user">
     <button class="btn-logout" onclick="window.location.href='login.html'">Keluar</button>
   </div>
 </nav>
 <main class="container">
-  <section class="page-hero">
-    <div>
-      <h1>Panitia</h1>
-      <p>Kelola tim panitia dan pembagian tugas acara pernikahan Anda.</p>
-    </div>
-  </section>
-  <section style="margin-top:2rem;">
+  <div class="page-hero">
+    <h1>👔 Tim Panitia</h1>
+    <p>Kelola tim panitia dan pembagian tugas acara pernikahan Anda.</p>
+  </div>
+  <section>
     <div class="card">
-      <h2>Halaman Panitia</h2>
-      <p>Halaman ini masih dalam pengembangan. Kembali ke menu lain atau tambahkan anggota panitia di data Anda.</p>
+      <div class="empty-state">
+        <span class="empty-icon">👔</span>
+        <h4>Halaman Panitia</h4>
+        <p>Fitur manajemen panitia sedang dalam pengembangan. Kembali ke menu lain untuk melanjutkan perencanaan.</p>
+        <a href="index.html" class="btn btn-primary" style="margin-top:1rem">← Kembali ke Dashboard</a>
+      </div>
     </div>
   </section>
 </main>
