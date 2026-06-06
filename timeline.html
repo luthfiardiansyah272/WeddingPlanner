@@ -125,6 +125,24 @@
   <!-- ACTIVE SESSION DESC -->
   <div id="session-desc" class="card" style="margin-bottom:1rem;padding:0.9rem 1.2rem;display:flex;align-items:center;gap:10px"></div>
 
+  <!-- SESSION SONGS -->
+  <div class="card session-song-panel">
+    <div class="session-song-head">
+      <h3>🎼 Lagu Sesi <span class="badge badge-gold" id="song-session-name">-</span></h3>
+      <span class="badge badge-neutral" id="song-count">0 lagu</span>
+    </div>
+    <div class="session-song-form">
+      <input type="text" id="song-title" placeholder="Judul lagu" />
+      <input type="url" id="song-url" placeholder="URL audio publik MP3/OGG/WAV" />
+      <button class="btn btn-primary btn-sm" onclick="addSessionSongFromUrl()">+ Tambah URL</button>
+      <label class="btn btn-outline btn-sm" style="cursor:pointer">
+        Upload Audio
+        <input type="file" id="song-file" accept="audio/*" onchange="addSessionSongFromFile(this.files[0]); this.value=''" style="display:none" />
+      </label>
+    </div>
+    <div id="session-song-list" class="session-song-list"></div>
+  </div>
+
   <!-- TIMELINE LIST -->
   <div class="card" id="timeline-container" style="padding:1.5rem"></div>
 </div>
@@ -201,12 +219,63 @@
   let sessions = [];       // [{id, label, emoji, desc, order}]
   let activeId  = null;
   let eventData = {};      // { sessionId: [...events] }
+  let songsBySession = {}; // { sessionId: [...songs] }
 
   const catBadge = {
     Persiapan:'badge-pink', Venue:'badge-green', Akad:'badge-yellow',
     Dokumentasi:'badge-blue', Resepsi:'badge-green', 'Ngunduh Mantu':'badge-blue',
     Hiburan:'badge-blue', Acara:'badge-pink', Penutup:'badge-yellow', Lainnya:'badge-pink'
   };
+
+  function songStorageKey() {
+    return `sakinah_session_songs_${uid || 'guest'}`;
+  }
+
+  function loadSongs() {
+    try {
+      songsBySession = JSON.parse(localStorage.getItem(songStorageKey()) || '{}');
+    } catch (e) {
+      songsBySession = {};
+    }
+  }
+
+  function saveSongs() {
+    const persistent = {};
+    Object.keys(songsBySession).forEach(id => {
+      persistent[id] = songsBySession[id].filter(song => song.persist !== false);
+    });
+    localStorage.setItem(songStorageKey(), JSON.stringify(persistent));
+  }
+
+  function activeSongs() {
+    if (!activeId) return [];
+    if (!songsBySession[activeId]) songsBySession[activeId] = [];
+    return songsBySession[activeId];
+  }
+
+  function renderSongs() {
+    const sess = sessions.find(s => s.id === activeId);
+    const songs = activeSongs();
+    document.getElementById('song-session-name').textContent = sess?.label || '-';
+    document.getElementById('song-count').textContent = `${songs.length} lagu`;
+    const el = document.getElementById('session-song-list');
+    if (!songs.length) {
+      el.innerHTML = '<div class="empty-state" style="padding:1rem"><div class="empty-icon">🎼</div><p>Belum ada lagu untuk sesi ini. Tambahkan URL audio atau upload file dari perangkat.</p></div>';
+      return;
+    }
+    el.innerHTML = songs.map((song, index) => `
+      <div class="session-song-row">
+        <div style="min-width:0">
+          <strong>${song.title || 'Lagu Sesi'}</strong><br>
+          <small>${song.source || (song.persist === false ? 'File lokal sementara' : 'URL audio')}</small>
+        </div>
+        <div class="session-song-actions">
+          <button class="btn btn-outline btn-sm" onclick="playSessionSong(${index})">▶ Putar</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteSessionSong(${index})">Hapus</button>
+        </div>
+      </div>
+    `).join('');
+  }
 
   // ===== RENDER TABS =====
   function renderTabs() {
@@ -264,7 +333,47 @@
   }
 
   // ===== SWITCH TAB =====
-  window.switchTab = (id) => { activeId = id; renderTabs(); renderEvents(); };
+  window.switchTab = (id) => { activeId = id; renderTabs(); renderEvents(); renderSongs(); };
+
+  window.addSessionSongFromUrl = () => {
+    if (!activeId) return toast('Pilih sesi acara terlebih dahulu', 'error');
+    const title = document.getElementById('song-title').value.trim();
+    const url = document.getElementById('song-url').value.trim();
+    if (!title || !url) return toast('Judul dan URL lagu wajib diisi', 'error');
+    activeSongs().push({ title, url, source: 'URL audio', persist: true });
+    document.getElementById('song-title').value = '';
+    document.getElementById('song-url').value = '';
+    saveSongs();
+    renderSongs();
+    toast('Lagu ditambahkan ke sesi ini');
+  };
+
+  window.addSessionSongFromFile = (file) => {
+    if (!file) return;
+    if (!activeId) return toast('Pilih sesi acara terlebih dahulu', 'error');
+    activeSongs().push({
+      title: file.name.replace(/\.[^.]+$/, ''),
+      url: URL.createObjectURL(file),
+      source: 'File lokal sementara',
+      persist: false
+    });
+    renderSongs();
+    toast('File lagu siap diputar untuk sesi ini');
+  };
+
+  window.playSessionSong = (index) => {
+    const song = activeSongs()[index];
+    if (!song) return;
+    if (!window.SakinahMusic) return toast('Player belum siap, coba sebentar lagi', 'error');
+    window.SakinahMusic.playTrack({ title: song.title, url: song.url }, { persist: false });
+  };
+
+  window.deleteSessionSong = (index) => {
+    activeSongs().splice(index, 1);
+    saveSongs();
+    renderSongs();
+    toast('Lagu dihapus dari sesi ini');
+  };
 
   // ===== SESSION CRUD =====
   window.openAddSessionModal = () => {
@@ -310,7 +419,7 @@
     if (!editId) activeId = data.id;
     closeModal('modal-session');
     toast(editId ? 'Sesi diperbarui' : 'Sesi ditambahkan');
-    renderTabs(); renderEvents();
+    renderTabs(); renderEvents(); renderSongs();
   };
 
   window.deleteSession = async (id) => {
@@ -320,8 +429,10 @@
     delete eventData[id];
     sessions = await TimelineSession.getAll(uid);
     if (activeId === id) activeId = sessions[0]?.id || null;
+    delete songsBySession[id];
+    saveSongs();
     toast('Sesi dihapus');
-    renderTabs(); renderEvents();
+    renderTabs(); renderEvents(); renderSongs();
   };
 
   // ===== EVENT CRUD =====
@@ -358,7 +469,7 @@
     eventData[activeId] = await Timeline.getAll(uid, activeId);
     closeModal('modal-event');
     toast(id ? 'Acara diperbarui' : 'Acara ditambahkan');
-    renderTabs(); renderEvents();
+    renderTabs(); renderEvents(); renderSongs();
   };
 
   window.deleteEvent = async (id) => {
@@ -366,7 +477,7 @@
     await Timeline.delete(uid, id, activeId);
     eventData[activeId] = await Timeline.getAll(uid, activeId);
     toast('Acara dihapus');
-    renderTabs(); renderEvents();
+    renderTabs(); renderEvents(); renderSongs();
   };
 
   // ===== PRINT =====
@@ -392,6 +503,7 @@
     showLoading(true);
     uid = user.uid;
     profile = await Auth.getProfile();
+    loadSongs();
     setupNav(profile);
     document.getElementById('wedding-names').textContent = `${profile.name} & ${profile.partnerName}`;
     if (profile.weddingDate)
@@ -406,7 +518,7 @@
       eventData[s.id] = await Timeline.getAll(uid, s.id);
     }));
 
-    renderTabs(); renderEvents();
+    renderTabs(); renderEvents(); renderSongs();
     showLoading(false);
   });
 </script>
