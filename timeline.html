@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
@@ -21,13 +21,13 @@
       gap: 6px;
       padding: 8px 14px;
       border-radius: 20px;
-      border: 1.5px solid var(--primary-light);
-      background: var(--white);
+      border: 1.5px solid var(--primary-bg);
+      background: var(--surface);
       cursor: pointer;
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 0.82rem;
       font-weight: 500;
-      color: var(--text-light);
+      color: var(--text-2);
       transition: all 0.2s;
       white-space: nowrap;
     }
@@ -68,49 +68,65 @@
       padding: 7px 14px;
       border-radius: 20px;
       cursor: pointer;
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 0.82rem;
       font-weight: 500;
       transition: all 0.2s;
       white-space: nowrap;
     }
-    .btn-add-session:hover { background: var(--primary-light); }
+    .btn-add-session:hover { background: var(--primary-bg); }
     .timeline-wrap { position: relative; padding-left: 32px; }
-    .timeline-wrap::before { content:''; position:absolute; left:10px; top:0; bottom:0; width:2px; background:linear-gradient(to bottom,var(--primary-light),var(--primary)); }
+    .timeline-wrap::before { content:''; position:absolute; left:10px; top:0; bottom:0; width:2px; background:linear-gradient(to bottom,var(--primary-bg),var(--primary)); }
     .timeline-item { position: relative; margin-bottom: 1.2rem; }
-    .timeline-dot { position:absolute; left:-22px; top:14px; width:12px; height:12px; border-radius:50%; background:var(--primary); border:3px solid var(--white); box-shadow:0 0 0 2px var(--primary); }
-    .timeline-card { background:var(--white); border-radius:var(--radius-sm); padding:1rem 1.2rem; box-shadow:var(--shadow); display:flex; align-items:center; gap:1rem; flex-wrap:wrap; transition:box-shadow 0.2s; }
-    .timeline-card:hover { box-shadow:var(--shadow-hover); }
-    .timeline-time { font-size:1rem; font-weight:700; color:var(--primary-dark); min-width:52px; font-family:'DM Sans',sans-serif; flex-shrink:0; }
+    .timeline-dot { position:absolute; left:-22px; top:14px; width:12px; height:12px; border-radius:50%; background:var(--primary); border:3px solid var(--surface); box-shadow:0 0 0 2px var(--primary); }
+    .timeline-card { background:var(--surface); border-radius:var(--radius-sm); padding:1rem 1.2rem; box-shadow:var(--shadow); display:flex; align-items:center; gap:1rem; flex-wrap:wrap; transition:box-shadow 0.2s; }
+    .timeline-card:hover { box-shadow:var(--shadow-md); }
+    .timeline-time { font-size:1rem; font-weight:700; color:var(--primary-dark); min-width:52px; font-family:'Inter',sans-serif; flex-shrink:0; }
+    .song-tag {
+      display:inline-flex; align-items:center; gap:5px;
+      background:var(--bg); border:1px solid var(--border); border-radius:6px;
+      padding:3px 8px; font-size:0.75rem; color:var(--text-2);
+    }
+    .song-tag button { background:none; border:none; cursor:pointer; color:var(--text-3); padding:0; line-height:1; font-size:0.8rem; }
+    .song-tag button:hover { color:var(--danger); }
+    .songs-display {
+      display:flex; flex-wrap:wrap; gap:5px; margin-top:6px;
+    }
+    .song-chip {
+      display:inline-flex; align-items:center; gap:5px;
+      background:var(--primary-bg); border:1px solid rgba(176,141,110,0.2);
+      border-radius:6px; padding:3px 10px; font-size:0.75rem; color:var(--primary-dark);
+    }
+    .song-chip svg { opacity:0.6; }
   </style>
 </head>
 <body>
 <nav>
-  <a href="index.html" class="nav-brand">✨ Sakinah</a>
+  <a href="index.html" class="nav-brand"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="color:#b08d6e"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> Sakinah</a>
   <button class="nav-toggle" id="nav-toggle" onclick="document.getElementById('nav-links').classList.toggle('open')"><span></span><span></span><span></span></button>
-  <div class="nav-links" id="nav-links"><a href="index.html">🏠 <span>Dashboard</span></a><a href="budget.html">💰 <span>Budget</span></a><a href="vendors.html">🤝 <span>Vendor</span></a><a href="recommendations.html">⭐ <span>Rekomendasi</span></a><a href="checklist.html">✅ <span>Checklist</span></a><a href="seserahan.html">🎁 <span>Seserahan</span></a><a href="guestlist.html">👥 <span>Tamu</span></a><a href="timeline.html">🕐 <span>Timeline</span></a><a href="panitia.html">👔 <span>Panitia</span></a><a href="profile.html">👤 <span>Profil</span></a></div>
+  <div class="nav-links" id="nav-links"><a href="index.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> <span>Dashboard</span></a><a href="budget.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> <span>Budget</span></a><a href="vendors.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> <span>Vendor</span></a><a href="recommendations.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> <span>Rekomendasi</span></a><a href="checklist.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> <span>Checklist</span></a><a href="seserahan.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg> <span>Seserahan</span></a><a href="guestlist.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> <span>Tamu</span></a><a href="timeline.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> <span>Timeline</span></a><a href="panitia.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg> <span>Panitia</span></a><a href="profile.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> <span>Profil</span></a></div>
   <div class="nav-user"><span id="nav-user-name"></span><button class="btn-logout" onclick="doLogout()">Keluar</button></div>
 </nav>
 
 <div class="container">
   <div class="page-header">
-    <div><h2>🕐 Timeline Acara</h2><p>Kelola rundown setiap sesi acara pernikahan</p></div>
+    <div><h2>Timeline Acara</h2><p>Kelola rundown setiap sesi acara pernikahan</p></div>
     <div style="display:flex;gap:0.6rem;flex-wrap:wrap">
-      <button class="btn btn-outline" style="flex:1;justify-content:center" onclick="printTimeline()">🖨️ Print</button>
+      <button class="btn btn-outline" style="flex:1;justify-content:center" onclick="printTimeline()">Print</button>
       <button class="btn btn-primary" style="flex:1;justify-content:center" onclick="openAddEventModal()">+ Tambah Acara</button>
     </div>
   </div>
 
   <!-- INFO CARD -->
-  <div class="card" style="margin-bottom:1.5rem;background:linear-gradient(135deg,var(--primary-light),var(--accent-light))">
+  <div class="card" style="margin-bottom:1.5rem;background:linear-gradient(135deg,var(--primary-bg),var(--accent-bg))">
     <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap">
-      <div style="font-size:2rem">💍</div>
+      
       <div style="flex:1;min-width:0">
         <h3 id="wedding-names" style="color:var(--primary-dark);font-size:1rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></h3>
-        <p id="wedding-date-full" style="color:var(--text-light);font-size:0.82rem"></p>
+        <p id="wedding-date-full" style="color:var(--text-2);font-size:0.82rem"></p>
       </div>
       <div style="text-align:right;flex-shrink:0">
-        <p style="font-size:0.75rem;color:var(--text-light)">Total Acara</p>
+        <p style="font-size:0.75rem;color:var(--text-2)">Total Acara</p>
         <p id="total-events" style="font-size:1.4rem;font-weight:700;color:var(--primary-dark)">0</p>
       </div>
     </div>
@@ -144,7 +160,7 @@
     <div class="grid-2">
       <div class="form-group">
         <label>Emoji / Ikon</label>
-        <input type="text" id="sess-emoji" placeholder="Contoh: 🌸" maxlength="4" />
+        <input type="text" id="sess-emoji" placeholder="Contoh: Akad" maxlength="4" />
       </div>
       <div class="form-group">
         <label>Urutan</label>
@@ -155,7 +171,7 @@
       <label>Deskripsi Singkat</label>
       <textarea id="sess-desc" rows="2" placeholder="Deskripsi singkat sesi ini..."></textarea>
     </div>
-    <div style="display:flex;gap:0.8rem;position:sticky;bottom:0;background:var(--white);padding-top:1rem;margin-top:0.5rem">
+    <div style="display:flex;gap:0.8rem;position:sticky;bottom:0;background:var(--surface);padding-top:1rem;margin-top:0.5rem">
       <button class="btn btn-primary" style="flex:1;justify-content:center" onclick="saveSession()">Simpan</button>
       <button class="btn btn-outline" onclick="closeModal('modal-session')">Batal</button>
     </div>
@@ -183,7 +199,15 @@
     <div class="form-group"><label>Nama Acara</label><input type="text" id="e-event" placeholder="Contoh: Prosesi Akad Nikah" /></div>
     <div class="form-group"><label>Deskripsi</label><textarea id="e-desc" rows="2" placeholder="Detail acara..."></textarea></div>
     <div class="form-group"><label>Penanggung Jawab (PIC)</label><input type="text" id="e-pic" placeholder="Contoh: MC, Fotografer, Panitia" /></div>
-    <div style="display:flex;gap:0.8rem;position:sticky;bottom:0;background:var(--white);padding-top:1rem;margin-top:0.5rem">
+    <div class="form-group">
+      <label>Lagu yang Dimainkan</label>
+      <div id="songs-list" style="display:flex;flex-direction:column;gap:6px;margin-bottom:6px"></div>
+      <div style="display:flex;gap:6px">
+        <input type="text" id="e-song-input" placeholder="Judul lagu – Artis" style="flex:1" onkeydown="if(event.key==='Enter'){event.preventDefault();addSong()}" />
+        <button type="button" class="btn btn-outline btn-sm" onclick="addSong()">+ Tambah</button>
+      </div>
+    </div>
+    <div style="display:flex;gap:0.8rem;position:sticky;bottom:0;background:var(--surface);padding-top:1rem;margin-top:0.5rem">
       <button class="btn btn-primary" style="flex:1;justify-content:center" onclick="saveEvent()">Simpan</button>
       <button class="btn btn-outline" onclick="closeModal('modal-event')">Batal</button>
     </div>
@@ -201,11 +225,36 @@
   let sessions = [];       // [{id, label, emoji, desc, order}]
   let activeId  = null;
   let eventData = {};      // { sessionId: [...events] }
+  let currentSongs = [];   // songs for the currently open modal
 
   const catBadge = {
     Persiapan:'badge-pink', Venue:'badge-green', Akad:'badge-yellow',
     Dokumentasi:'badge-blue', Resepsi:'badge-green', 'Ngunduh Mantu':'badge-blue',
     Hiburan:'badge-blue', Acara:'badge-pink', Penutup:'badge-yellow', Lainnya:'badge-pink'
+  };
+
+  // ===== SONGS HELPERS =====
+  function renderSongsList() {
+    document.getElementById('songs-list').innerHTML = currentSongs.map((s, i) => `
+      <div class="song-tag">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+        <span style="flex:1">${s}</span>
+        <button onclick="removeSong(${i})">✕</button>
+      </div>`).join('');
+  }
+
+  window.addSong = () => {
+    const inp = document.getElementById('e-song-input');
+    const val = inp.value.trim();
+    if (!val) return;
+    currentSongs.push(val);
+    inp.value = '';
+    renderSongsList();
+  };
+
+  window.removeSong = (i) => {
+    currentSongs.splice(i, 1);
+    renderSongsList();
   };
 
   // ===== RENDER TABS =====
@@ -215,9 +264,9 @@
 
     document.getElementById('session-tabs').innerHTML = sessions.map(s => `
       <button class="session-tab ${s.id === activeId ? 'active' : ''}" onclick="switchTab('${s.id}')">
-        ${s.emoji || '📋'} ${s.label}
+        ${s.label}
         <span class="tab-actions">
-          <span class="tab-btn" onclick="event.stopPropagation();openEditSessionModal('${s.id}')" title="Edit sesi">✏️</span>
+          <span class="tab-btn" onclick="event.stopPropagation();openEditSessionModal('${s.id}')" title="Edit sesi"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></span>
           <span class="tab-btn del" onclick="event.stopPropagation();deleteSession('${s.id}')" title="Hapus sesi">✕</span>
         </span>
       </button>`).join('');
@@ -229,17 +278,17 @@
     if (!sess) return;
 
     document.getElementById('session-desc').innerHTML = `
-      <span style="font-size:1.5rem">${sess.emoji || '📋'}</span>
+      <span style="font-size:0.75rem;font-weight:600;color:var(--text-2)">
       <div style="flex:1;min-width:0">
         <strong style="color:var(--primary-dark)">${sess.label}</strong>
-        ${sess.desc ? `<p style="font-size:0.8rem;color:var(--text-light);margin-top:2px">${sess.desc}</p>` : ''}
+        ${sess.desc ? `<p style="font-size:0.8rem;color:var(--text-2);margin-top:2px">${sess.desc}</p>` : ''}
       </div>
       <span class="badge badge-pink">${(eventData[activeId]||[]).length} acara</span>`;
 
     const events = eventData[activeId] || [];
     const el = document.getElementById('timeline-container');
     if (!events.length) {
-      el.innerHTML = '<div class="empty-state"><div class="empty-icon">🕐</div><p>Belum ada acara di sesi ini.<br>Klik "+ Tambah Acara" untuk mulai.</p></div>';
+      el.innerHTML = '<div class="empty-state"><p>Belum ada acara di sesi ini.<br>Klik "+ Tambah Acara" untuk mulai.</p></div>';
       return;
     }
     el.innerHTML = `<div class="timeline-wrap">${events.map(e => `
@@ -252,12 +301,13 @@
               <strong style="font-size:0.92rem">${e.event}</strong>
               <span class="badge ${catBadge[e.category]||'badge-pink'}">${e.category}</span>
             </div>
-            ${e.desc ? `<p style="font-size:0.8rem;color:var(--text-light);margin-bottom:3px">${e.desc}</p>` : ''}
-            ${e.pic  ? `<p style="font-size:0.78rem;color:var(--primary-dark)">👤 ${e.pic}</p>` : ''}
+            ${e.desc ? `<p style="font-size:0.8rem;color:var(--text-2);margin-bottom:3px">${e.desc}</p>` : ''}
+            ${e.pic  ? `<p style="font-size:0.78rem;color:var(--text-2)">${e.pic}</p>` : ''}
+            ${e.songs && e.songs.length ? `<div class="songs-display">${e.songs.map(s=>`<span class="song-chip"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>${s}</span>`).join('')}</div>` : ''}
           </div>
           <div style="display:flex;gap:6px;flex-shrink:0">
-            <button class="btn btn-outline btn-sm" onclick="editEvent('${e.id}')">✏️</button>
-            <button class="btn btn-danger btn-sm" onclick="deleteEvent('${e.id}')">🗑️</button>
+            <button class="btn btn-outline btn-sm" onclick="editEvent('${e.id}')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+            <button class="btn btn-danger btn-sm" onclick="deleteEvent('${e.id}')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button>
           </div>
         </div>
       </div>`).join('')}</div>`;
@@ -293,7 +343,7 @@
     const editId = document.getElementById('sess-edit-id').value;
     const data = {
       label,
-      emoji: document.getElementById('sess-emoji').value || '📋',
+      emoji: document.getElementById('sess-emoji').value || '',
       order: parseInt(document.getElementById('sess-order').value) || 0,
       desc:  document.getElementById('sess-desc').value,
     };
@@ -331,6 +381,8 @@
     ['e-event','e-desc','e-pic'].forEach(id => document.getElementById(id).value = '');
     document.getElementById('e-time').value = '08:00';
     document.getElementById('e-category').value = 'Acara';
+    currentSongs = [];
+    renderSongsList();
     openModal('modal-event');
   };
 
@@ -344,6 +396,8 @@
     document.getElementById('e-event').value = e.event;
     document.getElementById('e-desc').value = e.desc || '';
     document.getElementById('e-pic').value = e.pic || '';
+    currentSongs = [...(e.songs || [])];
+    renderSongsList();
     openModal('modal-event');
   };
 
@@ -352,7 +406,7 @@
     const time  = document.getElementById('e-time').value;
     if (!event || !time) return toast('Waktu dan nama acara wajib diisi', 'error');
     const id   = document.getElementById('e-edit-id').value;
-    const data = { time, category: document.getElementById('e-category').value, event, desc: document.getElementById('e-desc').value, pic: document.getElementById('e-pic').value };
+    const data = { time, category: document.getElementById('e-category').value, event, desc: document.getElementById('e-desc').value, pic: document.getElementById('e-pic').value, songs: currentSongs };
     if (id) await Timeline.update(uid, id, data, activeId);
     else    await Timeline.add(uid, data, activeId);
     eventData[activeId] = await Timeline.getAll(uid, activeId);
@@ -379,11 +433,12 @@
     win.document.write(`<html><head><title>${sess?.label||'Timeline'}</title>
     <style>body{font-family:Arial,sans-serif;padding:30px;color:#4a4543}h1{color:#a68566;text-align:center}p.sub{text-align:center;color:#8b8580;margin-bottom:30px;font-size:13px}table{width:100%;border-collapse:collapse}th{background:#e8d5c4;padding:10px;text-align:left;font-size:12px}td{padding:10px;border-bottom:1px solid #eee;font-size:12px}.cat{background:#e8d5c4;padding:2px 8px;border-radius:10px;font-size:11px}</style>
     </head><body>
-    <h1>${sess?.emoji||'🕐'} ${sess?.label||'Timeline'}</h1>
+    <h1> ${sess?.label||'Timeline'}</h1>
     <p class="sub">${profile?.name} & ${profile?.partnerName} — ${dateStr}</p>
     <table><thead><tr><th>Waktu</th><th>Acara</th><th>Kategori</th><th>Deskripsi</th><th>PIC</th></tr></thead>
     <tbody>${events.map(e=>`<tr><td><strong>${e.time}</strong></td><td>${e.event}</td><td><span class="cat">${e.category}</span></td><td>${e.desc||'-'}</td><td>${e.pic||'-'}</td></tr>`).join('')}</tbody>
-    </table></body></html>`);
+    </table><script src="js/music-player.js"></script>
+</body></html>`);
     win.document.close(); win.print();
   };
 
@@ -410,5 +465,6 @@
     showLoading(false);
   });
 </script>
+<script src="js/music-player.js"></script>
 </body>
 </html>

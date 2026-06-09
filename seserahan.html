@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
@@ -7,24 +7,24 @@
   <link rel="stylesheet" href="css/style.css" />
   <script defer src="js/nav-fix.js"></script>
   <style>
-    .ses-card { background:var(--white); border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow); transition:box-shadow 0.2s; margin-bottom:1rem; }
-    .ses-card:hover { box-shadow:var(--shadow-hover); }
-    .ses-cat-header { display:flex; align-items:center; gap:10px; padding:0.9rem 1.2rem; background:linear-gradient(135deg,var(--primary-light),var(--primary)); cursor:pointer; user-select:none; }
+    .ses-card { background:var(--surface); border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow); transition:box-shadow 0.2s; margin-bottom:1rem; }
+    .ses-card:hover { box-shadow:var(--shadow-md); }
+    .ses-cat-header { display:flex; align-items:center; gap:10px; padding:0.9rem 1.2rem; background:linear-gradient(135deg,var(--primary-bg),var(--primary)); cursor:pointer; user-select:none; }
     .ses-cat-header h4 { font-size:1rem; color:var(--primary-dark); flex:1; }
-    .ses-cat-header .cat-toggle { font-size:0.8rem; color:var(--text-light); transition:transform 0.2s; }
+    .ses-cat-header .cat-toggle { font-size:0.8rem; color:var(--text-2); transition:transform 0.2s; }
     .ses-cat-header.collapsed .cat-toggle { transform:rotate(-90deg); }
     .ses-items { padding:0.5rem 0; }
     .ses-item { display:flex; align-items:flex-start; gap:10px; padding:10px 1.2rem; border-bottom:1px solid var(--border); transition:background 0.15s; }
     .ses-item:last-child { border-bottom:none; }
-    .ses-item:hover { background:var(--primary-light); }
-    .ses-item.checked .item-name { text-decoration:line-through; color:var(--text-light); }
+    .ses-item:hover { background:var(--primary-bg); }
+    .ses-item.checked .item-name { text-decoration:line-through; color:var(--text-2); }
     .ses-check { width:20px; height:20px; border-radius:6px; border:2px solid var(--primary); cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; background:white; transition:all 0.2s; margin-top:2px; }
     .ses-check.checked { background:var(--primary); border-color:var(--primary); }
     .ses-check.checked::after { content:'✓'; color:white; font-size:12px; font-weight:700; }
     .ses-emoji { font-size:1.3rem; flex-shrink:0; width:28px; text-align:center; margin-top:1px; }
     .item-info { flex:1; min-width:0; }
     .item-name { font-size:0.88rem; font-weight:500; word-break:break-word; }
-    .item-detail { font-size:0.75rem; color:var(--text-light); margin-top:3px; display:flex; flex-wrap:wrap; gap:6px; align-items:center; }
+    .item-detail { font-size:0.75rem; color:var(--text-2); margin-top:3px; display:flex; flex-wrap:wrap; gap:6px; align-items:center; }
     .shop-link { display:inline-flex; align-items:center; gap:3px; font-size:0.72rem; padding:2px 8px; border-radius:10px; text-decoration:none; font-weight:500; }
     .shop-link.shopee { background:#fff0e6; color:#ee4d2d; }
     .shop-link.tokped { background:#e8f5e9; color:#03ac0e; }
@@ -32,24 +32,24 @@
     .item-actions { display:flex; gap:4px; flex-shrink:0; }
     .summary-ring { position:relative; display:inline-flex; align-items:center; justify-content:center; }
     .summary-ring svg { transform:rotate(-90deg); }
-    .summary-ring .ring-text { position:absolute; font-size:1.2rem; font-weight:700; color:var(--primary-dark); font-family:'DM Sans',sans-serif; }
+    .summary-ring .ring-text { position:absolute; font-size:1.2rem; font-weight:700; color:var(--primary-dark); font-family:'Inter',sans-serif; }
   </style>
 </head>
 <body>
 <nav>
-  <a href="index.html" class="nav-brand">✨ Sakinah</a>
+  <a href="index.html" class="nav-brand"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="color:#b08d6e"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> Sakinah</a>
   <button class="nav-toggle" id="nav-toggle" onclick="document.getElementById('nav-links').classList.toggle('open')"><span></span><span></span><span></span></button>
   <div class="nav-links" id="nav-links">
-    <a href="index.html">🏠 <span>Dashboard</span></a>
-    <a href="budget.html">💰 <span>Budget</span></a>
-    <a href="vendors.html">🤝 <span>Vendor</span></a>
-    <a href="recommendations.html">⭐ <span>Rekomendasi</span></a>
-    <a href="checklist.html">✅ <span>Checklist</span></a>
-    <a href="seserahan.html">🎁 <span>Seserahan</span></a>
-    <a href="guestlist.html">👥 <span>Tamu</span></a>
-    <a href="timeline.html">🕐 <span>Timeline</span></a>
-    <a href="panitia.html">👔 <span>Panitia</span></a>
-    <a href="profile.html">👤 <span>Profil</span></a>
+    <a href="index.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> <span>Dashboard</span></a>
+    <a href="budget.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> <span>Budget</span></a>
+    <a href="vendors.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> <span>Vendor</span></a>
+    <a href="recommendations.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> <span>Rekomendasi</span></a>
+    <a href="checklist.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> <span>Checklist</span></a>
+    <a href="seserahan.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg> <span>Seserahan</span></a>
+    <a href="guestlist.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> <span>Tamu</span></a>
+    <a href="timeline.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> <span>Timeline</span></a>
+    <a href="panitia.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg> <span>Panitia</span></a>
+    <a href="profile.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> <span>Profil</span></a>
   </div>
   <div class="nav-user">
     <span id="nav-user-name"></span>
@@ -59,9 +59,9 @@
 
 <div class="container">
   <div class="page-header">
-    <div><h2>🎁 Daftar Seserahan</h2><p>Kelola seserahan pernikahan secara rinci</p></div>
+    <div><h2>Daftar Seserahan</h2><p>Kelola seserahan pernikahan secara rinci</p></div>
     <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
-      <button class="btn btn-outline" onclick="printSeserahan()">🖨️ Print</button>
+      <button class="btn btn-outline" onclick="printSeserahan()">Print</button>
       <button class="btn btn-primary" onclick="openAddModal()">+ Tambah Item</button>
     </div>
   </div>
@@ -79,10 +79,10 @@
       <div style="flex:1;min-width:0">
         <h3 style="font-size:1.1rem;color:var(--primary-dark);margin-bottom:0.6rem" id="summary-title">Mulai siapkan seserahan!</h3>
         <div style="display:flex;gap:1.5rem;flex-wrap:wrap">
-          <div><span style="font-size:1.3rem;font-weight:700;color:var(--success)" id="done-count">0</span><p style="font-size:0.75rem;color:var(--text-light)">Siap</p></div>
-          <div><span style="font-size:1.3rem;font-weight:700;color:var(--warning)" id="pending-count">0</span><p style="font-size:0.75rem;color:var(--text-light)">Belum</p></div>
-          <div><span style="font-size:1.3rem;font-weight:700;color:var(--text)" id="total-count">0</span><p style="font-size:0.75rem;color:var(--text-light)">Total</p></div>
-          <div><span style="font-size:1.3rem;font-weight:700;color:var(--primary-dark)" id="total-harga">Rp 0</span><p style="font-size:0.75rem;color:var(--text-light)">Est. Total</p></div>
+          <div><span style="font-size:1.3rem;font-weight:700;color:var(--success)" id="done-count">0</span><p style="font-size:0.75rem;color:var(--text-2)">Siap</p></div>
+          <div><span style="font-size:1.3rem;font-weight:700;color:var(--warning)" id="pending-count">0</span><p style="font-size:0.75rem;color:var(--text-2)">Belum</p></div>
+          <div><span style="font-size:1.3rem;font-weight:700;color:var(--text)" id="total-count">0</span><p style="font-size:0.75rem;color:var(--text-2)">Total</p></div>
+          <div><span style="font-size:1.3rem;font-weight:700;color:var(--primary-dark)" id="total-harga">Rp 0</span><p style="font-size:0.75rem;color:var(--text-2)">Est. Total</p></div>
         </div>
       </div>
     </div>
@@ -90,11 +90,11 @@
 
   <!-- FILTER -->
   <div class="filter-bar">
-    <input type="text" id="search" placeholder="🔍 Cari item seserahan..." oninput="renderAll()" />
+    <input type="text" id="search" placeholder="Cari item seserahan..." oninput="renderAll()" />
     <select id="filter-cat" onchange="renderAll()"><option value="">Semua Kategori</option></select>
     <select id="filter-status" onchange="renderAll()">
       <option value="">Semua Status</option>
-      <option value="done">✅ Sudah Siap</option>
+      <option value="done">Sudah Siap</option>
       <option value="pending">⏳ Belum Siap</option>
     </select>
   </div>
@@ -133,7 +133,7 @@
     <div class="grid-2">
       <div class="form-group">
         <label>Emoji / Ikon</label>
-        <input type="text" id="s-emoji" placeholder="Contoh: 💍" maxlength="4" />
+        <input type="text" id="s-emoji" placeholder="Contoh: nama ikon" maxlength="4" />
       </div>
       <div class="form-group">
         <label>Jumlah / Satuan</label>
@@ -149,7 +149,7 @@
         <label>Status</label>
         <select id="s-status">
           <option value="0">⏳ Belum Siap</option>
-          <option value="1">✅ Sudah Siap</option>
+          <option value="1">Sudah Siap</option>
         </select>
       </div>
     </div>
@@ -167,14 +167,14 @@
     </div>
     <!-- LINK BELANJA -->
     <div class="form-group">
-      <label>🛍️ Link Shopee <span style="font-size:0.75rem;color:var(--text-light)">(opsional)</span></label>
+      <label>Link Shopee <span style="font-size:0.75rem;color:var(--text-2)">(opsional)</span></label>
       <input type="url" id="s-shopee" placeholder="https://shopee.co.id/..." />
     </div>
     <div class="form-group">
-      <label>🛒 Link Tokopedia <span style="font-size:0.75rem;color:var(--text-light)">(opsional)</span></label>
+      <label>Link Tokopedia <span style="font-size:0.75rem;color:var(--text-2)">(opsional)</span></label>
       <input type="url" id="s-tokped" placeholder="https://www.tokopedia.com/..." />
     </div>
-    <div style="display:flex;gap:0.8rem;position:sticky;bottom:0;background:var(--white);padding-top:1rem;margin-top:0.5rem">
+    <div style="display:flex;gap:0.8rem;position:sticky;bottom:0;background:var(--surface);padding-top:1rem;margin-top:0.5rem">
       <button class="btn btn-primary" style="flex:1;justify-content:center" onclick="saveItem()">Simpan</button>
       <button class="btn btn-outline" onclick="closeModal('modal-ses')">Batal</button>
     </div>
@@ -191,10 +191,10 @@
   let uid, allItems = [];
 
   const catEmoji = {
-    'Perhiasan & Aksesoris':'💍', 'Busana & Pakaian':'👗',
-    'Perlengkapan Ibadah':'🕌', 'Kosmetik & Perawatan':'💄',
-    'Makanan & Minuman':'🍱', 'Perlengkapan Rumah':'🏠',
-    'Uang & Mahar':'💵', 'Buah-buahan':'🍎', 'Lainnya':'📦'
+    'Perhiasan & Aksesoris':'Ph', 'Busana & Pakaian':'Bu',
+    'Perlengkapan Ibadah':'Pi', 'Kosmetik & Perawatan':'Ko',
+    'Makanan & Minuman':'Ma', 'Perlengkapan Rumah':'Pr',
+    'Uang & Mahar':'Um', 'Buah-buahan':'Ba', 'Lainnya':'La'
   };
 
   function updateSummary() {
@@ -209,10 +209,10 @@
     document.getElementById('total-count').textContent   = total;
     document.getElementById('total-harga').textContent   = fmt(totalHarga);
     document.getElementById('summary-title').textContent =
-      pct === 100 ? '🎉 Semua seserahan sudah siap!' :
-      pct >= 75   ? '💪 Hampir lengkap!' :
-      pct >= 50   ? '🌸 Setengah sudah siap!' :
-      pct >= 25   ? '✨ Terus semangat!' : '🎁 Mulai siapkan seserahan!';
+      pct === 100 ? 'Semua seserahan sudah siap!' :
+      pct >= 75   ? 'Hampir lengkap!' :
+      pct >= 50   ? 'Setengah sudah siap!' :
+      pct >= 25   ? 'Terus semangat!' : 'Mulai siapkan seserahan!';
   }
 
   window.renderAll = () => {
@@ -233,7 +233,7 @@
 
     const el = document.getElementById('ses-list');
     if (!items.length) {
-      el.innerHTML = '<div class="empty-state card"><div class="empty-icon">🎁</div><p>Belum ada item seserahan.</p></div>';
+      el.innerHTML = '<div class="empty-state card"><p>Belum ada item seserahan.</p></div>';
       return;
     }
 
@@ -246,7 +246,7 @@
       return `
         <div class="ses-card">
           <div class="ses-cat-header" onclick="toggleCat(this)">
-            <span style="font-size:1.3rem">${catEmoji[cat]||'📦'}</span>
+            <span style="font-size:0.72rem;font-weight:600;color:var(--text-3);background:var(--bg);padding:2px 6px;border-radius:4px">${catEmoji[cat]||cat}</span>
             <h4>${cat}</h4>
             <span class="badge ${catDone===catItems.length?'badge-green':'badge-yellow'}">${catDone}/${catItems.length}</span>
             <span style="font-size:0.8rem;color:var(--primary-dark);font-weight:600">${fmt(catPrice)}</span>
@@ -256,21 +256,21 @@
             ${catItems.map(i => `
               <div class="ses-item ${i.done?'checked':''}">
                 <div class="ses-check ${i.done?'checked':''}" onclick="toggleItem('${i.id}',${i.done})"></div>
-                <span class="ses-emoji">${i.emoji||catEmoji[i.category]||'📦'}</span>
+                <span class="ses-emoji" style="font-size:0.72rem;font-weight:600;color:var(--primary-dark);background:var(--primary-bg);padding:1px 6px;border-radius:4px">${catEmoji[i.category]||i.category.substring(0,2)}</span>
                 <div class="item-info">
                   <div class="item-name">${i.name}</div>
                   <div class="item-detail">
-                    ${i.qty   ? `<span>📦 ${i.qty}</span>` : ''}
-                    ${i.price ? `<span>💰 ${fmt(i.price)}</span>` : ''}
-                    ${i.from  ? `<span>👤 ${i.from}</span>` : ''}
-                    ${i.shopee ? `<a href="${i.shopee}" target="_blank" class="shop-link shopee">🛍️ Shopee</a>` : ''}
-                    ${i.tokped ? `<a href="${i.tokped}" target="_blank" class="shop-link tokped">🛒 Tokopedia</a>` : ''}
+                    ${i.qty   ? `<span>${i.qty}</span>` : ''}
+                    ${i.price ? `<span>${fmt(i.price)}</span>` : ''}
+                    ${i.from  ? `<span>${i.from}</span>` : ''}
+                    ${i.shopee ? `<a href="${i.shopee}" target="_blank" class="shop-link shopee">Shopee</a>` : ''}
+                    ${i.tokped ? `<a href="${i.tokped}" target="_blank" class="shop-link tokped">Tokopedia</a>` : ''}
                     ${i.desc  ? `<div style="width:100%;margin-top:2px">${i.desc}</div>` : ''}
                   </div>
                 </div>
                 <div class="item-actions">
-                  <button class="btn btn-outline btn-sm" onclick="editItem('${i.id}')" style="padding:3px 8px">✏️</button>
-                  <button class="btn btn-danger btn-sm" onclick="deleteItem('${i.id}')" style="padding:3px 8px">🗑️</button>
+                  <button class="btn btn-outline btn-sm" onclick="editItem('${i.id}')" style="padding:3px 8px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                  <button class="btn btn-danger btn-sm" onclick="deleteItem('${i.id}')" style="padding:3px 8px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button>
                 </div>
               </div>`).join('')}
           </div>
@@ -338,7 +338,7 @@
     else    await Seserahan.add(uid, data);
     allItems = await Seserahan.getAll(uid);
     closeModal('modal-ses');
-    toast(id ? 'Item diperbarui' : 'Item ditambahkan ✨');
+    toast(id ? 'Item diperbarui' : 'Item ditambahkan');
     updateSummary(); renderAll();
   };
 
@@ -358,7 +358,7 @@
     win.document.write(`<html><head><title>Daftar Seserahan</title>
     <style>body{font-family:Arial,sans-serif;padding:30px;color:#4a4543}h1{color:#a68566;text-align:center;margin-bottom:4px}.sub{text-align:center;color:#8b8580;margin-bottom:24px;font-size:13px}.summary{display:flex;gap:16px;margin-bottom:24px;flex-wrap:wrap}.sum-box{background:#e8d5c4;padding:10px 18px;border-radius:8px}.sum-box p{margin:0;font-size:11px;color:#8b8580}.sum-box h3{margin:4px 0 0;color:#a68566;font-size:15px}h2{color:#d4af85;font-size:14px;margin:20px 0 8px;border-bottom:1px solid #d4c4b0;padding-bottom:4px}table{width:100%;border-collapse:collapse;margin-bottom:16px}th{background:#e8d5c4;padding:8px 10px;text-align:left;font-size:12px}td{padding:8px 10px;border-bottom:1px solid #eee;font-size:12px}.done{color:#609856;font-weight:600}.pending{color:#b08f3a}a{color:#a68566;font-size:11px}</style>
     </head><body>
-    <h1>🎁 Daftar Seserahan Pernikahan</h1>
+    <h1>Daftar Seserahan Pernikahan</h1>
     <p class="sub">Dicetak: ${new Date().toLocaleString('id-ID')}</p>
     <div class="summary">
       <div class="sum-box"><p>Total Item</p><h3>${allItems.length}</h3></div>
@@ -367,7 +367,7 @@
       <div class="sum-box"><p>Estimasi Total</p><h3>Rp ${totalHarga.toLocaleString('id-ID')}</h3></div>
     </div>
     ${Object.entries(grouped).map(([cat,items])=>`
-      <h2>${catEmoji[cat]||'📦'} ${cat}</h2>
+      <h2>${cat}</h2>
       <table><thead><tr><th>No</th><th>Item</th><th>Jumlah</th><th>Spesifikasi</th><th>Dari</th><th>Harga</th><th>Link</th><th>Status</th></tr></thead>
       <tbody>${items.map((i,idx)=>`<tr>
         <td>${idx+1}</td>
@@ -377,9 +377,10 @@
         <td>${i.from||'-'}</td>
         <td>Rp ${(i.price||0).toLocaleString('id-ID')}</td>
         <td>${i.shopee?`<a href="${i.shopee}">Shopee</a>`:''}${i.shopee&&i.tokped?' · ':''}${i.tokped?`<a href="${i.tokped}" style="color:#03ac0e">Tokped</a>`:''}</td>
-        <td class="${i.done?'done':'pending'}">${i.done?'✅ Siap':'⏳ Belum'}</td>
+        <td class="${i.done?'done':'pending'}">${i.done?'Siap':'Belum'}</td>
       </tr>`).join('')}</tbody></table>`).join('')}
-    </body></html>`);
+    <script src="js/music-player.js"></script>
+</body></html>`);
     win.document.close(); win.print();
   };
 
@@ -393,5 +394,6 @@
     showLoading(false);
   });
 </script>
+<script src="js/music-player.js"></script>
 </body>
 </html>

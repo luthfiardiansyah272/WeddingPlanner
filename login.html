@@ -12,106 +12,138 @@
       position: absolute; right: 12px; top: 50%;
       transform: translateY(-50%);
       background: none; border: none; cursor: pointer;
-      font-size: 1.1rem; color: var(--text-light); padding: 0; line-height: 1;
+      color: var(--text-3); padding: 0; line-height: 1;
+      display: flex; align-items: center;
     }
-    .toggle-eye:hover { color: var(--primary-dark); }
+    .toggle-eye:hover { color: var(--text); }
     .forgot-link {
       display: block; text-align: right; font-size: 0.8rem;
-      color: var(--primary-dark); margin-top: -8px; margin-bottom: 1rem; cursor: pointer;
+      color: var(--primary-dark); margin-top: -6px; margin-bottom: 1rem; cursor: pointer;
     }
     .forgot-link:hover { text-decoration: underline; }
     .reset-overlay {
       display: none; position: fixed; inset: 0;
-      background: rgba(15, 23, 42, 0.45); z-index: 200;
+      background: rgba(0,0,0,0.35); z-index: 200;
       align-items: center; justify-content: center;
     }
     .reset-overlay.active { display: flex; }
     .reset-modal {
-      background: var(--white); border-radius: var(--radius); padding: 2rem;
-      width: 90%; max-width: 400px;
-      box-shadow: 0 8px 30px rgba(15, 23, 42, 0.12);
-      animation: slideUp 0.25s ease; text-align: center;
+      background: var(--surface); border-radius: var(--radius); padding: 1.75rem;
+      width: 90%; max-width: 380px;
+      box-shadow: var(--shadow-md);
+      animation: slideUp 0.18s ease; text-align: center;
+      border: 1px solid var(--border);
     }
-    @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-    .reset-modal h3 { color: var(--primary-dark); margin-bottom: 0.5rem; }
-    .reset-modal p { font-size: 0.85rem; color: var(--text-light); margin-bottom: 1.5rem; }
+    @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    .reset-modal h3 { color: var(--text); margin-bottom: 0.4rem; font-size: 1rem; }
+    .reset-modal p { font-size: 0.85rem; color: var(--text-2); margin-bottom: 1.35rem; }
     #reset-success { display: none; }
+    .reset-icon {
+      width: 44px; height: 44px; border-radius: 12px;
+      background: var(--primary-bg); display: flex; align-items: center;
+      justify-content: center; margin: 0 auto 1rem; color: var(--primary-dark);
+    }
   </style>
 </head>
 <body>
 <div class="login-page">
   <!-- Kolom kiri: visual -->
   <div class="login-visual">
-    <div class="login-visual-icon">💍</div>
-    <h1>Sakinah</h1>
-    <p>Platform modern untuk merencanakan pernikahan impian Anda dengan penuh percaya diri</p>
-    <div class="login-features">
-      <div class="login-feature"><span>💰</span><span>Kelola budget pernikahan</span></div>
-      <div class="login-feature"><span>✅</span><span>Checklist persiapan lengkap</span></div>
-      <div class="login-feature"><span>👥</span><span>Manajemen tamu &amp; RSVP</span></div>
-      <div class="login-feature"><span>🤝</span><span>Database vendor terpercaya</span></div>
-      <div class="login-feature"><span>🕐</span><span>Timeline rundown hari H</span></div>
+    <div class="login-visual-pattern"></div>
+    <div class="login-visual-badge">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      Sakinah
+    </div>
+    <div style="position:relative">
+      <h1>Rencanakan hari<br>istimewa Anda</h1>
+      <p>Platform modern untuk membantu pasangan merencanakan pernikahan dengan percaya diri.</p>
+      <div class="login-features">
+        <div class="login-feature">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          <span>Kelola budget pernikahan</span>
+        </div>
+        <div class="login-feature">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          <span>Checklist persiapan lengkap</span>
+        </div>
+        <div class="login-feature">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <span>Manajemen tamu &amp; RSVP</span>
+        </div>
+        <div class="login-feature">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <span>Database vendor terpercaya</span>
+        </div>
+        <div class="login-feature">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <span>Timeline rundown hari H</span>
+        </div>
+      </div>
     </div>
   </div>
+
   <!-- Kolom kanan: form -->
   <div class="login-form-side">
-  <div class="login-card">
-    <div class="logo">✨</div>
-    <h2>Selamat Datang</h2>
-    <p>Masuk atau buat akun untuk mulai merencanakan hari spesial Anda</p>
+    <div class="login-card">
+      <h2>Selamat Datang</h2>
+      <p>Masuk atau buat akun untuk mulai merencanakan hari spesial Anda</p>
 
-    <div class="tab-switch">
-      <button id="tab-login-btn" class="active">Masuk</button>
-      <button id="tab-register-btn">Daftar</button>
+      <div class="tab-switch">
+        <button id="tab-login-btn" class="active">Masuk</button>
+        <button id="tab-register-btn">Daftar</button>
+      </div>
+
+      <!-- LOGIN FORM -->
+      <form id="form-login">
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="login-email" placeholder="email@contoh.com" required />
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <div class="input-wrap">
+            <input type="password" id="login-pass" placeholder="Password" required />
+            <button type="button" class="toggle-eye" id="eye-login">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+        </div>
+        <span class="forgot-link" id="forgot-link">Lupa password?</span>
+        <p id="login-err" style="color:var(--danger);font-size:0.8rem;margin-bottom:1rem;display:none"></p>
+        <button type="submit" id="btn-login" class="btn btn-primary" style="width:100%;justify-content:center">Masuk</button>
+      </form>
+
+      <!-- REGISTER FORM -->
+      <form id="form-register" style="display:none">
+        <div class="form-group">
+          <label>Nama Lengkap</label>
+          <input type="text" id="reg-name" placeholder="Nama kamu" required />
+        </div>
+        <div class="form-group">
+          <label>Nama Pasangan</label>
+          <input type="text" id="reg-partner" placeholder="Nama pasangan" required />
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="reg-email" placeholder="email@contoh.com" required />
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <div class="input-wrap">
+            <input type="password" id="reg-pass" placeholder="Minimal 6 karakter" required minlength="6" />
+            <button type="button" class="toggle-eye" id="eye-register">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Tanggal Pernikahan</label>
+          <input type="date" id="reg-date" required />
+        </div>
+        <p id="reg-err" style="color:var(--danger);font-size:0.8rem;margin-bottom:1rem;display:none"></p>
+        <button type="submit" id="btn-register" class="btn btn-primary" style="width:100%;justify-content:center">Daftar Sekarang</button>
+      </form>
     </div>
-
-    <!-- LOGIN FORM -->
-    <form id="form-login">
-      <div class="form-group">
-        <label>Email</label>
-        <input type="email" id="login-email" placeholder="email@contoh.com" required />
-      </div>
-      <div class="form-group">
-        <label>Password</label>
-        <div class="input-wrap">
-          <input type="password" id="login-pass" placeholder="Password" required />
-          <button type="button" class="toggle-eye" id="eye-login">👁️</button>
-        </div>
-      </div>
-      <span class="forgot-link" id="forgot-link">Lupa password?</span>
-      <p id="login-err" style="color:var(--danger);font-size:0.8rem;margin-bottom:1rem;display:none"></p>
-      <button type="submit" id="btn-login" class="btn btn-primary" style="width:100%;justify-content:center">Masuk</button>
-    </form>
-
-    <!-- REGISTER FORM -->
-    <form id="form-register" style="display:none">
-      <div class="form-group">
-        <label>Nama Lengkap</label>
-        <input type="text" id="reg-name" placeholder="Nama kamu" required />
-      </div>
-      <div class="form-group">
-        <label>Nama Pasangan</label>
-        <input type="text" id="reg-partner" placeholder="Nama pasangan" required />
-      </div>
-      <div class="form-group">
-        <label>Email</label>
-        <input type="email" id="reg-email" placeholder="email@contoh.com" required />
-      </div>
-      <div class="form-group">
-        <label>Password</label>
-        <div class="input-wrap">
-          <input type="password" id="reg-pass" placeholder="Minimal 6 karakter" required minlength="6" />
-          <button type="button" class="toggle-eye" id="eye-register">👁️</button>
-        </div>
-      </div>
-      <div class="form-group">
-        <label>Tanggal Pernikahan</label>
-        <input type="date" id="reg-date" required />
-      </div>
-      <p id="reg-err" style="color:var(--danger);font-size:0.8rem;margin-bottom:1rem;display:none"></p>
-      <button type="submit" id="btn-register" class="btn btn-primary" style="width:100%;justify-content:center">Daftar Sekarang</button>
-    </form>
-  </div>
   </div>
 </div>
 
@@ -119,7 +151,9 @@
 <div class="reset-overlay" id="reset-overlay">
   <div class="reset-modal">
     <div id="reset-form-wrap">
-      <div style="font-size:2rem;margin-bottom:0.5rem">🔑</div>
+      <div class="reset-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      </div>
       <h3>Lupa Password?</h3>
       <p>Masukkan email kamu, kami akan kirim link reset password.</p>
       <div class="form-group" style="text-align:left">
@@ -127,15 +161,17 @@
         <input type="email" id="reset-email" placeholder="email@contoh.com" />
       </div>
       <p id="reset-err" style="color:var(--danger);font-size:0.8rem;margin-bottom:1rem;display:none"></p>
-      <div style="display:flex;gap:0.8rem">
+      <div style="display:flex;gap:0.75rem">
         <button id="btn-reset" class="btn btn-primary" style="flex:1;justify-content:center">Kirim Link Reset</button>
         <button id="btn-reset-cancel" class="btn btn-outline">Batal</button>
       </div>
     </div>
     <div id="reset-success">
-      <div style="font-size:3rem;margin-bottom:1rem">📧</div>
-      <h3 style="color:var(--primary-dark);margin-bottom:0.5rem">Email Terkirim!</h3>
-      <p style="margin-bottom:1.5rem">Link reset password sudah dikirim ke <strong id="reset-email-sent"></strong>. Cek inbox atau folder spam kamu.</p>
+      <div class="reset-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      </div>
+      <h3>Email Terkirim!</h3>
+      <p style="margin-bottom:1.35rem">Link reset password sudah dikirim ke <strong id="reset-email-sent"></strong>. Cek inbox atau folder spam kamu.</p>
       <button id="btn-reset-ok" class="btn btn-primary" style="width:100%;justify-content:center">Oke, Mengerti</button>
     </div>
   </div>
@@ -144,7 +180,6 @@
 <script type="module">
   import { Auth } from './js/firebase.js';
 
-  // Redirect jika sudah login
   Auth.redirectIfLoggedIn();
 
   // ===== TAB SWITCH =====
@@ -163,18 +198,21 @@
   });
 
   // ===== TOGGLE PASSWORD =====
+  const eyeSVG = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`;
+  const eyeOffSVG = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>`;
+
   document.getElementById('eye-login').addEventListener('click', () => {
     const inp = document.getElementById('login-pass');
     const btn = document.getElementById('eye-login');
     inp.type = inp.type === 'password' ? 'text' : 'password';
-    btn.textContent = inp.type === 'password' ? '👁️' : '🙈';
+    btn.innerHTML = inp.type === 'password' ? eyeSVG : eyeOffSVG;
   });
 
   document.getElementById('eye-register').addEventListener('click', () => {
     const inp = document.getElementById('reg-pass');
     const btn = document.getElementById('eye-register');
     inp.type = inp.type === 'password' ? 'text' : 'password';
-    btn.textContent = inp.type === 'password' ? '👁️' : '🙈';
+    btn.innerHTML = inp.type === 'password' ? eyeSVG : eyeOffSVG;
   });
 
   // ===== LOGIN =====
@@ -244,9 +282,8 @@
   });
 
   document.getElementById('reset-overlay').addEventListener('click', (e) => {
-    if (e.target === document.getElementById('reset-overlay')) {
+    if (e.target === document.getElementById('reset-overlay'))
       document.getElementById('reset-overlay').classList.remove('active');
-    }
   });
 
   document.getElementById('btn-reset').addEventListener('click', async () => {
