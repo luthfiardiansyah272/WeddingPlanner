@@ -125,12 +125,12 @@
     }
     el.innerHTML = `<table><thead><tr><th>Kategori</th><th>Nama Item</th><th>Rencana</th><th>Aktual</th><th>Selisih</th><th>Status</th><th>Aksi</th></tr></thead><tbody>
       ${bData.items.map(item => {
-        const diff = (item.planned||0)-(item.actual||0);
+        const diff = (item.actual||0)-(item.planned||0);
         return `<tr>
           <td><span class="badge badge-pink">${item.category}</span></td>
           <td><strong>${item.name}</strong>${item.note?`<br><small style="color:var(--text-2)">${item.note}</small>`:''}</td>
           <td>${fmt(item.planned||0)}</td><td>${fmt(item.actual||0)}</td>
-          <td style="color:${diff>=0?'var(--success)':'var(--danger)'}">${diff>=0?'+':''}${fmt(diff)}</td>
+          <td style="color:${diff<=0?'var(--success)':'var(--danger)'}">${diff>0?'+':''}${fmt(diff)}</td>
           <td><span class="badge ${statusColor[item.status]||'badge-blue'}">${item.status}</span></td>
           <td>
             <button class="btn btn-outline btn-sm" onclick="editItem(${item.id})"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
