@@ -278,12 +278,13 @@
     if (!sess) return;
 
     document.getElementById('session-desc').innerHTML = `
-      <span style="font-size:0.75rem;font-weight:600;color:var(--text-2)">
-      <div style="flex:1;min-width:0">
-        <strong style="color:var(--primary-dark)">${sess.label}</strong>
-        ${sess.desc ? `<p style="font-size:0.8rem;color:var(--text-2);margin-top:2px">${sess.desc}</p>` : ''}
-      </div>
-      <span class="badge badge-pink">${(eventData[activeId]||[]).length} acara</span>`;
+      <div style="display:flex;align-items:center;gap:10px;width:100%">
+        <div style="flex:1;min-width:0">
+          <strong style="color:var(--primary-dark)">${sess.label}</strong>
+          ${sess.desc ? `<p style="font-size:0.8rem;color:var(--text-2);margin-top:2px">${sess.desc}</p>` : ''}
+        </div>
+        <span class="badge badge-pink">${(eventData[activeId]||[]).length} acara</span>
+      </div>`;
 
     const events = eventData[activeId] || [];
     const el = document.getElementById('timeline-container');
@@ -437,7 +438,7 @@
     <p class="sub">${profile?.name} & ${profile?.partnerName} — ${dateStr}</p>
     <table><thead><tr><th>Waktu</th><th>Acara</th><th>Kategori</th><th>Deskripsi</th><th>PIC</th></tr></thead>
     <tbody>${events.map(e=>`<tr><td><strong>${e.time}</strong></td><td>${e.event}</td><td><span class="cat">${e.category}</span></td><td>${e.desc||'-'}</td><td>${e.pic||'-'}</td></tr>`).join('')}</tbody>
-    </table><script src="js/music-player.js"></script>
+    </table>
 </body></html>`);
     win.document.close(); win.print();
   };
